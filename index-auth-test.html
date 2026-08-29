@@ -1,0 +1,937 @@
+<!-- ============================================================= -->
+<!-- index-auth-test.html – Badminton Group Manager with Auth      -->
+<!-- ============================================================= -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>Badminton Group Manager</title>
+
+  <!-- External libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Your existing styles (unchanged) -->
+  <style>
+    /* ===== Your original styles ===== */
+    :root{--bg:#020617;--panel:#0f172a;--line:#334155;--text:#f8fafc;--muted:#94a3b8;--green:#059669;--blue:#0284c7;--red:#be123c;--yellow:#b45309}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Segoe UI,Arial,sans-serif}button,input,select{font:inherit}button{border:1px solid #475569;border-radius:9px;padding:9px 13px;background:#1e293b;color:#fff;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}input,select{width:100%;height:40px;border:1px solid #475569;border-radius:8px;padding:0 10px;background:#020617;color:#fff}label{display:block;margin-bottom:6px;color:#cbd5e1}.wrap{width:min(1450px,calc(100% - 24px));margin:auto;padding:24px 0 40px}.row,.actions,.header,.section-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.header,.section-head{justify-content:space-between}.header{align-items:flex-start}.card{margin-top:16px;border:1px solid var(--line);border-radius:15px;background:var(--panel);overflow:hidden}.pad{padding:16px}.section-head{padding:16px;border-bottom:1px solid var(--line)}h1,h2,h3,p{margin:0}h1{font-size:40px;margin:7px 0}p,.muted{color:var(--muted)}.primary{background:var(--green)}.blue{background:var(--blue)}.danger{background:var(--red)}.hidden{display:none!important}.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-top:16px}.summary .card{margin:0;padding:16px}.summary strong{display:block;font-size:22px;margin-top:5px}.green{color:#34d399}.red{color:#fb7185}.blue-t{color:#38bdf8}.yellow{color:#fbbf24}.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:11px}.span2{grid-column:span 2}.sync{border-left:5px solid #64748b}.sync.connected{border-left-color:#34d399}.sync.saving{border-left-color:#fbbf24}.sync.error{border-left-color:#fb7185}.member-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:11px;margin-top:12px}.member{border:1px solid var(--line);border-left:5px solid #fb7185;border-radius:10px;padding:12px;background:#08111f}.member.paid{border-left-color:#34d399}.member.partial{border-left-color:#fbbf24}.months{margin-top:8px}.month{display:grid;grid-template-columns:95px 1fr auto;gap:8px;align-items:center;border-top:1px solid var(--line);padding:7px 0;font-size:12px}.preview{margin-top:12px;border:1px solid var(--line);border-left:5px solid #38bdf8;border-radius:10px;padding:12px}.preview-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:7px;border-top:1px solid var(--line)}.table-wrap{overflow:auto}table{width:100%;min-width:1200px;border-collapse:collapse}th,td{padding:10px;border-top:1px solid var(--line);text-align:left}th{background:#020617;color:var(--muted)}.modal-bg{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;padding:20px;z-index:4}.modal{width:min(500px,100%);background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}.field{min-width:120px}.help{font-size:11px;color:var(--muted);display:block;margin-top:4px}@media(max-width:1000px){.summary{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.summary,.grid{grid-template-columns:1fr}.span2{grid-column:span 1}.month{grid-template-columns:1fr}}
+    .archive-controls{display:grid;grid-template-columns:minmax(220px,280px) minmax(220px,280px) auto;gap:16px;align-items:end}.archive-view-action{display:flex;align-items:flex-end}.archive-view-action button{height:40px;white-space:nowrap}.archive-index-message{margin-top:12px;line-height:1.4}@media(max-width:800px){.archive-controls{grid-template-columns:1fr 1fr}.archive-view-action{grid-column:1/-1}.archive-view-action button{width:100%}}@media(max-width:520px){.archive-controls{grid-template-columns:1fr}}
+    :root{--bg:#f4fbf7;--panel:#fff;--line:#c9dfd3;--text:#183c2b;--muted:#668174;--green:#16865b;--blue:#247caf;--red:#c94b5f;--yellow:#b57918;--green-dark:#0e6b47}
+    body{background:linear-gradient(135deg,#f7fcf9,#edf8f2 56%,#fffaf0);color:var(--text)}button{border-color:#abc9ba;background:#fff;color:var(--text);box-shadow:0 2px 7px rgba(28,75,52,.07)}input,select{border-color:#abc9ba;background:#fff;color:var(--text)}label{color:#355c49}.card,.modal{background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(41,91,66,.08)}.primary{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff}.blue{background:linear-gradient(135deg,#3295c8,var(--blue));color:#fff}.danger{color:#fff}.member{background:linear-gradient(#fff,#f5fbf7)}th{background:#dff2e7;color:#244c39}.modal-bg{background:rgba(24,58,42,.55);backdrop-filter:blur(4px)}.section-head{background:linear-gradient(90deg,#f4fbf7,#fff)}
+    .header{padding:20px 24px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(120deg,#fff,#eff9f3 68%,#fff6d5);box-shadow:0 10px 28px rgba(41,91,66,.10)}.header h1:before{content:"🏸 ";font-size:.82em}.header .green{display:none}
+    .app-nav{position:sticky;top:8px;z-index:30;display:flex;gap:6px;margin:14px 0;padding:7px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.95);box-shadow:0 7px 22px rgba(41,91,66,.10);backdrop-filter:blur(10px);overflow-x:auto}.nav-button{flex:1;min-width:max-content;border-color:transparent;background:transparent;box-shadow:none;font-weight:700;color:#446b58}.app-nav .nav-button{position:relative;z-index:100;pointer-events:auto}.nav-button.active{color:#fff;background:linear-gradient(135deg,var(--green),var(--green-dark));border-color:var(--green-dark)}.page-hidden{display:none!important}.page-section.section-enter{animation:enter .2s ease-out}@keyframes enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .workbook-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.workbook-controls button{min-height:40px}.settings-controls{display:grid;grid-template-columns:minmax(220px,280px) minmax(220px,280px) auto;gap:16px;align-items:end}.settings-action button{height:40px}.summary .card:nth-child(1){border-top:4px solid #20a46d}.summary .card:nth-child(2){border-top:4px solid #d65a6c}.summary .card:nth-child(3){border-top:4px solid #3295c8}.summary .card:nth-child(4){border-top:4px solid #e4a11b}.summary .card:nth-child(5){border-top:4px solid #7b69b8}
+    @media(max-width:800px){.settings-controls{grid-template-columns:1fr 1fr}.settings-action{grid-column:1/-1}.settings-action button{width:100%}.app-nav{top:4px}}@media(max-width:520px){.settings-controls{grid-template-columns:1fr}.nav-button{font-size:12px;padding:9px}.header h1{font-size:30px}}
+
+    /* Streamlined workbook toolbar (unchanged) */
+    .workbook-controls{display:grid!important;grid-template-columns:repeat(7,minmax(118px,1fr));gap:8px!important;width:100%;margin-top:14px!important;align-items:stretch}
+    .workbook-controls button{width:100%;min-width:0;min-height:42px!important;padding:9px 10px!important;white-space:nowrap;font-size:13px;font-weight:650;border:1px solid #9fc4b2!important;background:linear-gradient(180deg,#ffffff,#f3faf6)!important;color:#24533d!important;box-shadow:0 2px 6px rgba(28,75,52,.06)!important}
+    .workbook-controls button:hover:not(:disabled){background:linear-gradient(180deg,#f2fbf6,#e7f5ed)!important;border-color:#63a584!important;transform:translateY(-1px)}
+    .workbook-controls button:disabled{background:#f4f7f5!important;color:#9caca4!important;border-color:#d7e3dd!important;box-shadow:none!important;opacity:1!important}
+    .workbook-controls #connectMasterButton,.workbook-controls #pickExistingMasterButton{background:linear-gradient(135deg,#16865b,#0e6b47)!important;color:#fff!important;border-color:#0e6b47!important}
+    .workbook-controls #importButton,.workbook-controls #downloadExcelButton{background:linear-gradient(135deg,#318ab7,#24739e)!important;color:#fff!important;border-color:#1d648a!important}
+    .workbook-controls #disconnectButton:not(:disabled){color:#a33d4d!important;border-color:#daaab3!important;background:#fff7f8!important}
+    #syncPanel>.pad{display:block!important}#syncPanel>.pad>div:first-child{width:100%}
+    @media(max-width:1180px){.workbook-controls{grid-template-columns:repeat(4,minmax(145px,1fr))}}
+    @media(max-width:760px){.workbook-controls{grid-template-columns:repeat(2,minmax(140px,1fr))}.workbook-controls button{white-space:normal}}
+    @media(max-width:430px){.workbook-controls{grid-template-columns:1fr}}
+
+    /* Final unified single-line workbook toolbar (unchanged) */
+    .workbook-controls{display:flex!important;flex-wrap:nowrap!important;gap:7px!important;width:100%!important;margin-top:14px!important;align-items:stretch!important;overflow-x:auto!important;overflow-y:hidden!important;padding:2px 2px 8px!important;scrollbar-width:thin;scrollbar-color:#9fc4b2 transparent}
+    .workbook-controls button{flex:1 1 0!important;width:auto!important;min-width:132px!important;max-width:none!important;min-height:42px!important;padding:9px 9px!important;white-space:nowrap!important;font-size:12.5px!important;font-weight:650!important;border:1px solid #7fb397!important;background:linear-gradient(180deg,#f7fcf9,#eaf6ef)!important;color:#174c36!important;box-shadow:0 2px 6px rgba(22,107,71,.07)!important}
+    .workbook-controls button:hover:not(:disabled){background:linear-gradient(180deg,#eaf7f0,#dcefe5)!important;border-color:#3f8e67!important;color:#0e5e3d!important;transform:translateY(-1px)!important}
+    .workbook-controls button:active:not(:disabled){transform:translateY(0)!important}
+    .workbook-controls button:disabled{background:#f4f7f5!important;color:#a8b5ae!important;border-color:#d7e1dc!important;box-shadow:none!important;opacity:1!important;filter:none!important;cursor:not-allowed!important}
+    .workbook-controls #importButton,.workbook-controls #connectMasterButton,.workbook-controls #pickExistingMasterButton,.workbook-controls #saveMasterButton,.workbook-controls #grantAccessButton,.workbook-controls #downloadExcelButton,.workbook-controls #disconnectButton{background:linear-gradient(180deg,#f7fcf9,#eaf6ef)!important;color:#174c36!important;border-color:#7fb397!important}
+    .workbook-controls #importButton:hover:not(:disabled),.workbook-controls #connectMasterButton:hover:not(:disabled),.workbook-controls #pickExistingMasterButton:hover:not(:disabled),.workbook-controls #saveMasterButton:hover:not(:disabled),.workbook-controls #grantAccessButton:hover:not(:disabled),.workbook-controls #downloadExcelButton:hover:not(:disabled),.workbook-controls #disconnectButton:hover:not(:disabled){background:linear-gradient(180deg,#eaf7f0,#dcefe5)!important;color:#0e5e3d!important;border-color:#3f8e67!important}
+    .workbook-controls #importButton:disabled,.workbook-controls #connectMasterButton:disabled,.workbook-controls #pickExistingMasterButton:disabled,.workbook-controls #saveMasterButton:disabled,.workbook-controls #grantAccessButton:disabled,.workbook-controls #downloadExcelButton:disabled,.workbook-controls #disconnectButton:disabled{background:#f4f7f5!important;color:#a8b5ae!important;border-color:#d7e1dc!important}
+    @media(max-width:900px){.workbook-controls{flex-wrap:nowrap!important}.workbook-controls button{flex:0 0 145px!important;min-width:145px!important;white-space:nowrap!important}}
+
+    /* Compact final action bar (unchanged) */
+    .workbook-controls{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;width:100%!important;overflow:visible!important;padding:2px 0!important}
+    .workbook-controls button{min-width:0!important;width:100%!important;height:42px!important;padding:8px 10px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:13px!important;font-weight:700!important;border:1px solid #76aa8e!important;background:linear-gradient(180deg,#f5fbf7,#e7f4ec)!important;color:#174c36!important;box-shadow:0 2px 6px rgba(22,107,71,.07)!important}
+    .workbook-controls button:hover:not(:disabled){background:linear-gradient(180deg,#e8f6ee,#d9ecdf)!important;border-color:#3f8e67!important;color:#0e5e3d!important}
+    .workbook-controls button:disabled{background:#f3f6f4!important;color:#a8b3ad!important;border-color:#d7e0db!important;box-shadow:none!important;opacity:1!important}
+    #viewArchiveButton{background:linear-gradient(180deg,#f5fbf7,#e7f4ec)!important;color:#174c36!important;border-color:#76aa8e!important;box-shadow:0 2px 6px rgba(22,107,71,.07)!important}
+    #viewArchiveButton:hover:not(:disabled){background:linear-gradient(180deg,#e8f6ee,#d9ecdf)!important;border-color:#3f8e67!important;color:#0e5e3d!important}
+    @media(max-width:700px){.workbook-controls{grid-template-columns:repeat(4,minmax(105px,1fr))!important;overflow-x:auto!important}.workbook-controls button{font-size:12px!important}}
+
+    /* Legacy workbook UI retained only for import/export/archive compatibility (unchanged) */
+    .workbook-controls{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+    .autosave-note{display:flex;align-items:center;gap:8px;margin-top:10px;color:#557466;font-size:12px}.autosave-dot{width:8px;height:8px;border-radius:50%;background:#86b99e;box-shadow:0 0 0 4px #edf7f1}.sync.saving .autosave-dot{background:#d7a138}.sync.connected .autosave-dot{background:#16865b}.sync.error .autosave-dot{background:#c94b5f}
+    @media(max-width:700px){.workbook-controls{grid-template-columns:repeat(3,minmax(105px,1fr))!important}}
+
+    /* File actions moved into a compact navigation menu (unchanged) */
+    .file-menu-wrap{position:relative;display:flex;flex:1;min-width:max-content}.file-menu-button{width:100%}.file-menu-panel{position:absolute;right:0;top:calc(100% + 10px);z-index:80;width:min(440px,calc(100vw - 28px));padding:14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.98);box-shadow:0 16px 38px rgba(34,78,56,.18);backdrop-filter:blur(12px)}
+    .file-menu-status{padding:2px 2px 12px;border-bottom:1px solid #dcebe3}.file-menu-status strong{display:block;color:#173f2d;font-size:14px}.file-menu-status .muted{display:block;margin-top:4px;font-size:12px;line-height:1.4}
+    .file-menu-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.file-menu-actions button{min-width:0;height:40px;padding:8px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid #76aa8e!important;background:linear-gradient(180deg,#f5fbf7,#e7f4ec)!important;color:#174c36!important;font-weight:700!important;box-shadow:none!important}.file-menu-actions button:hover{background:linear-gradient(180deg,#e8f6ee,#d9ecdf)!important;border-color:#3f8e67!important}
+    .connection-indicator{align-self:center;margin-left:auto;padding:7px 11px;border:1px solid #c8ddd1;border-radius:999px;background:#f5fbf7;color:#668174;font-size:12px;white-space:nowrap}.connection-indicator.connected{color:#0e6b47;border-color:#86b99e;background:#eaf6ef}.connection-indicator.error{color:#a64150;border-color:#ddb0b8;background:#fff5f6}.connection-indicator.saving{color:#8b6519;border-color:#e2c581;background:#fff9e8}
+    /* Remove the former workbook card and red left rule completely */
+    .autosave-note,.autosave-dot,.workbook-controls{display:none!important}
+    @media(max-width:700px){.file-menu-panel{position:fixed;left:14px;right:14px;top:118px;width:auto}.file-menu-actions{grid-template-columns:1fr}.connection-indicator{width:100%;margin:10px 0 0;text-align:center}.header{flex-direction:column}}
+
+    /* File menu opens fully to the left and never needs internal scrolling (unchanged) */
+    .file-menu-wrap{position:relative!important;overflow:visible!important}
+    .file-menu-panel{position:absolute!important;left:auto!important;right:0!important;top:calc(100% + 8px)!important;width:460px!important;max-width:calc(100vw - 28px)!important;max-height:none!important;height:auto!important;overflow:visible!important;padding:14px!important;box-sizing:border-box!important}
+    .file-menu-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;margin-top:12px!important;overflow:visible!important}
+    .file-menu-actions button{display:block!important;width:100%!important;min-width:0!important;height:42px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+    .file-menu-status{max-height:none!important;overflow:visible!important}
+    .app-nav{overflow:visible!important}
+    @media(max-width:620px){.file-menu-panel{position:fixed!important;left:12px!important;right:12px!important;top:92px!important;width:auto!important;max-width:none!important}.file-menu-actions{grid-template-columns:1fr!important}.file-menu-actions button{height:44px!important}}
+
+    /* Master file is mandatory before the application can be used (unchanged) */
+    .master-gate{margin:18px 0}.master-gate-card{max-width:620px;margin:36px auto;padding:34px 28px;text-align:center;border:1px solid #c8ddd1;border-radius:22px;background:linear-gradient(135deg,#ffffff,#edf8f2 68%,#fff8df);box-shadow:0 14px 38px rgba(34,78,56,.13)}.master-gate-icon{font-size:46px;line-height:1;margin-bottom:8px}.master-gate-card h2{font-size:28px;color:#173f2d}.master-gate-card p{max-width:520px;margin:10px auto 20px;line-height:1.55}.master-gate-card button{min-width:220px;height:46px;border-color:#0e6b47;background:linear-gradient(135deg,#16865b,#0e6b47);color:#fff;font-weight:750;box-shadow:0 7px 18px rgba(22,107,71,.19)}
+    .app-locked .app-nav,.app-locked .page-section,.app-locked .file-menu-wrap{display:none!important}.app-locked #masterGate{display:block!important}.app-unlocked #masterGate{display:none!important}
+    /* No connected-file pill or empty connection strip */
+    .connection-indicator{display:none!important}
+
+    /* Integrated File dropdown: visually attached to the File tab (unchanged) */
+    .file-menu-wrap{position:relative!important;display:flex!important;flex:1!important;min-width:max-content!important;overflow:visible!important}
+    .file-menu-button{position:relative!important;z-index:82!important;width:100%!important;border-radius:10px!important;transition:none!important}
+    .file-menu-wrap:has(.file-menu-panel:not(.hidden)) .file-menu-button{border-bottom-left-radius:0!important;border-bottom-right-radius:0!important;border-bottom-color:transparent!important;background:linear-gradient(135deg,#16865b,#0e6b47)!important;color:#fff!important;box-shadow:none!important}
+    .file-menu-panel{position:absolute!important;right:0!important;left:auto!important;top:calc(100% - 1px)!important;z-index:81!important;width:520px!important;max-width:calc(100vw - 28px)!important;height:auto!important;max-height:none!important;overflow:visible!important;margin:0!important;padding:0!important;border:1px solid #76aa8e!important;border-radius:14px 0 14px 14px!important;background:#fff!important;box-shadow:0 16px 34px rgba(34,78,56,.16)!important;transform:none!important}
+    .file-menu-panel:before{content:"";position:absolute;right:-1px;top:-2px;width:calc(20% + 2px);height:4px;background:#fff}
+    .file-menu-status{padding:16px 18px 13px!important;border-bottom:1px solid #dcebe3!important;background:linear-gradient(110deg,#f3faf6,#fffaf0)!important;border-radius:13px 0 0 0!important}
+    .file-menu-status strong{font-size:14px!important;color:#174c36!important}.file-menu-status .muted{margin-top:4px!important;font-size:12px!important;color:#668174!important}
+    .file-menu-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important;margin:0!important;padding:14px 16px 16px!important;background:#fff!important;border-radius:0 0 13px 13px!important}
+    .file-menu-actions button{display:block!important;width:100%!important;min-width:0!important;height:42px!important;padding:8px 10px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;border:1px solid #8ab9a0!important;border-radius:9px!important;background:linear-gradient(180deg,#f7fcf9,#eaf6ef)!important;color:#174c36!important;font-size:13px!important;font-weight:700!important;box-shadow:none!important}
+    .file-menu-actions button:hover:not(:disabled){background:linear-gradient(180deg,#e8f6ee,#dbeee3)!important;border-color:#3f8e67!important}
+    .app-nav{overflow:visible!important}
+    @media(max-width:650px){.file-menu-panel{position:fixed!important;left:12px!important;right:12px!important;top:110px!important;width:auto!important;max-width:none!important;border-radius:14px!important}.file-menu-panel:before{display:none}.file-menu-status{border-radius:13px 13px 0 0!important}.file-menu-actions{grid-template-columns:1fr!important}.file-menu-wrap:has(.file-menu-panel:not(.hidden)) .file-menu-button{border-radius:10px!important}}
+
+    /* Compact pop-down commands that visually emerge from the File tab (unchanged) */
+    .file-menu-wrap{position:relative!important;display:flex!important;flex:1!important;min-width:max-content!important;overflow:visible!important}
+    .file-menu-button{position:relative!important;z-index:92!important;width:100%!important;border-radius:10px!important}
+    .file-menu-wrap:has(.file-menu-panel:not(.hidden)) .file-menu-button{border-radius:10px 10px 0 0!important;border-bottom-color:#16865b!important;background:linear-gradient(135deg,#16865b,#0e6b47)!important;color:#fff!important;box-shadow:0 5px 12px rgba(22,107,71,.15)!important}
+    .file-menu-panel{position:absolute!important;right:0!important;left:auto!important;top:calc(100% - 1px)!important;z-index:91!important;width:100%!important;min-width:190px!important;max-width:240px!important;height:auto!important;max-height:none!important;overflow:visible!important;margin:0!important;padding:6px!important;border:1px solid #16865b!important;border-top:0!important;border-radius:0 0 12px 12px!important;background:#fff!important;box-shadow:0 13px 24px rgba(34,78,56,.16)!important;transform-origin:top center!important;animation:fileDrop .16s ease-out!important}
+    .file-menu-panel:before{display:none!important}
+    .file-menu-actions{display:flex!important;flex-direction:column!important;gap:3px!important;margin:0!important;padding:0!important;background:transparent!important}
+    .file-menu-actions button{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;width:100%!important;min-width:0!important;height:40px!important;padding:8px 11px!important;white-space:nowrap!important;overflow:visible!important;border:0!important;border-radius:8px!important;background:transparent!important;color:#174c36!important;font-size:13px!important;font-weight:700!important;box-shadow:none!important;text-align:left!important}
+    .file-menu-actions button:hover:not(:disabled){background:#e8f6ee!important;color:#0e5e3d!important;border:0!important;transform:none!important}
+    .file-command-icon{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;flex:0 0 25px;border-radius:7px;background:#e2f2e8;color:#0e6b47;font-size:15px;font-weight:800}
+    .file-menu-status{display:none!important}
+    @keyframes fileDrop{from{opacity:0;transform:scaleY(.92) translateY(-3px)}to{opacity:1;transform:scaleY(1) translateY(0)}}
+    .app-nav{overflow:visible!important}
+    @media(max-width:650px){.file-menu-panel{position:absolute!important;left:auto!important;right:0!important;top:calc(100% - 1px)!important;width:210px!important;min-width:210px!important;max-width:210px!important;border-radius:0 0 12px 12px!important}.file-menu-actions{display:flex!important;grid-template-columns:none!important}}
+
+    .fee-status-filters{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.fee-status-filters .field{min-width:190px}.fee-status-table{min-width:1280px}.status-pill{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:750}.status-paid{background:#dff3e7;color:#0e6b47}.status-partial{background:#fff2cb;color:#8a6214}.status-pending{background:#fde4e8;color:#a33d4d}.status-advance{background:#e4effa;color:#275f89}.source-list{color:#557466;font-size:12px;line-height:1.35}
+
+    /* Names-only group showcase plus subtle interaction effects (unchanged) */
+    .group-showcase{overflow:visible}.group-showcase .section-head{background:linear-gradient(100deg,#f1faf5,#fff9e5)}.group-count{padding:8px 13px;border:1px solid #a6cdb9;border-radius:999px;background:#edf8f2;color:#176444;font-size:12px;font-weight:750;white-space:nowrap}.group-name-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.group-name-chip{position:relative;display:flex;align-items:center;justify-content:center;min-height:54px;padding:12px 16px;border:1px solid transparent;border-radius:14px;font-weight:750;line-height:1.25;text-align:center;box-shadow:0 4px 12px rgba(37,82,59,.07);overflow:hidden;transition:transform .18s ease,box-shadow .18s ease,filter .18s ease}.group-name-chip:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px}.group-name-chip:hover{transform:translateY(-3px);box-shadow:0 10px 20px rgba(37,82,59,.13);filter:saturate(1.06)}.group-name-chip:nth-child(6n+1){background:#eaf7ef;color:#145d3f;border-color:#b6dac6}.group-name-chip:nth-child(6n+1):before{background:#39a66f}.group-name-chip:nth-child(6n+2){background:#eef5fb;color:#245d7d;border-color:#bfd6e7}.group-name-chip:nth-child(6n+2):before{background:#4c97c0}.group-name-chip:nth-child(6n+3){background:#fff7df;color:#7a5a17;border-color:#ead9a6}.group-name-chip:nth-child(6n+3):before{background:#d5a62f}.group-name-chip:nth-child(6n+4){background:#f4effb;color:#604a82;border-color:#d7c8ea}.group-name-chip:nth-child(6n+4):before{background:#8a70b2}.group-name-chip:nth-child(6n+5){background:#fff0f2;color:#8a4050;border-color:#edc7cf}.group-name-chip:nth-child(6n+5):before{background:#d66c7e}.group-name-chip:nth-child(6n){background:#edf8f7;color:#236b67;border-color:#b9dedb}.group-name-chip:nth-child(6n):before{background:#4fa9a3}.group-show-more{display:flex;justify-content:center;margin-top:14px}.group-show-more button{min-width:160px;background:#fff;color:#176444;border-color:#8fbea7}.group-empty{grid-column:1/-1;padding:22px;text-align:center;border:1px dashed #bdd6c9;border-radius:14px;color:#668174;background:#f8fcfa}
+    button{transition:transform .16s ease,box-shadow .16s ease,filter .16s ease}button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 16px rgba(28,75,52,.14);filter:saturate(1.05)}button:active:not(:disabled){transform:translateY(0) scale(.98)}.card{transition:box-shadow .2s ease,border-color .2s ease}.card:hover{border-color:#b5d5c4;box-shadow:0 11px 28px rgba(41,91,66,.11)}.nav-button:hover:not(:disabled){transform:none;box-shadow:none;background:#edf8f2}.nav-button.active{box-shadow:inset 0 -3px 0 rgba(255,255,255,.28),0 4px 11px rgba(22,107,71,.14)}
+    @media(max-width:1100px){.group-name-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:760px){.group-name-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:470px){.group-name-grid{grid-template-columns:1fr}.group-showcase .section-head{align-items:flex-start}.group-count{margin-top:5px}}
+    @media(prefers-reduced-motion:reduce){button,.card,.group-name-chip{transition:none!important}.group-name-chip:hover,button:hover:not(:disabled){transform:none!important}}
+
+    /* Soft elegant filled UI inspired by the supplied mint pill button (unchanged) */
+    :root{--soft-shadow:0 10px 24px rgba(44,120,82,.17),0 3px 8px rgba(44,120,82,.10);--soft-shadow-hover:0 14px 28px rgba(44,120,82,.23),0 5px 12px rgba(44,120,82,.12)}
+    button:not(.nav-button):not(.file-menu-button){border:0!important;border-radius:999px!important;background:linear-gradient(135deg,#c9f8dc,#9ceabf)!important;color:#075f2d!important;font-weight:700!important;box-shadow:var(--soft-shadow)!important;transition:transform .18s ease,box-shadow .18s ease,filter .18s ease!important}
+    button:not(.nav-button):not(.file-menu-button):hover:not(:disabled){transform:translateY(-2px)!important;box-shadow:var(--soft-shadow-hover)!important;filter:saturate(1.08)!important}
+    button:not(.nav-button):not(.file-menu-button):active:not(:disabled){transform:translateY(0) scale(.98)!important;box-shadow:0 5px 12px rgba(44,120,82,.15)!important}
+    button:not(.nav-button):not(.file-menu-button):disabled{background:linear-gradient(135deg,#eef3f0,#e1e8e4)!important;color:#9aa8a0!important;box-shadow:none!important;opacity:1!important}
+    button.danger{background:linear-gradient(135deg,#ffd8df,#ffb8c5)!important;color:#8e2f43!important}.primary{background:linear-gradient(135deg,#baf5d1,#83e5aa)!important;color:#075f2d!important}.blue{background:linear-gradient(135deg,#cfefff,#9fdafa)!important;color:#175c82!important}
+    .header{background:linear-gradient(120deg,#f5fff9,#e7faef 62%,#fff4c9)!important;border:0!important;box-shadow:0 14px 34px rgba(44,110,78,.12)!important}.card{border:0!important;border-radius:22px!important;box-shadow:0 10px 28px rgba(51,103,77,.10)!important}.section-head{border-bottom:0!important;border-radius:22px 22px 0 0!important}
+    .summary .card{position:relative;overflow:hidden;border-top:0!important;min-height:112px;padding:20px!important;color:#174c36}.summary .card:before{content:"";position:absolute;inset:0;opacity:.92;z-index:0}.summary .card>*{position:relative;z-index:1}.summary .card:nth-child(1):before{background:linear-gradient(135deg,#c9f8dc,#9ceabf)}.summary .card:nth-child(2):before{background:linear-gradient(135deg,#ffd9df,#ffb7c4)}.summary .card:nth-child(3):before{background:linear-gradient(135deg,#d4efff,#9dd8fa)}.summary .card:nth-child(4):before{background:linear-gradient(135deg,#fff0bd,#ffd77a)}.summary .card:nth-child(5):before{background:linear-gradient(135deg,#e8dcff,#cbb7f5)}.summary .card strong,.summary .card .green,.summary .card .red,.summary .card .blue-t,.summary .card .yellow{color:#173f2d!important}.summary .card:hover{transform:translateY(-3px);box-shadow:0 16px 32px rgba(51,103,77,.16)!important}
+    .group-showcase{background:linear-gradient(135deg,#fbfffc,#f4fbf7)!important}.group-name-chip{border:0!important;border-radius:999px!important;min-height:50px!important;box-shadow:0 8px 20px rgba(51,103,77,.12)!important}.group-name-chip:before{display:none!important}.group-name-chip:nth-child(6n+1){background:linear-gradient(135deg,#c9f8dc,#9ceabf)!important}.group-name-chip:nth-child(6n+2){background:linear-gradient(135deg,#d4efff,#9dd8fa)!important}.group-name-chip:nth-child(6n+3){background:linear-gradient(135deg,#fff0bd,#ffd77a)!important}.group-name-chip:nth-child(6n+4){background:linear-gradient(135deg,#e8dcff,#cbb7f5)!important}.group-name-chip:nth-child(6n+5){background:linear-gradient(135deg,#ffd9df,#ffb7c4)!important}.group-name-chip:nth-child(6n){background:linear-gradient(135deg,#d2f5f0,#9ee1d7)!important}.group-name-chip:hover{transform:translateY(-4px) scale(1.015)!important;box-shadow:0 14px 27px rgba(51,103,77,.18)!important}
+    input,select{border:0!important;border-radius:14px!important;background:#f8fcfa!important;box-shadow:inset 0 0 0 1px #bad8c9,0 3px 9px rgba(51,103,77,.05)!important}input:focus,select:focus{outline:none!important;box-shadow:inset 0 0 0 2px #6eb891,0 0 0 4px rgba(110,184,145,.13)!important}
+    .nav-button{border-radius:999px!important;transition:background .18s ease,color .18s ease,box-shadow .18s ease!important}.nav-button.active{background:linear-gradient(135deg,#baf5d1,#83e5aa)!important;color:#075f2d!important;border:0!important;box-shadow:0 8px 18px rgba(44,120,82,.16)!important}.nav-button:hover:not(:disabled){background:#e7f8ee!important;color:#145d3f!important}
+    .status-pill,.group-count{border:0!important;box-shadow:0 5px 12px rgba(51,103,77,.10)!important}.modal{border:0!important;border-radius:24px!important;box-shadow:0 20px 55px rgba(31,75,53,.22)!important}
+    @media(prefers-reduced-motion:reduce){button,.summary .card,.group-name-chip,.nav-button{transition:none!important;transform:none!important}}
+
+    /* Modern Members workspace (unchanged) */
+    .member-form-card{background:linear-gradient(135deg,#fbfffc,#f1faf5 70%,#fffbea)!important;overflow:visible}.member-form-card .section-head{position:relative;padding-bottom:12px}.section-kicker{display:block;margin-bottom:5px;color:#2d8060;font-size:10px;font-weight:850;letter-spacing:.14em}.member-form-card form>.grid{grid-template-columns:minmax(280px,2fr) minmax(210px,1fr) minmax(190px,1fr);gap:16px}.member-form-field{position:relative;padding:14px 15px 16px;border-radius:18px;background:rgba(255,255,255,.76);box-shadow:0 8px 22px rgba(45,104,75,.08);border:1px solid rgba(151,198,174,.45)}.member-form-field label{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:800;color:#365f4c}.field-icon{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:50%;font-size:12px}.member-field-1{background:linear-gradient(145deg,#effcf4,#fff)}.member-field-1 .field-icon{background:#d2f5df}.member-field-2{background:linear-gradient(145deg,#eff8ff,#fff)}.member-field-2 .field-icon{background:#d7edfb}.member-field-3{background:linear-gradient(145deg,#fff9e8,#fff)}.member-field-3 .field-icon{background:#ffedbd}.member-form-field input,.member-form-field select{height:46px!important;background:rgba(255,255,255,.88)!important}.member-form-card .actions{margin-top:16px!important}.member-form-card #saveMemberButton{min-width:165px;height:44px}.member-form-card #cancelMemberButton{min-width:110px;height:44px}
+    .active-members-card{overflow:visible}.active-members-card>.section-head{background:linear-gradient(110deg,#effaf4,#fff 55%,#fff8e1)}.active-members-card .section-head .actions{display:flex;justify-content:flex-end}.member-action-button{box-shadow:0 7px 17px rgba(40,103,71,.11)!important}.native-member-selector{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important}.member-picker{padding:2px}.member-picker-top{display:grid;grid-template-columns:minmax(260px,460px) 1fr;gap:14px;align-items:center;margin-bottom:15px}.member-search-wrap{display:flex;align-items:center;gap:9px;height:48px;padding:0 15px;border-radius:999px;background:linear-gradient(135deg,#f8fdf9,#eaf7ef);box-shadow:inset 0 0 0 1px #aed2bf,0 7px 18px rgba(44,103,73,.08)}.member-search-wrap span{font-size:22px;color:#498068;transform:rotate(-15deg)}.member-search-wrap input{height:auto!important;padding:0!important;background:transparent!important;box-shadow:none!important;border:0!important}.member-search-wrap input:focus{box-shadow:none!important}.member-selection-summary{justify-self:end;padding:9px 13px;border-radius:999px;background:#f5faf7;color:#638073;font-size:12px;font-weight:700;border:1px solid #d5e6dd}.member-choice-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.member-choice{position:relative;display:flex;align-items:center;justify-content:center;min-height:50px;padding:11px 32px 11px 14px;border:0;border-radius:999px;background:linear-gradient(135deg,#f5faf7,#e9f5ee);color:#285a43;font-weight:750;text-align:center;cursor:pointer;box-shadow:0 7px 17px rgba(51,103,77,.10);transition:transform .16s ease,box-shadow .16s ease,filter .16s ease}.member-choice:hover{transform:translateY(-2px);box-shadow:0 11px 22px rgba(51,103,77,.15)}.member-choice.selected{background:linear-gradient(135deg,#c9f8dc,#8ce6b2);color:#075f2d;box-shadow:0 10px 23px rgba(32,139,86,.20)}.member-choice.selected:after{content:"✓";position:absolute;right:12px;display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#fff;color:#13804d;font-size:12px;font-weight:900}.member-choice-empty{grid-column:1/-1;padding:24px;border:1px dashed #bad8c9;border-radius:18px;text-align:center;color:#668174;background:#f8fcfa}.selected-details-heading{display:flex;justify-content:space-between;align-items:end;margin:24px 2px 4px;padding-top:18px;border-top:1px solid #dcebe3}.selected-details-heading h3{font-size:20px;color:#174c36}.selected-details-count{padding:7px 11px;border-radius:999px;background:#edf8f2;color:#176444;font-size:12px;font-weight:750}.active-members-card .member-grid{margin-top:12px}.active-members-card .member{border:0!important;border-radius:20px!important;box-shadow:0 9px 24px rgba(45,98,71,.10)!important}.active-members-card .member:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(45,98,71,.15)!important}
+    @media(max-width:1120px){.member-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.member-form-card form>.grid{grid-template-columns:2fr 1fr}.member-field-3{grid-column:span 1}}@media(max-width:760px){.member-form-card form>.grid{grid-template-columns:1fr}.member-picker-top{grid-template-columns:1fr}.member-selection-summary{justify-self:start}.member-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.active-members-card .section-head{align-items:flex-start}.active-members-card .section-head .actions{justify-content:flex-start}}@media(max-width:460px){.member-choice-grid{grid-template-columns:1fr}.member-choice{min-height:46px}}
+
+    /* Theme Studio: polished forms and selectable overall palette (unchanged) */
+    :root{--theme-bg-1:#fbf9ff;--theme-bg-2:#f2edfb;--theme-bg-3:#fff8ee;--theme-main:#8064b2;--theme-deep:#5f468f;--theme-soft:#e9dfff;--theme-soft-2:#d8c6f5;--theme-line:#d8caec;--theme-ink:#382b50;--theme-muted:#746886;--theme-shadow:rgba(100,72,145,.16)}
+    body.theme-mint{--theme-bg-1:#f7fcf9;--theme-bg-2:#edf8f2;--theme-bg-3:#fffaf0;--theme-main:#16865b;--theme-deep:#0e6b47;--theme-soft:#c9f8dc;--theme-soft-2:#9ceabf;--theme-line:#c9dfd3;--theme-ink:#183c2b;--theme-muted:#668174;--theme-shadow:rgba(44,120,82,.16)}
+    body.theme-sky{--theme-bg-1:#f7fbff;--theme-bg-2:#eaf4fc;--theme-bg-3:#f9f5ff;--theme-main:#4b88b7;--theme-deep:#315f8a;--theme-soft:#d4efff;--theme-soft-2:#9dd8fa;--theme-line:#c4dceb;--theme-ink:#24485f;--theme-muted:#637c8b;--theme-shadow:rgba(55,111,153,.16)}
+    body.theme-peach{--theme-bg-1:#fffaf7;--theme-bg-2:#fff0e8;--theme-bg-3:#fff8df;--theme-main:#c87963;--theme-deep:#9e5647;--theme-soft:#ffe0d5;--theme-soft-2:#ffc2ad;--theme-line:#eed2c7;--theme-ink:#5b382f;--theme-muted:#887067;--theme-shadow:rgba(166,91,72,.16)}
+    body{background:linear-gradient(135deg,var(--theme-bg-1),var(--theme-bg-2) 58%,var(--theme-bg-3))!important;color:var(--theme-ink)!important}.header{background:linear-gradient(120deg,var(--theme-bg-1),var(--theme-bg-2) 65%,var(--theme-bg-3))!important;box-shadow:0 14px 34px var(--theme-shadow)!important}.card{box-shadow:0 10px 28px var(--theme-shadow)!important}.section-head{background:linear-gradient(100deg,var(--theme-bg-2),#fff 65%,var(--theme-bg-3))!important}.section-kicker{color:var(--theme-main)!important}.nav-button.active,.file-menu-wrap:has(.file-menu-panel:not(.hidden)) .file-menu-button{background:linear-gradient(135deg,var(--theme-soft),var(--theme-soft-2))!important;color:var(--theme-deep)!important;box-shadow:0 8px 18px var(--theme-shadow)!important}.nav-button:hover:not(:disabled){background:var(--theme-bg-2)!important;color:var(--theme-deep)!important}.master-gate-card{background:linear-gradient(135deg,#fff,var(--theme-bg-2),var(--theme-bg-3))!important}.master-gate-card button,.primary{background:linear-gradient(135deg,var(--theme-soft),var(--theme-soft-2))!important;color:var(--theme-deep)!important}
+    .transaction-studio-card,.settings-studio-card,.archive-studio-card{overflow:visible;background:linear-gradient(140deg,#fff,var(--theme-bg-1) 72%,var(--theme-bg-3))!important}.transaction-studio-card form>.grid{gap:14px}.studio-field,.theme-field{position:relative;padding:13px 14px 15px;border:1px solid color-mix(in srgb,var(--theme-line) 75%,white);border-radius:18px;background:rgba(255,255,255,.82);box-shadow:0 8px 20px var(--theme-shadow);min-width:0}.studio-field label,.theme-field label{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:800;color:var(--theme-ink)}.studio-field .field-icon,.theme-field .field-icon{background:var(--theme-soft);color:var(--theme-deep)}.studio-field input,.studio-field select,.theme-field select{height:46px!important;background:rgba(255,255,255,.92)!important;box-shadow:inset 0 0 0 1px var(--theme-line),0 3px 9px var(--theme-shadow)!important}.studio-field input:focus,.studio-field select:focus,.theme-field select:focus{box-shadow:inset 0 0 0 2px var(--theme-main),0 0 0 4px color-mix(in srgb,var(--theme-soft) 45%,transparent)!important}.studio-tone-1{background:linear-gradient(145deg,var(--theme-bg-2),#fff)}.studio-tone-2{background:linear-gradient(145deg,#eef8ff,#fff)}.studio-tone-3{background:linear-gradient(145deg,#fff8e6,#fff)}.studio-tone-4{background:linear-gradient(145deg,#f6efff,#fff)}.studio-tone-5{background:linear-gradient(145deg,#fff0f3,#fff)}.studio-tone-6{background:linear-gradient(145deg,#edf9f7,#fff)}
+    .settings-controls{grid-template-columns:minmax(190px,1fr) minmax(190px,1fr) minmax(220px,1.2fr) auto!important}.theme-field .help{margin-top:7px}.archive-controls{grid-template-columns:minmax(220px,1fr) minmax(220px,1fr) auto!important}.archive-studio-card .archive-index-message{margin-top:14px;padding:11px 14px;border-radius:14px;background:var(--theme-bg-2);color:var(--theme-muted)}
+    button:not(.nav-button):not(.file-menu-button){background:linear-gradient(135deg,var(--theme-soft),var(--theme-soft-2))!important;color:var(--theme-deep)!important;box-shadow:0 9px 21px var(--theme-shadow)!important}.group-count,.selected-details-count,.member-selection-summary{background:var(--theme-bg-2)!important;color:var(--theme-deep)!important;border-color:var(--theme-line)!important}.member-choice.selected{background:linear-gradient(135deg,var(--theme-soft),var(--theme-soft-2))!important;color:var(--theme-deep)!important}.member-search-wrap{background:linear-gradient(135deg,#fff,var(--theme-bg-2))!important;box-shadow:inset 0 0 0 1px var(--theme-line),0 7px 18px var(--theme-shadow)!important}
+    @media(max-width:1180px){.settings-controls{grid-template-columns:repeat(2,minmax(220px,1fr))!important}.settings-action{grid-column:1/-1}}@media(max-width:760px){.transaction-studio-card form>.grid,.settings-controls,.archive-controls{grid-template-columns:1fr!important}.studio-field{grid-column:span 1!important}}
+
+    /* Expanded themes and aligned Settings controls (unchanged) */
+    body.theme-rose{--theme-bg-1:#fff9fb;--theme-bg-2:#fbeef3;--theme-bg-3:#fff8ee;--theme-main:#b76b88;--theme-deep:#854865;--theme-soft:#f7dce7;--theme-soft-2:#efbfd1;--theme-line:#ead0dc;--theme-ink:#553344;--theme-muted:#876a78;--theme-shadow:rgba(155,83,113,.15)}
+    body.theme-aqua{--theme-bg-1:#f7fffe;--theme-bg-2:#e8f8f6;--theme-bg-3:#f0f8ff;--theme-main:#4b9c98;--theme-deep:#2f726f;--theme-soft:#d2f5f0;--theme-soft-2:#9ee1d7;--theme-line:#c2e3de;--theme-ink:#245451;--theme-muted:#668582;--theme-shadow:rgba(55,132,126,.15)}
+    body.theme-lemon{--theme-bg-1:#fffef7;--theme-bg-2:#fff9dc;--theme-bg-3:#f7fff7;--theme-main:#b99a2f;--theme-deep:#796419;--theme-soft:#fff0a8;--theme-soft-2:#f6d967;--theme-line:#eadfa9;--theme-ink:#55491f;--theme-muted:#817755;--theme-shadow:rgba(164,136,42,.14)}
+    body.theme-slate{--theme-bg-1:#fafbfc;--theme-bg-2:#edf1f5;--theme-bg-3:#f7f4fb;--theme-main:#708097;--theme-deep:#4d5b70;--theme-soft:#dee6ef;--theme-soft-2:#bdc9d8;--theme-line:#d0d8e2;--theme-ink:#334052;--theme-muted:#707b89;--theme-shadow:rgba(79,94,116,.14)}
+    body.theme-berry{--theme-bg-1:#fff9fe;--theme-bg-2:#f6eaf6;--theme-bg-3:#fff5ed;--theme-main:#9c6295;--theme-deep:#70436b;--theme-soft:#edd9ec;--theme-soft-2:#dcb7d8;--theme-line:#e1cde0;--theme-ink:#51334e;--theme-muted:#806c7e;--theme-shadow:rgba(128,73,123,.15)}
+    body.theme-sand{--theme-bg-1:#fffdf9;--theme-bg-2:#f7efe2;--theme-bg-3:#f5f8ed;--theme-main:#a7865e;--theme-deep:#755b3d;--theme-soft:#efe0c9;--theme-soft-2:#ddc39d;--theme-line:#e2d4c0;--theme-ink:#4f402e;--theme-muted:#817462;--theme-shadow:rgba(130,101,65,.14)}
+    body.theme-coral{--theme-bg-1:#fffafa;--theme-bg-2:#ffede8;--theme-bg-3:#fff8e8;--theme-main:#c9786c;--theme-deep:#945248;--theme-soft:#ffd9d1;--theme-soft-2:#ffb8aa;--theme-line:#eed0ca;--theme-ink:#603b35;--theme-muted:#8c6d67;--theme-shadow:rgba(166,86,74,.15)}
+    body.theme-mono{--theme-bg-1:#ffffff;--theme-bg-2:#f4f4f3;--theme-bg-3:#faf8f4;--theme-main:#74746f;--theme-deep:#4e4e4a;--theme-soft:#ebebe7;--theme-soft-2:#d3d3cd;--theme-line:#deded9;--theme-ink:#353531;--theme-muted:#74746f;--theme-shadow:rgba(77,77,72,.12)}
+    .settings-controls{align-items:end!important}.settings-controls>.field,.settings-controls>.theme-field{min-height:126px!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important}.settings-controls>.field label,.settings-controls>.theme-field label{min-height:25px!important}.settings-controls>.field input,.settings-controls>.field select,.settings-controls>.theme-field select{height:46px!important}.settings-action{display:flex!important;align-items:flex-end!important;height:126px!important}.settings-action button{height:46px!important;min-width:170px!important}.theme-field{padding-bottom:15px!important}
+    @media(max-width:1180px){.settings-controls>.field,.settings-controls>.theme-field,.settings-action{min-height:0!important;height:auto!important}}
+
+    /* Final Settings alignment: all three fields have equal geometry (unchanged) */
+    .settings-controls{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr)) auto!important;gap:24px!important;align-items:end!important}
+    .settings-controls>.field,.settings-controls>.theme-field{min-width:0!important;min-height:0!important;height:auto!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;display:block!important}
+    .settings-controls>.field label,.settings-controls>.theme-field label{display:flex!important;align-items:center!important;gap:7px!important;min-height:28px!important;margin:0 0 8px!important;font-size:14px!important;font-weight:700!important;color:var(--theme-ink)!important}
+    .settings-controls>.theme-field .field-icon{width:26px!important;height:26px!important;flex:0 0 26px!important;border-radius:50%!important;background:var(--theme-soft)!important;color:var(--theme-deep)!important}
+    .settings-controls>.field input,.settings-controls>.field select,.settings-controls>.theme-field select{width:100%!important;height:52px!important;min-height:52px!important;margin:0!important;padding:0 16px!important;border:0!important;border-radius:18px!important;background:rgba(255,255,255,.9)!important;box-shadow:inset 0 0 0 1px var(--theme-line),0 7px 17px var(--theme-shadow)!important;font-size:16px!important;color:var(--theme-ink)!important}
+    .settings-action{display:flex!important;align-items:flex-end!important;height:auto!important;min-height:0!important;padding:0 0 1px!important}.settings-action button{height:52px!important;min-height:52px!important;min-width:180px!important;margin:0!important;padding:0 24px!important}
+    @media(max-width:1100px){.settings-controls{grid-template-columns:repeat(2,minmax(0,1fr))!important}.settings-action{grid-column:1/-1!important}.settings-action button{width:100%!important}}
+    @media(max-width:650px){.settings-controls{grid-template-columns:1fr!important;gap:16px!important}}
+
+    /* Elegant transaction form: one cohesive surface, no separate field cards (unchanged) */
+    .transaction-studio-card{background:linear-gradient(140deg,#fff,var(--theme-bg-1) 74%,var(--theme-bg-3))!important;overflow:hidden!important}
+    .transaction-studio-card .section-head{padding-bottom:18px!important}
+    .transaction-studio-card .pad{padding:24px 26px 26px!important;background:linear-gradient(180deg,rgba(255,255,255,.68),rgba(255,255,255,.34))!important}
+    .transaction-studio-card form>.grid{display:grid!important;grid-template-columns:repeat(12,minmax(0,1fr))!important;gap:20px 18px!important;align-items:start!important}
+    .transaction-studio-card .studio-field{min-width:0!important;min-height:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+    .transaction-studio-card .studio-field label{display:flex!important;align-items:center!important;gap:7px!important;min-height:27px!important;margin:0 0 8px!important;font-size:13px!important;font-weight:750!important;color:var(--theme-ink)!important}
+    .transaction-studio-card .studio-field .field-icon{width:24px!important;height:24px!important;flex:0 0 24px!important;border-radius:50%!important;background:var(--theme-soft)!important;color:var(--theme-deep)!important;font-size:11px!important}
+    .transaction-studio-card .studio-field input,.transaction-studio-card .studio-field select{width:100%!important;height:50px!important;min-height:50px!important;margin:0!important;padding:0 15px!important;border:0!important;border-radius:16px!important;background:rgba(255,255,255,.94)!important;box-shadow:inset 0 0 0 1px var(--theme-line),0 6px 15px var(--theme-shadow)!important;font-size:15px!important;color:var(--theme-ink)!important}
+    .transaction-studio-card .studio-field input:focus,.transaction-studio-card .studio-field select:focus{outline:none!important;box-shadow:inset 0 0 0 2px var(--theme-main),0 0 0 4px color-mix(in srgb,var(--theme-soft) 42%,transparent),0 8px 18px var(--theme-shadow)!important}
+    .transaction-studio-card .studio-field .help{margin:7px 3px 0!important;line-height:1.35!important;color:var(--theme-muted)!important}
+    .transaction-studio-card .studio-tone-1,.transaction-studio-card .studio-tone-2,.transaction-studio-card .studio-tone-3,.transaction-studio-card .studio-tone-4,.transaction-studio-card .studio-tone-5,.transaction-studio-card .studio-tone-6{background:transparent!important}
+    #transactionForm .grid>.field:nth-child(1),#transactionForm .grid>.field:nth-child(2),#transactionForm .grid>.field:nth-child(3),#transactionForm .grid>.field:nth-child(4),#transactionForm .grid>.field:nth-child(5),#transactionForm .grid>.field:nth-child(6){grid-column:span 2!important}
+    #transactionForm .grid>.field:nth-child(7),#transactionForm .grid>.field:nth-child(8){grid-column:span 4!important}
+    #transactionForm .grid>.field:nth-child(9),#transactionForm .grid>.field:nth-child(10){grid-column:span 4!important}
+    #transactionForm .grid>.field:nth-child(11){grid-column:span 2!important}
+    .transaction-studio-card .actions{display:flex!important;align-items:center!important;gap:14px!important;margin-top:22px!important;padding-top:18px!important;border-top:1px solid color-mix(in srgb,var(--theme-line) 65%,transparent)!important}
+    .transaction-studio-card #saveTransactionButton{min-width:180px!important;height:48px!important}
+    .transaction-studio-card #applicationStatus{padding:8px 12px!important;border-radius:999px!important;background:var(--theme-bg-2)!important;color:var(--theme-muted)!important;font-size:12px!important}
+    @media(max-width:1200px){#transactionForm .grid>.field:nth-child(n){grid-column:span 3!important}#transactionForm .grid>.field.span2{grid-column:span 6!important}}
+    @media(max-width:800px){.transaction-studio-card form>.grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.transaction-studio-card .studio-field,#transactionForm .grid>.field:nth-child(n),#transactionForm .grid>.field.span2{grid-column:span 1!important}.transaction-studio-card .studio-field.span2{grid-column:span 2!important}}
+    @media(max-width:520px){.transaction-studio-card form>.grid{grid-template-columns:1fr!important}.transaction-studio-card .studio-field,#transactionForm .grid>.field:nth-child(n),.transaction-studio-card .studio-field.span2{grid-column:span 1!important}.transaction-studio-card .pad{padding:20px 16px!important}}
+
+    .autosave-toast{position:fixed;right:20px;bottom:20px;z-index:150;max-width:360px;padding:11px 15px;border-radius:999px;background:rgba(255,255,255,.96);color:var(--theme-deep);box-shadow:0 10px 26px var(--theme-shadow);font-size:12px;font-weight:700;opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .2s ease,transform .2s ease}.autosave-toast.show{opacity:1;transform:translateY(0)}.autosave-toast.error{color:#923f4d;background:#fff4f6}
+
+    .removed-member-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}.permanent-delete-button{background:linear-gradient(135deg,#ffd8df,#ffb8c5)!important;color:#8e2f43!important;box-shadow:0 9px 21px rgba(166,65,86,.14)!important}.permanent-delete-button:hover:not(:disabled){background:linear-gradient(135deg,#ffcbd5,#f5a5b5)!important;color:#77273a!important}
+
+    /* Supabase is the live source of truth; legacy workbook UI is intentionally hidden. */
+    .file-menu-wrap,
+    #masterGate { display:none !important; }
+    .file-menu-wrap,#masterGate{display:none!important}
+
+    /* --- ADDED AUTH STYLES (minimal) --- */
+    #authControls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+    #authStatus {
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    #authStatus.admin {
+      color: var(--green);
+    }
+    .login-modal .modal {
+      max-width: 400px;
+    }
+    .login-modal .modal input {
+      width: 100%;
+    }
+    .login-error {
+      color: var(--red);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<main class="wrap">
+  <!-- ===== HEADER (modified: added auth controls) ===== -->
+  <header class="header">
+    <div>
+      <div class="green">🏸 Badminton Group Accounts</div>
+      <h1>Badminton Group Manager</h1>
+      <p>Manage income, expenses and monthly fees with shared live database data.</p>
+    </div>
+    <!-- Auth controls -->
+    <div id="authControls">
+      <span id="authStatus" class="muted">Public</span>
+      <button id="loginButton" class="primary" style="min-width:80px;">Login</button>
+      <button id="logoutButton" class="danger" style="display:none;min-width:80px;">Logout</button>
+    </div>
+    <input accept=".xlsx,.xls,.csv" class="hidden" id="spreadsheetInput" type="file"/>
+  </header>
+
+  <!-- Navigation (unchanged) -->
+  <nav aria-label="Sections" class="app-nav">
+    <button class="nav-button active" data-page="dashboard" type="button">Dashboard</button>
+    <button class="nav-button" data-page="members" type="button">Members</button>
+    <button class="nav-button" data-page="transactions" type="button">Transactions</button>
+    <button class="nav-button" data-page="archive" type="button">Archive</button>
+    <button class="nav-button" data-page="settings" type="button">Settings</button>
+  </nav>
+
+  <!-- ===== All page sections (unchanged) ===== -->
+  <!-- Archive -->
+  <section class="card page-section page-hidden archive-studio-card" data-page="archive" id="archivePanel">
+    <div class="section-head">
+      <div><span class="section-kicker">READ-ONLY HISTORY</span><h2>Archive History</h2><p id="archiveFolderStatus">No archive folder selected.</p></div>
+      <div class="actions"><button id="chooseArchiveFolderButton" type="button">Choose Archive Folder</button><button id="archiveDataButton" type="button">Archive Data</button><button id="refreshArchiveIndexButton">Refresh Archive Index</button><button class="hidden" id="closeArchiveViewButton">Close Archive View</button></div>
+    </div>
+    <div class="pad">
+      <div class="archive-controls">
+        <div class="field studio-field studio-tone-3"><label>Archived Year</label><select id="archiveYear"><option value="">Select archived year</option></select></div>
+        <div class="field studio-field studio-tone-4"><label>Archived Month</label><select id="archiveMonth"><option value="">Select archived month</option></select></div>
+        <div class="archive-view-action"><button class="blue" id="viewArchiveButton">View Archive</button></div>
+      </div>
+      <div class="muted archive-index-message" id="archiveIndexMessage">Choose the folder containing archive workbooks.</div>
+    </div>
+    <div class="pad hidden" id="archiveModeBanner" style="background:#e5f4ee;border-top:1px solid #8dc7ad;color:#174c36"><strong>ARCHIVE VIEW: READ ONLY</strong><div class="muted" id="archiveModeDetails"></div></div>
+  </section>
+
+  <!-- Dashboard -->
+  <section class="summary page-section" data-page="dashboard">
+    <article class="card"><small>Total Income</small><strong class="green" id="totalIncome">₹0</strong></article>
+    <article class="card"><small>Total Expenses</small><strong class="red" id="totalExpenses">₹0</strong></article>
+    <article class="card"><small>Cash Balance</small><strong class="blue-t" id="cashBalance">₹0</strong></article>
+    <article class="card"><small>Selected Month Pending</small><strong class="yellow" id="pendingTotal">₹0</strong></article>
+    <article class="card"><small>Active Members</small><strong id="activeMemberCount">0</strong></article>
+  </section>
+
+  <!-- Group Showcase -->
+  <section class="card page-section group-showcase" data-page="dashboard" id="groupShowcase">
+    <div class="section-head"><div><h2>Our Badminton Group</h2><p>Meet the active members of the group.</p></div><div class="group-count" id="groupMemberCount">0 Active Members</div></div>
+    <div class="pad"><div class="group-name-grid" id="groupNameGrid"></div><div class="group-show-more"><button class="hidden" id="toggleGroupMembersButton" type="button">Show All Members</button></div></div>
+  </section>
+
+  <!-- Settings -->
+  <section class="card page-section page-hidden settings-studio-card" data-page="settings">
+    <div class="section-head"><div><span class="section-kicker">APPEARANCE &amp; PREFERENCES</span><h2>Settings</h2><p>Standard monthly fee and review month.</p></div></div>
+    <div class="pad row"><div class="settings-controls">
+      <div class="field"><label>Monthly Fee</label><input id="monthlyFee" min="1" type="number"/></div>
+      <div class="field"><label>Review Month</label><input id="reviewMonth" type="month"/></div>
+      <div class="field theme-field"><label><span aria-hidden="true" class="field-icon">✦</span>Interface Theme</label><select id="interfaceTheme"><option value="lavender">Lavender Mist</option><option value="mint">Mint Court</option><option value="sky">Sky Rally</option><option value="peach">Peach Shuttle</option><option value="rose">Rose Quartz</option><option value="aqua">Aqua Breeze</option><option value="lemon">Lemon Glow</option><option value="slate">Soft Slate</option><option value="berry">Berry Cream</option><option value="sand">Warm Sand</option><option value="coral">Coral Bloom</option><option value="mono">Pearl Mono</option></select></div>
+      <div class="settings-action"><button class="primary" id="saveSettingsButton">Save Settings</button></div>
+    </div></div>
+  </section>
+
+  <!-- Members – Add Member -->
+  <section class="card page-section page-hidden member-form-card" data-page="members">
+    <div class="section-head"><div><span class="section-kicker">MEMBER PROFILE</span><h2 id="memberFormTitle">Add Member</h2><p>Add or edit members.</p></div></div>
+    <div class="pad"><form id="memberForm"><div class="grid">
+      <div class="field span2 member-form-field member-field-1"><label><span aria-hidden="true" class="field-icon">👤</span>Member Name</label><input id="memberName" required=""/></div>
+      <div class="field member-form-field member-field-2"><label><span aria-hidden="true" class="field-icon">📅</span>Joining Date</label><input id="joiningDate" required="" type="date"/></div>
+      <div class="field member-form-field member-field-3"><label><span aria-hidden="true" class="field-icon">●</span>State</label><select id="memberState"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+    </div><div class="actions" style="margin-top:12px"><button class="primary" id="saveMemberButton" type="submit">Add Member</button><button class="hidden" id="cancelMemberButton" type="button">Cancel</button></div></form></div>
+  </section>
+
+  <!-- Members – Active Member Details -->
+  <section class="card page-section page-hidden active-members-card" data-page="members">
+    <div class="section-head"><div><h2>Active Member Details</h2><p>Monthly status, partial payments and advances.</p></div><div class="actions"><button class="primary member-action-button" id="bulkClearButton">Bulk Clear Pending</button><button class="member-action-button" id="undoBulkButton">Undo Last Bulk Clearance</button><button class="member-action-button" id="selectAllMembersButton">Select All</button><button class="member-action-button" id="clearMemberSelectionButton">Clear</button></div></div>
+    <div class="pad">
+      <div class="member-picker"><div class="member-picker-top"><div class="member-search-wrap"><span aria-hidden="true">⌕</span><input autocomplete="off" id="memberSearchInput" placeholder="Search active members..." type="search"/></div><div class="member-selection-summary" id="memberSelectionSummary">Select one or more members to view details</div></div><div class="member-choice-grid" id="memberChoiceGrid"></div></div>
+      <div class="selected-details-heading"><div><span class="section-kicker">SELECTED MEMBERS</span><h3>Member Details</h3></div><span class="selected-details-count" id="selectedDetailsCount">0 selected</span></div>
+      <select aria-hidden="true" class="native-member-selector" id="memberSelector" multiple="" style="min-height:120px" tabindex="-1"></select>
+      <div class="member-grid" id="memberCards"></div>
+    </div>
+  </section>
+
+  <!-- Members – Inactive / Deleted -->
+  <section class="card page-section page-hidden" data-page="members">
+    <div class="section-head"><div><h2>Inactive / Deleted Members</h2></div><select id="removedMemberSelector"><option value="">Select member</option></select></div>
+    <div class="pad hidden" id="removedMemberDetails"></div>
+  </section>
+
+  <!-- Transactions – Add -->
+  <section class="card page-section page-hidden transaction-studio-card" data-page="transactions">
+    <div class="section-head"><div><span class="section-kicker">NEW ACCOUNT ENTRY</span><h2 id="transactionFormTitle">Add Transaction</h2><p>Automatic member payments clear oldest pending first, then current month, then future advance.</p></div></div>
+    <div class="pad"><form id="transactionForm"><div class="grid">
+      <div class="field studio-field studio-tone-1"><label><span aria-hidden="true" class="field-icon">◷</span>Transaction Date</label><input id="transactionDate" required="" type="date"/></div>
+      <div class="field studio-field studio-tone-2"><label><span aria-hidden="true" class="field-icon">⇄</span>Direction</label><select id="transactionDirection"><option>Income</option><option>Expense</option></select></div>
+      <div class="field studio-field studio-tone-3" id="incomeCategoryContainer"><label><span aria-hidden="true" class="field-icon">₹</span>Income Type</label><select id="incomeCategory"><option>Monthly Fee</option><option>Advance Fee</option><option>Arrears Payment</option><option>Opening Balance</option><option>Interest</option><option>Court Fee Contribution</option><option>Shuttle Reimbursement</option><option>Other Income</option></select></div>
+      <div class="field hidden studio-field studio-tone-4" id="expenseCategoryContainer"><label><span aria-hidden="true" class="field-icon">₹</span>Expense Type</label><select id="expenseCategory"><option>Court Fee</option><option>Shuttle Purchase</option><option>Equipment</option><option>Member Reimbursement</option><option>Other Expense</option></select></div>
+      <div class="field studio-field studio-tone-5" id="transactionMemberContainer"><label><span aria-hidden="true" class="field-icon">●</span>Member</label><select id="transactionMember"><option value="">Select member</option></select></div>
+      <div class="field studio-field studio-tone-6" id="allocationMethodContainer"><label><span aria-hidden="true" class="field-icon">↯</span>Fee Allocation</label><select id="allocationMethod"><option value="automatic">Automatic: Oldest pending first</option><option value="manual">Manual: Selected month only</option></select></div>
+      <div class="field studio-field studio-tone-1" id="feeMonthContainer"><label id="feeMonthLabel"><span aria-hidden="true" class="field-icon">▣</span>Applicable Month</label><input id="feeMonth" type="month"/><small class="help" id="feeMonthHelp"></small></div>
+      <div class="field span2 studio-field studio-tone-2" id="transactionNameContainer"><label id="transactionNameLabel"><span aria-hidden="true" class="field-icon">◎</span>Paid To / Received From</label><input id="transactionName" placeholder="Optional"/></div>
+      <div class="field span2 studio-field studio-tone-3"><label><span aria-hidden="true" class="field-icon">≡</span>Description</label><select id="transactionDescriptionChoice"><option>Contribution</option><option>Monthly Fee Payment</option><option>Advance Payment</option><option>Arrears Payment</option><option>Payment</option><option>Court Booking Payment</option><option>Shuttle Purchase</option><option>Equipment Purchase</option><option>Opening Balance</option><option>Interest Received</option><option>Reimbursement</option><option>Other / Custom</option></select></div>
+      <div class="field span2 hidden studio-field studio-tone-4" id="customDescriptionContainer"><label><span aria-hidden="true" class="field-icon">✎</span>Custom Description</label><input id="transactionDescription"/></div>
+      <div class="field studio-field studio-tone-5"><label><span aria-hidden="true" class="field-icon">₹</span>Amount</label><input id="transactionAmount" min="0.01" required="" step="0.01" type="number"/></div>
+    </div>
+    <div class="preview hidden" id="allocationPreview"><h3>Payment Allocation Preview</h3><div class="muted" id="allocationPreviewMessage"></div><div id="allocationPreviewList"></div></div>
+    <div class="actions" style="margin-top:12px"><button class="primary" id="saveTransactionButton" type="submit">Add Transaction</button><button class="hidden" id="cancelTransactionButton" type="button">Cancel</button><span class="muted" id="applicationStatus">Ready</span></div></form></div>
+  </section>
+
+  <!-- Transactions – Financial Records -->
+  <section class="card page-section page-hidden" data-page="transactions">
+    <div class="section-head"><div><h2>Financial Records</h2></div><div class="row"><select id="financialView"><option value="">Select</option><option>All</option><option>Income</option><option>Expense</option><option value="Adjustments">Manual Adjustments</option></select><select id="financialMonth"><option value="">All Months</option></select></div></div>
+    <div class="table-wrap hidden" id="financialTableWrapper"><table><thead><tr><th>Date</th><th>Applicable Month</th><th>Name</th><th>Direction</th><th>Category</th><th>Description</th><th>Amount</th><th>Balance</th><th>Allocation</th><th>Action</th></tr></thead><tbody id="financialTableBody"></tbody></table></div>
+  </section>
+
+  <!-- Transactions – Monthly Fee Status -->
+  <section class="card page-section" data-page="transactions">
+    <div class="section-head"><div><h2>Monthly Fee Status</h2><p>Shows every active member for the selected month, including payments, advances, and status-only adjustments.</p></div><div class="fee-status-filters"><div class="field"><label for="feeStatusMonth">Month</label><input id="feeStatusMonth" type="month"/></div><div class="field"><label for="feeStatusFilter">Status</label><select id="feeStatusFilter"><option value="All">All</option><option value="Paid">Paid</option><option value="Partial">Partial</option><option value="Pending">Pending</option><option value="Advance">Advance</option></select></div></div></div>
+    <div class="table-wrap"><table class="fee-status-table"><thead><tr><th>Member</th><th>Required</th><th>Direct Payment</th><th>Arrears</th><th>Advance Applied</th><th>Status Adjustment</th><th>Total Applied</th><th>Pending</th><th>Status</th><th>Payment Source</th></tr></thead><tbody id="feeStatusTableBody"></tbody></table></div>
+  </section>
+
+  <!-- Hidden buttons (unchanged) -->
+  <button class="hidden" id="bulkClearTopButton" type="button">Bulk Clear Pending</button>
+  <button class="primary hidden" id="connectMasterButton" type="button">Create &amp; Connect Master</button>
+  <button class="hidden" disabled="" id="grantAccessButton">Save Changes</button>
+  <button class="hidden" disabled="" id="disconnectButton">Disconnect</button>
+  <button class="hidden" disabled="" id="saveMasterButton" type="button">Save</button>
+</main>
+
+<!-- ===== MODALS (unchanged except login modal added) ===== -->
+<!-- Archive modal -->
+<div class="modal-bg hidden" id="archiveModal">
+  <div class="modal" style="width:min(700px,100%)">
+    <h2>Archive Data</h2>
+    <p>The archive file is created first. Current-master data is changed only after the archive is saved.</p>
+    <div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:14px">
+      <div class="field studio-field studio-tone-1"><label>Archive Name Prefix</label><input id="archivePrefix" value="Badminton"/></div>
+      <div class="field studio-field studio-tone-2"><label>Start Month</label><input id="archiveStartMonth" type="month"/></div>
+      <div class="field studio-field studio-tone-3"><label>End Month</label><input id="archiveEndMonth" type="month"/></div>
+      <div class="field studio-field studio-tone-4"><label>New Current Review Month</label><input id="archiveNewReviewMonth" type="month"/></div>
+    </div>
+    <div class="preview"><h3>Archive Preview</h3><div class="muted" id="archivePreviewText"></div></div>
+    <div class="actions" style="margin-top:14px"><button class="primary" disabled="" id="confirmArchiveButton">Create Archive</button><button id="cancelArchiveButton">Cancel</button></div>
+  </div>
+</div>
+
+<!-- Bulk Clear modal -->
+<div class="modal-bg hidden" id="bulkClearModal">
+  <div class="modal" style="width:min(700px,100%)">
+    <h2>Bulk Clear Pending</h2>
+    <p>Clear exact pending amounts. Status-only is the safe default and does not change cash balance.</p>
+    <div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:14px">
+      <div class="field"><label>Member Scope</label><select id="bulkMemberScope"><option value="selected">Members selected on main screen</option><option value="all">All active members</option><option value="one">One member</option></select></div>
+      <div class="field hidden" id="bulkOneMemberContainer"><label>Member</label><select id="bulkOneMember"></select></div>
+      <div class="field"><label>Month Scope</label><select id="bulkMonthScope"><option value="current">Current review month</option><option value="single">One selected month</option><option value="range">Selected month range</option><option value="allPending">All pending months up to review month</option></select></div>
+      <div class="field hidden" id="bulkSingleMonthContainer"><label>Selected Month</label><input id="bulkSingleMonth" type="month"/></div>
+      <div class="field hidden" id="bulkRangeStartContainer"><label>Start Month</label><input id="bulkStartMonth" type="month"/></div>
+      <div class="field hidden" id="bulkRangeEndContainer"><label>End Month</label><input id="bulkEndMonth" type="month"/></div>
+      <div class="field"><label>Balance Treatment</label><select id="bulkBalanceMode"><option value="status">Status only, do not change cash balance</option><option value="income">Record actual income and change cash balance</option></select></div>
+      <div class="field"><label>Clearance Date</label><input id="bulkClearDate" type="date"/></div>
+      <div class="field span2"><label>Note</label><input id="bulkClearNote" value="Bulk pending clearance"/></div>
+    </div>
+    <div class="preview"><h3>Preview</h3><div class="muted" id="bulkClearPreviewText"></div><div id="bulkClearPreviewList" style="max-height:220px;overflow:auto;margin-top:8px"></div></div>
+    <div class="actions" style="margin-top:14px"><button class="primary" disabled="" id="confirmBulkClearButton">Confirm Bulk Clearance</button><button id="cancelBulkClearButton">Cancel</button></div>
+  </div>
+</div>
+
+<!-- Set Paid modal -->
+<div class="modal-bg hidden" id="setPaidModal">
+  <div class="modal"><h2>Set Paid / Clear Pending</h2><p id="setPaidMessage"></p>
+    <div class="field"><label>Date</label><input id="setPaidDate" type="date"/></div>
+    <div class="field"><label>Amount</label><input id="setPaidAmount" min="0.01" type="number"/></div>
+    <div class="field"><label>Change Cash Balance?</label><select id="setPaidBalanceEffect"><option value="yes">Yes, record income</option><option value="no">No, status only</option></select></div>
+    <div class="field"><label>Note</label><input id="setPaidNote" value="Manual pending clearance"/></div>
+    <div class="actions" style="margin-top:12px"><button class="primary" id="confirmSetPaidButton">Confirm</button><button id="cancelSetPaidButton">Cancel</button></div>
+  </div>
+</div>
+
+<!-- ===== NEW LOGIN MODAL ===== -->
+<div class="modal-bg hidden" id="loginModal">
+  <div class="modal login-modal">
+    <h2>🔐 Owner Login</h2>
+    <p class="muted">Enter your credentials to manage the group.</p>
+    <div class="field" style="margin-top:16px;">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="vigilancekeeper@gmail.com" value="vigilancekeeper@gmail.com" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" />
+    </div>
+    <div id="loginError" class="login-error"></div>
+    <div class="actions" style="margin-top:16px;">
+      <button id="loginCancelBtn" class="btn" type="button">Cancel</button>
+      <button id="loginSubmitBtn" class="primary" type="button">Log In</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="autosaveToast" class="autosave-toast" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   EARLY NAVIGATION (unchanged)
+   ============================================================ */
+(function(){
+  function navigate(page){
+    document.querySelectorAll(".nav-button[data-page]").forEach(function(b){
+      b.classList.toggle("active", b.getAttribute("data-page")===page);
+    });
+    document.querySelectorAll(".page-section[data-page]").forEach(function(section){
+      section.classList.toggle("page-hidden", section.getAttribute("data-page")!==page);
+    });
+    try{ window.scrollTo({top:0,behavior:"smooth"}); }catch(e){ window.scrollTo(0,0); }
+  }
+  document.addEventListener("click",function(event){
+    var button=event.target && event.target.closest ? event.target.closest(".nav-button[data-page]") : null;
+    if(!button) return;
+    var page=button.getAttribute("data-page");
+    if(!page) return;
+    event.preventDefault();
+    event.stopPropagation();
+    navigate(page);
+  },true);
+  window.__badmintonNavigate=navigate;
+})();
+
+/* ============================================================
+   ORIGINAL CODE (unchanged except where noted)
+   ============================================================ */
+"use strict";
+const STORAGE_KEY="badminton-gui-master-v3";
+let state={monthlyFee:1000,reviewMonth:"",members:[],transactions:[],adjustments:[],importedFileName:""};
+let groupMembersExpanded=false;
+let editingMemberId="",editingTransactionId="",pendingPaidRequest=null;
+let archiveFolderHandle=null,archiveIndex=[],archiveViewActive=false,currentStateBeforeArchiveView=null,archiveExportStart="",archiveExportEnd="";
+const $=id=>document.getElementById(id);
+const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+"-"+Math.random().toString(16).slice(2);
+const today=()=>{let d=new Date(); return new Date(d-d.getTimezoneOffset()*60000).toISOString().slice(0,10)};
+const curMonth=()=>today().slice(0,7);
+const monthOf=d=>d?String(d).slice(0,7):"";
+
+function addMonths(m,n){ if(!m)return""; let[a,b]=m.split("-").map(Number), d=new Date(a,b-1+n,1); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0") }
+function monthRange(a,b){ let r=[], g=0; while(a&&a<=b&&g++<240){ r.push(a); a=addMonths(a,1) } return r }
+function money(v){ return new Intl.NumberFormat("en-IN",{style:"currency",currency:"INR"}).format(Number(v||0)) }
+function fmtMonth(m){ if(!m)return""; let[a,b]=m.split("-").map(Number); return new Date(a,b-1,1).toLocaleString("en-US",{month:"short",year:"numeric"}) }
+function esc(v){ return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])) }
+function amount(v){ return Math.abs(Number(String(v??"").replace(/₹|,/g,"").replace(/[^\d.-]/g,""))||0) }
+function norm(v){ return String(v||"").toLowerCase().replace(/[^a-z0-9]/g,"") }
+function clean(v){ return String(v||"").replace(/\((adv|paid)[^)]*\)/gi,"").replace(/\s+/g," ").trim() }
+function normDate(v){ if(!v)return""; if(v instanceof Date&&!isNaN(v))return new Date(v-v.getTimezoneOffset()*60000).toISOString().slice(0,10); if(typeof v==="number"&&window.XLSX){ let p=XLSX.SSF.parse_date_code(v); if(p)return `${p.y}-${String(p.m).padStart(2,"0")}-${String(p.d).padStart(2,"0")}` } let s=String(v).trim(); return /^\d{4}-\d{2}-\d{2}$/.test(s)?s:"" }
+function saveLocal(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(state)) }catch(e){ console.error(e) } }
+function loadLocal(){ try{ let x=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null"); if(x)state={...state,...x} }catch(e){}; for(let k of["members","transactions","adjustments"]) if(!Array.isArray(state[k]))state[k]=[]; state.transactions=state.transactions.map((t,i)=>({...t,id:t.id||uid(),order:Number(t.order||i+1),feeMonth:t.feeMonth||t.applicableMonth||"",paymentGroupId:t.paymentGroupId||"",bulkOperationId:t.bulkOperationId||"",affectsBalance:t.affectsBalance!==false})) }
+const member=id=>state.members.find(x=>x.id===id);
+const active=()=>state.members.filter(x=>x.active&&!x.deleted);
+const feeCat=c=>["Monthly Fee","Advance Fee","Arrears Payment"].includes(c);
+function manualAmt(id,m){ return state.adjustments.filter(x=>x.memberId===id&&x.month===m).reduce((s,x)=>s+Number(x.amount||0),0) }
+function ledger(mem){ let start=monthOf(mem.joiningDate),review=state.reviewMonth||curMonth(),end=addMonths(review,24); if(!start)return{months:{},unallocated:0}; let keys=monthRange(start,end),months={}; keys.forEach(m=>months[m]={required:Number(state.monthlyFee||0),direct:0,arrears:0,advance:0,manual:manualAmt(mem.id,m),applied:0,pending:0}); let refresh=m=>{ let x=months[m]; x.applied=Math.min(x.required,x.direct+x.arrears+x.advance+x.manual); x.pending=Math.max(x.required-x.applied,0) }; keys.forEach(refresh); let apply=(m,a,src)=>{ if(!months[m]||a<=0)return a; refresh(m); let u=Math.min(months[m].pending,a); months[m][src]+=u; refresh(m); return a-u }; let excess=0; state.transactions.filter(t=>t.memberId===mem.id&&t.direction==="Income"&&feeCat(t.category)).sort((a,b)=>a.order-b.order).forEach(t=>{ let src=t.category==="Arrears Payment"?"arrears":t.category==="Advance Fee"?"advance":"direct", m=t.feeMonth||monthOf(t.date)||review; excess+=apply(m,Number(t.amount||0),src) }); for(let m of keys){ if(excess<=0||m>review)break; excess=apply(m,excess,"arrears") } for(let m of keys){ if(excess<=0)break; if(m>review)excess=apply(m,excess,"advance") } return{months,unallocated:excess} }
+function monthData(mem,m){ return ledger(mem).months[m]||{required:0,direct:0,arrears:0,advance:0,manual:0,applied:0,pending:0} }
+function transactions(){ let bal=0; return[...state.transactions].sort((a,b)=>a.order-b.order).map(t=>{ if(t.affectsBalance!==false)bal+=t.direction==="Expense"?-Number(t.amount):Number(t.amount); return{...t,calculatedBalance:bal} }) }
+function summary(){ let ts=transactions(),inc=ts.filter(t=>t.direction==="Income"&&t.affectsBalance!==false).reduce((s,t)=>s+Number(t.amount),0),exp=ts.filter(t=>t.direction==="Expense"&&t.affectsBalance!==false).reduce((s,t)=>s+Number(t.amount),0),pending=active().reduce((s,m)=>s+monthData(m,state.reviewMonth||curMonth()).pending,0); return{inc,exp,bal:inc-exp,pending,count:active().length} }
+function render(){ state.reviewMonth=state.reviewMonth||curMonth(); $("monthlyFee").value=state.monthlyFee; $("reviewMonth").value=state.reviewMonth; let s=summary(); $("totalIncome").textContent=money(s.inc); $("totalExpenses").textContent=money(s.exp); $("cashBalance").textContent=money(s.bal); $("pendingTotal").textContent=money(s.pending); $("activeMemberCount").textContent=s.count; renderSelectors(); renderCards(); renderRemoved(); renderMonths(); renderRecords(); renderFeeStatus(); renderGroupShowcase(); updateConnection() }
+function renderGroupShowcase(){ const grid=$("groupNameGrid"), count=$("groupMemberCount"), toggle=$("toggleGroupMembersButton"); if(!grid||!count||!toggle)return; const members=active().sort((a,b)=>a.name.localeCompare(b.name)); count.textContent=`${members.length} Active Member${members.length===1?"":"s"}`; const visible=groupMembersExpanded?members:members.slice(0,8); grid.innerHTML=visible.length?visible.map(m=>`<div class="group-name-chip">${esc(m.name)}</div>`).join(""):'<div class="group-empty">No active members are available.</div>'; toggle.classList.toggle("hidden",members.length<=8); toggle.textContent=groupMembersExpanded?"Show Less":"Show All Members" }
+function renderSelectors(){ let sel=[...$("memberSelector").selectedOptions].map(o=>o.value), a=active().sort((x,y)=>x.name.localeCompare(y.name)), tm=$("transactionMember").value; $("memberSelector").innerHTML=a.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join(""); [...$("memberSelector").options].forEach(o=>o.selected=sel.includes(o.value)); $("transactionMember").innerHTML='<option value="">Select member</option>'+a.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join(""); if(a.some(m=>m.id===tm))$("transactionMember").value=tm; renderMemberPicker(); let r=state.members.filter(m=>!m.active||m.deleted); $("removedMemberSelector").innerHTML='<option value="">Select member</option>'+r.map(m=>`<option value="${m.id}">${esc(m.name)} (${m.deleted?"Deleted":"Inactive"})</option>`).join("") }
+function selectedMemberIds(){ return[...$("memberSelector").selectedOptions].map(o=>o.value) }
+function updateMemberSelectionSummary(){ const ids=selectedMemberIds(), summary=$("memberSelectionSummary"), count=$("selectedDetailsCount"); if(summary)summary.textContent=ids.length?`${ids.length} member${ids.length===1?"":"s"} selected`:"Select one or more members to view details"; if(count)count.textContent=`${ids.length} selected` }
+function renderMemberPicker(){ const grid=$("memberChoiceGrid"), search=$("memberSearchInput"); if(!grid)return; const query=(search?.value||"").trim().toLowerCase(), selected=new Set(selectedMemberIds()), members=active().sort((a,b)=>a.name.localeCompare(b.name)).filter(m=>m.name.toLowerCase().includes(query)); grid.innerHTML=members.length?members.map(m=>`<button type="button" class="member-choice ${selected.has(m.id)?"selected":""}" data-member-id="${m.id}" aria-pressed="${selected.has(m.id)}">${esc(m.name)}</button>`).join(""):'<div class="member-choice-empty">No active members match the search.</div>'; grid.querySelectorAll(".member-choice").forEach(button=>button.addEventListener("click",()=>{ const option=[...$("memberSelector").options].find(o=>o.value===button.dataset.memberId); if(option)option.selected=!option.selected; renderMemberPicker(); renderCards() })); updateMemberSelectionSummary() }
+function renderCards(){ let ids=[...$("memberSelector").selectedOptions].map(o=>o.value), review=state.reviewMonth||curMonth(); $("memberCards").innerHTML=ids.map(id=>{ let m=member(id), d=monthData(m,review), css=d.pending===0?"paid":d.applied>0?"partial":""; let shownMonths=archiveViewActive?[...new Set([...state.transactions.map(t=>t.feeMonth),...state.adjustments.map(a=>a.month)].filter(Boolean))].sort():[-2,-1,0,1,2].map(n=>addMonths(review,n)); let rows=shownMonths.map(mo=>{ let x=monthData(m,mo); return`<div class="month"><strong>${fmtMonth(mo)}</strong><span>Paid ${money(x.applied)} · Pending ${money(x.pending)}</span>${x.pending>0?`<button type="button" onclick="openPaid('${m.id}','${mo}',${x.pending})">Set Paid</button>`:""}</div>` }).join(""); return`<article class="member ${css}"><h3>${esc(m.name)}</h3><p>Joining: ${esc(m.joiningDate)}</p><p>Current paid ${money(d.applied)} · pending ${money(d.pending)}</p><div class="months">${rows}</div><div class="actions"><button onclick="editMember('${m.id}')">Edit</button><button onclick="deactivateMember('${m.id}')">Deactivate</button><button class="danger" onclick="deleteMember('${m.id}')">Delete</button></div></article>` }).join("") }
+function renderRemoved(){ let m=member($("removedMemberSelector").value), c=$("removedMemberDetails"); if(!m){ c.classList.add("hidden"); return } c.classList.remove("hidden"); c.innerHTML=`<h3>${esc(m.name)}</h3><p>${m.deleted?"Deleted":"Inactive"}</p><div class="removed-member-actions"><button onclick="restoreMember('${m.id}')">Restore</button>${m.deleted?`<button class="permanent-delete-button" onclick="permanentlyDeleteMember('${m.id}')">Delete Permanently</button>`:""}</div>` }
+function renderMonths(){ let old=$("financialMonth").value, ms=[...new Set([...state.transactions.map(t=>t.feeMonth||monthOf(t.date)),...state.adjustments.map(a=>a.month)].filter(Boolean))].sort().reverse(); $("financialMonth").innerHTML='<option value="">All Months</option>'+ms.map(m=>`<option value="${m}">${fmtMonth(m)}</option>`).join(""); if(ms.includes(old))$("financialMonth").value=old }
+function getAllocationLabel(record){ if(record.isAdjustment)return record.bulkOperationId?"Bulk status-only":"Status only"; if(record.allocationMode==="bulk"||record.source==="Bulk Clear Pending")return"Bulk payment"; if(record.paymentGroupId){ let count=state.transactions.filter(t=>t.paymentGroupId===record.paymentGroupId).length; if(count>1)return`Split payment (${count})` } if(record.allocationMode==="automatic")return"Auto allocated"; return"Single entry" }
+function feeStatusSource(memberId,month,data){ let parts=[]; if(data.direct>0)parts.push("Direct payment"); if(data.arrears>0)parts.push("Arrears"); if(data.advance>0)parts.push("Advance"); if(data.manual>0){ let isBulk=state.adjustments.some(a=>a.memberId===memberId&&a.month===month&&a.bulkOperationId); parts.push(isBulk?"Bulk status-only":"Status-only adjustment") } return parts.length?parts.join(", "):"No payment recorded" }
+function renderFeeStatus(){ const month=$("feeStatusMonth")?.value||state.reviewMonth||curMonth(), filter=$("feeStatusFilter")?.value||"All", body=$("feeStatusTableBody"); if(!body)return; if(!$("feeStatusMonth").value)$("feeStatusMonth").value=month; let rows=active().sort((a,b)=>a.name.localeCompare(b.name)).map(m=>{ let d=monthData(m,month), status=d.pending===0?(d.advance>0?"Advance":"Paid"):d.applied>0?"Partial":"Pending"; return{m,d,status,source:feeStatusSource(m.id,month,d)} }).filter(x=>filter==="All"||x.status===filter); body.innerHTML=rows.map(x=>`<tr><td><strong>${esc(x.m.name)}</strong></td><td>${money(x.d.required)}</td><td>${money(x.d.direct)}</td><td>${money(x.d.arrears)}</td><td>${money(x.d.advance)}</td><td>${money(x.d.manual)}</td><td>${money(x.d.applied)}</td><td>${money(x.d.pending)}</td><td><span class="status-pill status-${x.status.toLowerCase()}">${x.status}</span></td><td class="source-list">${esc(x.source)}</td></tr>`).join("")||'<tr><td colspan="10">No members match this status filter.</td></tr>' }
+function renderRecords(){ let v=$("financialView").value, mo=$("financialMonth").value, w=$("financialTableWrapper"); if(!v){ w.classList.add("hidden"); return } w.classList.remove("hidden"); let rows=v==="Adjustments"?state.adjustments.filter(a=>!mo||a.month===mo).map(a=>({...a,feeMonth:a.month,direction:"Status",category:"Manual Adjustment",description:a.note,calculatedBalance:"",isAdjustment:true})):transactions().filter(t=>(v==="All"||t.direction===v)&&(!mo||(t.feeMonth||monthOf(t.date))===mo)); $("financialTableBody").innerHTML=rows.map(r=>{ let m=member(r.memberId); return`<tr><td>${esc(r.date)}</td><td>${esc(r.feeMonth||"")}</td><td>${esc(m?m.name:r.name||"General")}</td><td>${esc(r.direction)}</td><td>${esc(r.category)}</td><td>${esc(r.description||"")}</td><td>${money(r.amount)}</td><td>${r.calculatedBalance===""?"":money(r.calculatedBalance)}</td><td>${esc(getAllocationLabel(r))}</td><td>${r.isAdjustment?`<button onclick="deleteAdjustment('${r.id}')">Delete</button>`:`<button onclick="editTransaction('${r.id}')">Edit</button> <button onclick="deleteTransaction('${r.id}')">Delete</button>`}</td></tr>` }).join("")||'<tr><td colspan="10">No records</td></tr>' }
+function resetMember(){ editingMemberId=""; $("memberForm").reset(); $("joiningDate").value=today(); $("memberState").value="active"; $("memberFormTitle").textContent="Add Member"; $("saveMemberButton").textContent="Add Member"; $("cancelMemberButton").classList.add("hidden") }
+function requiresMonth(dir,cat){ return dir==="Expense"&&cat==="Court Fee"||dir==="Income"&&(feeCat(cat)||cat==="Court Fee Contribution") }
+function category(){ return $("transactionDirection").value==="Income"?$("incomeCategory").value:$("expenseCategory").value }
+function description(){ return $("transactionDescriptionChoice").value==="Other / Custom"?$("transactionDescription").value.trim():$("transactionDescriptionChoice").value }
+function updateFields(){ let dir=$("transactionDirection").value, cat=category(), mem=dir==="Income"&&feeCat(cat), req=requiresMonth(dir,cat); $("incomeCategoryContainer").classList.toggle("hidden",dir!=="Income"); $("expenseCategoryContainer").classList.toggle("hidden",dir!=="Expense"); $("transactionMemberContainer").classList.toggle("hidden",!mem); $("allocationMethodContainer").classList.toggle("hidden",!mem); $("feeMonthContainer").classList.toggle("hidden",!req); $("transactionNameContainer").classList.toggle("hidden",mem); $("transactionNameLabel").textContent=dir==="Expense"?"Paid To (optional)":"Received From (optional)"; $("feeMonthLabel").textContent=dir==="Expense"&&cat==="Court Fee"?"Court Fee Applicable Month":"Applicable Month"; $("feeMonthHelp").textContent=mem?"Automatic mode clears oldest pending first.":"Select the month this transaction applies to."; if(req&&!$("feeMonth").value)$("feeMonth").value=state.reviewMonth||curMonth(); preview() }
+function defaultDesc(){ let c=category(), d=$("transactionDirection").value==="Income"?({"Monthly Fee":"Monthly Fee Payment","Advance Fee":"Advance Payment","Arrears Payment":"Arrears Payment","Opening Balance":"Opening Balance","Interest":"Interest Received","Court Fee Contribution":"Contribution","Shuttle Reimbursement":"Reimbursement","Other Income":"Other / Custom"}[c]||"Contribution"):({"Court Fee":"Court Booking Payment","Shuttle Purchase":"Shuttle Purchase","Equipment":"Equipment Purchase","Member Reimbursement":"Reimbursement","Other Expense":"Other / Custom"}[c]||"Payment"); $("transactionDescriptionChoice").value=d; toggleCustom() }
+function toggleCustom(){ $("customDescriptionContainer").classList.toggle("hidden",$("transactionDescriptionChoice").value!=="Other / Custom") }
+function resetTransaction(){ editingTransactionId=""; $("transactionForm").reset(); $("transactionDate").value=today(); $("transactionDirection").value="Income"; $("incomeCategory").value="Monthly Fee"; $("allocationMethod").value="automatic"; $("feeMonth").value=state.reviewMonth||curMonth(); $("transactionDescriptionChoice").value="Monthly Fee Payment"; $("transactionFormTitle").textContent="Add Transaction"; $("saveTransactionButton").textContent="Add Transaction"; $("cancelTransactionButton").classList.add("hidden"); $("allocationPreview").classList.add("hidden"); toggleCustom(); updateFields() }
+function allocate(mem,pay,target){ let l=ledger(mem),left=pay,out=[],monthly=Number(state.monthlyFee); for(let mo of monthRange(monthOf(mem.joiningDate),target)){ if(left<=0)break; let p=(l.months[mo]||{pending:monthly}).pending; if(p>0){ let a=Math.min(p,left); out.push({month:mo,amount:a,category:mo<target?"Arrears Payment":"Monthly Fee",type:mo<target?"Oldest pending":"Current month"}); left-=a } } let mo=addMonths(target,1),g=0; while(left>0&&g++<120){ let p=(l.months[mo]||{pending:monthly}).pending; if(p>0){ let a=Math.min(p,left); out.push({month:mo,amount:a,category:"Advance Fee",type:a<monthly?"Partial advance":"Future advance"}); left-=a } mo=addMonths(mo,1) } return out }
+function preview(){ let box=$("allocationPreview"); box.classList.add("hidden"); if(editingTransactionId||$("transactionDirection").value!=="Income"||!feeCat(category()))return; let m=member($("transactionMember").value), a=amount($("transactionAmount").value), mo=$("feeMonth").value; if(!m||!a||!mo)return; let arr=$("allocationMethod").value==="automatic"?allocate(m,a,mo):[{month:mo,amount:a,category:category(),type:"Manual selection"}]; box.classList.remove("hidden"); $("allocationPreviewMessage").textContent=`${money(a)} will be saved as ${arr.length} month-level record(s).`; $("allocationPreviewList").innerHTML=arr.map(x=>`<div class="preview-row"><strong>${fmtMonth(x.month)}</strong><span>${money(x.amount)}</span><span>${esc(x.type)}</span></div>`).join("") }
+window.editMember=id=>{ let m=member(id); editingMemberId=id; $("memberName").value=m.name; $("joiningDate").value=m.joiningDate; $("memberState").value=m.active?"active":"inactive"; $("memberFormTitle").textContent="Edit Member"; $("saveMemberButton").textContent="Update Member"; $("cancelMemberButton").classList.remove("hidden") };
+window.deactivateMember=id=>{ let m=member(id); m.active=false; m.deleted=false; commit("Member deactivated") };
+window.deleteMember=id=>{ if(confirm("Move member to Deleted Members?")){ let m=member(id); m.active=false; m.deleted=true; commit("Member deleted") } };
+window.restoreMember=id=>{ let m=member(id); m.active=true; m.deleted=false; commit("Member restored") };
+window.permanentlyDeleteMember=id=>{ const m=member(id); if(!m||!m.deleted)return; const linkedTransactions=state.transactions.filter(t=>t.memberId===id), linkedAdjustments=state.adjustments.filter(a=>a.memberId===id); if(linkedTransactions.length||linkedAdjustments.length){ alert(`Permanent deletion is blocked because ${m.name} still has linked financial history.\n\nTransactions: ${linkedTransactions.length}\nStatus adjustments: ${linkedAdjustments.length}\n\nKeeping the member record protects balances, audit history, and archive references. The member can remain Deleted or be restored.`); return } if(!confirm(`Permanently delete ${m.name}?\n\nThis member has no linked current-master transactions or adjustments. This action cannot be undone.`))return; state.members=state.members.filter(x=>x.id!==id); $("removedMemberSelector").value=""; commit("Member permanently deleted") };
+window.deleteTransaction=id=>{ if(confirm("Delete this transaction?")){ state.transactions=state.transactions.filter(t=>t.id!==id); commit("Transaction deleted") } };
+window.deleteAdjustment=id=>{ state.adjustments=state.adjustments.filter(a=>a.id!==id); commit("Adjustment deleted") };
+window.editTransaction=id=>{ let t=state.transactions.find(x=>x.id===id); editingTransactionId=id; $("transactionDate").value=t.date; $("transactionDirection").value=t.direction; if(t.direction==="Income")$("incomeCategory").value=t.category; else $("expenseCategory").value=t.category; $("transactionMember").value=t.memberId||""; $("feeMonth").value=t.feeMonth||""; $("transactionName").value=t.name||""; $("transactionAmount").value=t.amount; let opts=[...$("transactionDescriptionChoice").options].map(o=>o.value); if(opts.includes(t.description))$("transactionDescriptionChoice").value=t.description; else{ $("transactionDescriptionChoice").value="Other / Custom"; $("transactionDescription").value=t.description||"" } toggleCustom(); updateFields(); $("transactionFormTitle").textContent="Edit Transaction"; $("saveTransactionButton").textContent="Update Transaction"; $("cancelTransactionButton").classList.remove("hidden") };
+window.openPaid=(id,mo,p)=>{ pendingPaidRequest={id,mo}; $("setPaidMessage").textContent=`${member(id).name}, ${fmtMonth(mo)}`; $("setPaidDate").value=today(); $("setPaidAmount").value=p; $("setPaidModal").classList.remove("hidden") };
+$("cancelSetPaidButton").onclick=()=>$("setPaidModal").classList.add("hidden");
+$("confirmSetPaidButton").onclick=()=>{ let a=amount($("setPaidAmount").value), m=member(pendingPaidRequest.id), balance=$("setPaidBalanceEffect").value==="yes"; if(balance)state.transactions.push({id:uid(),paymentGroupId:uid(),order:nextOrder(),date:$("setPaidDate").value,direction:"Income",category:pendingPaidRequest.mo<(state.reviewMonth||curMonth())?"Arrears Payment":"Monthly Fee",memberId:m.id,feeMonth:pendingPaidRequest.mo,name:"",description:$("setPaidNote").value,amount:a,affectsBalance:true,source:"Set Paid"}); else state.adjustments.push({id:uid(),memberId:m.id,month:pendingPaidRequest.mo,date:$("setPaidDate").value,amount:a,note:$("setPaidNote").value,affectsBalance:false}); $("setPaidModal").classList.add("hidden"); commit("Payment status updated") };
+function nextOrder(){ return state.transactions.reduce((m,t)=>Math.max(m,Number(t.order||0)),0)+1 }
+$("memberForm").onsubmit=e=>{ e.preventDefault(); let name=clean($("memberName").value), date=$("joiningDate").value, on=$("memberState").value==="active"; if(editingMemberId){ let m=member(editingMemberId); Object.assign(m,{name,joiningDate:date,active:on,deleted:on?false:m.deleted}) } else state.members.push({id:uid(),name,joiningDate:date,active:on,deleted:false}); resetMember(); commit("Member saved") };
+$("cancelMemberButton").onclick=resetMember;
+
+/* ========== saveSettingsButton modified to check admin ========== */
+$("saveSettingsButton").onclick=async()=>{
+  if(!isAdmin){ alert("Please login as admin to change settings."); return; }
+  if(!supabaseReady){
+    while(supabaseLoading) await new Promise(r=>setTimeout(r,50));
+    if(!supabaseReady){ alert("Supabase is not connected. Please wait for the database connection to finish."); return; }
+  }
+  const fee=amount($("monthlyFee").value), review=$("reviewMonth").value, theme=$("interfaceTheme").value;
+  try{
+    setSync("saving","Saving settings to Supabase...");
+    await writeAppSetting("Monthly Fee",fee);
+    await writeAppSetting("Review Month",review);
+    await writeAppSetting("Interface Theme",theme);
+    const check=await sbFetch("app_settings?select=key,value,updated_at&key=eq."+encodeURIComponent("Monthly Fee")+"&limit=1");
+    const row=Array.isArray(check)&&check[0];
+    if(!row || String(row.value)!==String(fee)) throw new Error("Supabase read-back did not return the value that was just saved.");
+    state.monthlyFee=fee; state.reviewMonth=review; $("feeMonth").value=review; saveLocal(); render();
+    setSync("connected","Settings saved to Supabase and verified.");
+  }catch(e){
+    console.error(e); setSync("error","Settings database save failed: "+e.message);
+    alert("Settings were NOT confirmed in Supabase.\n\n"+e.message);
+  }
+};
+
+$("transactionDirection").onchange=()=>{ defaultDesc(); updateFields() };
+$("incomeCategory").onchange=()=>{ defaultDesc(); updateFields() };
+$("expenseCategory").onchange=()=>{ defaultDesc(); updateFields() };
+$("transactionDescriptionChoice").onchange=toggleCustom;
+for(let id of["transactionMember","allocationMethod","feeMonth","transactionAmount"]) $(id).addEventListener(id==="transactionAmount"?"input":"change",preview);
+
+/* ========== transactionForm submit modified to check admin ========== */
+$("transactionForm").onsubmit=e=>{ e.preventDefault(); if(!isAdmin){ alert("Please login as admin to add transactions."); return; }
+  let dir=$("transactionDirection").value, cat=category(), memReq=dir==="Income"&&feeCat(cat), mid=memReq?$("transactionMember").value:"", mo=requiresMonth(dir,cat)?$("feeMonth").value:"", a=amount($("transactionAmount").value), data={date:$("transactionDate").value,direction:dir,category:cat,memberId:mid,feeMonth:mo,name:memReq?"":$("transactionName").value.trim(),description:description(),amount:a,affectsBalance:true}; if(!data.date||!a||memReq&&!mid||requiresMonth(dir,cat)&&!mo)return alert("Complete all required transaction fields."); if(editingTransactionId){ state.transactions=state.transactions.map(t=>t.id===editingTransactionId?{...t,...data,source:"GUI Edit"}:t); resetTransaction(); return commit("Transaction updated") }; if(memReq&&$("allocationMethod").value==="automatic"){ let arr=allocate(member(mid),a,mo), group=uid(), order=nextOrder(); arr.forEach(x=>state.transactions.push({...data,id:uid(),paymentGroupId:group,order:order++,category:x.category,feeMonth:x.month,amount:x.amount,allocationMode:"automatic",allocationType:x.type,source:"GUI Auto Allocation"})); resetTransaction(); return commit(`${money(a)} split into ${arr.length} month records`) } state.transactions.push({...data,id:uid(),paymentGroupId:memReq?uid():"",order:nextOrder(),allocationMode:memReq?"manual":"",source:"GUI"}); resetTransaction(); commit("Transaction saved") };
+$("cancelTransactionButton").onclick=resetTransaction;
+$("memberSelector").onchange=()=>{ renderMemberPicker(); renderCards() };
+$("removedMemberSelector").onchange=renderRemoved;
+$("financialView").onchange=renderRecords;
+$("financialMonth").onchange=renderRecords;
+$("feeStatusMonth").onchange=renderFeeStatus;
+$("feeStatusFilter").onchange=renderFeeStatus;
+$("selectAllMembersButton").onclick=()=>{[...$("memberSelector").options].forEach(o=>o.selected=true); renderMemberPicker(); renderCards()};
+$("clearMemberSelectionButton").onclick=()=>{[...$("memberSelector").options].forEach(o=>o.selected=false); renderMemberPicker(); renderCards()};
+
+function rows(w,n){ return w.Sheets[n]?XLSX.utils.sheet_to_json(w.Sheets[n],{defval:"",raw:true}):[] }
+function matrix(w,n){ return w.Sheets[n]?XLSX.utils.sheet_to_json(w.Sheets[n],{header:1,defval:"",raw:true}):[] }
+function setting(mat,name){ let key=norm(name); for(let r of mat) for(let i=0;i<r.length;i++) if(norm(r[i])===key) return r[i+1]??""; return"" }
+function isMaster(w){ return["Transactions","Members","Settings"].every(n=>w.SheetNames.includes(n)) }
+function buildState(w,file){ if(!isMaster(w))throw Error("Not a Badminton Group Manager master workbook."); let sm=matrix(w,"Settings"), members=rows(w,"Members").map(r=>{ let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v])), st=String(x.memberstate||"Active").toLowerCase(); return{id:String(x.memberid||x.id||"").trim(),name:clean(x.membername||x.name),joiningDate:normDate(x.joiningdate)||today(),active:st==="active",deleted:st==="deleted"} }).filter(m=>m.id&&m.name), ids=new Set(members.map(m=>m.id)); let ts=rows(w,"Transactions").map((r,i)=>{ let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v])), mid=String(x.memberid||"").trim(); return{id:String(x.transactionid||x.id||uid()),paymentGroupId:String(x.paymentgroupid||""),bulkOperationId:String(x.bulkoperationid||""),order:Number(x.order||i+1),date:normDate(x.date),feeMonth:String(x.applicablemonth||x.feemonth||"").slice(0,7),memberId:ids.has(mid)?mid:"",name:ids.has(mid)?"":clean(x.name),direction:String(x.direction),category:String(x.category),description:String(x.description||""),amount:amount(x.amount),affectsBalance:!/^no|false|0$/i.test(String(x.affectsbalance)),allocationMode:String(x.allocationmode||""),allocationType:String(x.allocationtype||""),source:String(x.source||"Master Workbook")}}).filter(t=>t.amount>0&&["Income","Expense"].includes(t.direction)); let ad=rows(w,"Manual Adjustments").map(r=>{ let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v])); return{id:String(x.adjustmentid||x.id||uid()),bulkOperationId:String(x.bulkoperationid||""),date:normDate(x.date),month:String(x.month||"").slice(0,7),memberId:String(x.memberid||""),amount:amount(x.amount),note:String(x.note||""),affectsBalance:false} }).filter(a=>ids.has(a.memberId)&&a.month&&a.amount); return{monthlyFee:amount(setting(sm,"Monthly Fee"))||1000,reviewMonth:String(setting(sm,"Review Month")||curMonth()).slice(0,7),members,transactions:ts,adjustments:ad,importedFileName:String(setting(sm,"Imported File")||file||"")} }
+async function readHandle(h){ let f=await h.getFile(), w=XLSX.read(await f.arrayBuffer(),{type:"array",cellDates:true}); return buildState(w,f.name) }
+function applyState(s){ state=s; saveLocal(); resetMember(); resetTransaction(); render() }
+
+/* ========== workbookBytes unchanged ========== */
+async function workbookBytes(){
+if(!window.ExcelJS)throw Error("ExcelJS did not load.");
+const wb=new ExcelJS.Workbook(); wb.creator="Badminton Group Manager"; wb.lastModifiedBy="Badminton Group Manager"; wb.created=new Date(); wb.modified=new Date();
+const C={navy:"FF17365D",navy2:"FF0F243E",white:"FFFFFFFF",green:"FFC6EFCE",greenText:"FF006100",red:"FFFFC7CE",redText:"FF9C0006",yellow:"FFFFEB9C",yellowText:"FF9C6500",blue:"FFDDEBF7",blueText:"FF0070C0",gray:"FFD9E1F2",grayText:"FF666666",purple:"FFE4DFEC",purpleText:"FF7030A0"};
+const currency='₹#,##0.00;[Red]-₹#,##0.00;-'; const s=summary(), review=state.reviewMonth||curMonth();
+function title(ws,range,text){ ws.mergeCells(range); let c=ws.getCell(range.split(':')[0]); c.value=text; c.font={bold:true,size:18,color:{argb:C.white}}; c.fill={type:"pattern",pattern:"solid",fgColor:{argb:C.navy}}; c.alignment={vertical:"middle",horizontal:"left"}; ws.getRow(c.row).height=30 }
+function header(row){ row.eachCell(c=>{ c.font={bold:true,color:{argb:C.white}}; c.fill={type:"pattern",pattern:"solid",fgColor:{argb:C.navy2}}; c.alignment={horizontal:"center",vertical:"middle"} }); row.height=24 }
+function statusStyle(cell,status){ let fill=C.gray,font=C.grayText; if(status==="Paid"){ fill=C.green; font=C.greenText }else if(status==="Partial"){ fill=C.yellow; font=C.yellowText }else if(status==="Pending"){ fill=C.red; font=C.redText }else if(status==="Advance"){ fill=C.blue; font=C.blueText } cell.fill={type:"pattern",pattern:"solid",fgColor:{argb:fill}}; cell.font={bold:true,color:{argb:font}} }
+function shadeRow(row,status){ let fill=status==="Paid"?C.green:status==="Partial"?C.yellow:status==="Pending"?C.red:status==="Advance"?C.blue:C.gray; row.eachCell(c=>c.fill={type:"pattern",pattern:"solid",fgColor:{argb:fill}}) }
+const dash=wb.addWorksheet("Dashboard",{views:[{showGridLines:false}]}); title(dash,"A1:H2","Badminton Group Financial Dashboard"); dash.columns=[{width:24},{width:20},{width:4},{width:24},{width:20},{width:4},{width:24},{width:24}];
+dash.getCell("A4").value="Review Month"; dash.getCell("B4").value=fmtMonth(review); dash.getCell("D4").value="Monthly Fee"; dash.getCell("E4").value=Number(state.monthlyFee||0); dash.getCell("A6").value="Total Income"; dash.getCell("B6").value=s.inc; dash.getCell("D6").value="Total Expenses"; dash.getCell("E6").value=s.exp; dash.getCell("G6").value="Cash Balance"; dash.getCell("H6").value=s.bal; dash.getCell("A8").value="Pending Fees"; dash.getCell("B8").value=s.pending; dash.getCell("D8").value="Active Members"; dash.getCell("E8").value=s.count; dash.getCell("G8").value="Last Updated"; dash.getCell("H8").value=new Date();
+["A4","D4","A6","D6","G6","A8","D8","G8"].forEach(a=>{ let c=dash.getCell(a); c.font={bold:true}; c.fill={type:"pattern",pattern:"solid",fgColor:{argb:C.gray}} }); ["E4","B6","E6","H6","B8"].forEach(a=>dash.getCell(a).numFmt=currency); dash.getCell("H8").numFmt="dd-mmm-yyyy hh:mm AM/PM";
+dash.mergeCells("A11:D11"); let ph=dash.getCell("A11"); ph.value="Pending Members"; ph.font={bold:true,size:14,color:{argb:C.white}}; ph.fill={type:"pattern",pattern:"solid",fgColor:{argb:C.redText}}; dash.addRow(["Member","Required","Paid","Pending"]); header(dash.getRow(12)); let pc=0; active().sort((a,b)=>a.name.localeCompare(b.name)).forEach(m=>{ let d=monthData(m,review); if(d.pending<=0)return; pc++; let r=dash.addRow([m.name,d.required,d.applied,d.pending]); shadeRow(r,"Pending"); for(let i=2;i<=4;i++)r.getCell(i).numFmt=currency }); if(!pc){ let r=dash.addRow(["No pending members for the selected month."]); dash.mergeCells(`A${r.number}:D${r.number}`); shadeRow(r,"Paid") }
+const monthly=wb.addWorksheet("Monthly Status",{views:[{state:"frozen",ySplit:4}]}); title(monthly,"A1:K2",`Monthly Status - ${fmtMonth(review)}`); monthly.addRow([]); monthly.addRow(["Member","Joining Date","Member State","Required","Direct","Arrears","Advance","Manual","Applied","Pending","Payment Status"]); header(monthly.getRow(4)); monthly.columns=[{width:30},{width:16},{width:16},{width:15},{width:15},{width:15},{width:15},{width:15},{width:15},{width:15},{width:17}]; [...state.members].sort((a,b)=>a.name.localeCompare(b.name)).forEach(m=>{ let d=monthData(m,review), ms=m.deleted?"Deleted":m.active?"Active":"Inactive", st=!m.active||m.deleted?ms:d.pending===0?(d.advance>0?"Advance":"Paid"):d.applied>0?"Partial":"Pending", r=monthly.addRow([m.name,m.joiningDate,ms,d.required,d.direct,d.arrears,d.advance,d.manual,d.applied,d.pending,st]); shadeRow(r,st); statusStyle(r.getCell(11),st); for(let i=4;i<=10;i++)r.getCell(i).numFmt=currency }); monthly.autoFilter={from:"A4",to:"K4"};
+const tx=wb.addWorksheet("Transactions",{views:[{state:"frozen",ySplit:1}]}); tx.columns=[{header:"Transaction ID",key:"id",width:38},{header:"Payment Group ID",key:"paymentGroupId",width:38},{header:"Order",key:"order",width:10},{header:"Date",key:"date",width:15},{header:"Applicable Month",key:"feeMonth",width:18},{header:"Member ID",key:"memberId",width:38},{header:"Name",key:"name",width:28},{header:"Direction",key:"direction",width:14},{header:"Category",key:"category",width:22},{header:"Description",key:"description",width:30},{header:"Amount",key:"amount",width:15},{header:"Affects Balance",key:"affectsBalance",width:18},{header:"Running Balance",key:"calculatedBalance",width:18},{header:"Allocation Mode",key:"allocationMode",width:18},{header:"Allocation Type",key:"allocationType",width:20},{header:"Bulk Operation ID",key:"bulkOperationId",width:38},{header:"Source",key:"source",width:22}]; header(tx.getRow(1)); transactions().forEach(t=>{ let m=member(t.memberId), r=tx.addRow({...t,name:m?m.name:t.name,affectsBalance:t.affectsBalance!==false?"Yes":"No"}); r.getCell("amount").numFmt=currency; r.getCell("calculatedBalance").numFmt=currency; r.getCell("direction").font={bold:true,color:{argb:t.direction==="Income"?C.greenText:C.redText}} }); tx.autoFilter={from:"A1",to:"Q1"};
+const ms=wb.addWorksheet("Members",{views:[{state:"frozen",ySplit:1}]}); ms.columns=[{header:"Member ID",key:"id",width:38},{header:"Member Name",key:"name",width:28},{header:"Joining Date",key:"joiningDate",width:16},{header:"Member State",key:"memberState",width:16}]; header(ms.getRow(1)); [...state.members].sort((a,b)=>a.name.localeCompare(b.name)).forEach(m=>{ let st=m.deleted?"Deleted":m.active?"Active":"Inactive", r=ms.addRow({...m,memberState:st}); statusStyle(r.getCell("memberState"),st) }); ms.autoFilter={from:"A1",to:"D1"};
+const led=wb.addWorksheet("Member Ledger",{views:[{state:"frozen",ySplit:1}]}); led.columns=[{header:"Member ID",key:"memberId",width:38},{header:"Member",key:"member",width:28},{header:"Month",key:"month",width:15},{header:"Required",key:"required",width:15},{header:"Direct",key:"direct",width:15},{header:"Arrears",key:"arrears",width:15},{header:"Advance",key:"advance",width:15},{header:"Manual",key:"manual",width:15},{header:"Applied",key:"applied",width:15},{header:"Pending",key:"pending",width:15},{header:"Status",key:"status",width:15}]; header(led.getRow(1)); state.members.forEach(m=>monthRange(archiveExportStart||monthOf(m.joiningDate),archiveExportEnd||addMonths(review,12)).forEach(mo=>{ let d=monthData(m,mo), st=m.deleted?"Deleted":!m.active?"Inactive":d.pending===0?(d.advance>0?"Advance":"Paid"):d.applied>0?"Partial":"Pending", r=led.addRow({memberId:m.id,member:m.name,month:mo,required:d.required,direct:d.direct,arrears:d.arrears,advance:d.advance,manual:d.manual,applied:d.applied,pending:d.pending,status:st}); for(let i=4;i<=10;i++)r.getCell(i).numFmt=currency; statusStyle(r.getCell("status"),st) })); led.autoFilter={from:"A1",to:"K1"};
+const ad=wb.addWorksheet("Manual Adjustments",{views:[{state:"frozen",ySplit:1}]}); ad.columns=[{header:"Adjustment ID",key:"id",width:38},{header:"Bulk Operation ID",key:"bulkOperationId",width:38},{header:"Date",key:"date",width:15},{header:"Month",key:"month",width:15},{header:"Member ID",key:"memberId",width:38},{header:"Member",key:"member",width:28},{header:"Amount",key:"amount",width:15},{header:"Affects Balance",key:"affectsBalance",width:18},{header:"Note",key:"note",width:35}]; header(ad.getRow(1)); state.adjustments.forEach(a=>{ let r=ad.addRow({...a,member:member(a.memberId)?.name||"",affectsBalance:"No"}); r.getCell("amount").numFmt=currency }); ad.autoFilter={from:"A1",to:"I1"};
+const st=wb.addWorksheet("Settings",{views:[{showGridLines:false}]}); title(st,"A1:B2","Badminton Group Manager Settings"); st.columns=[{width:32},{width:55}]; [["Monthly Fee",Number(state.monthlyFee||0)],["Review Month",state.reviewMonth],["Imported File",state.importedFileName||""],["Default Allocation","Oldest pending, current month, then future advance"],["Bulk Clear Default","Status only, no cash balance change"],["Workbook Version","4"],["Last Updated",new Date()]].forEach(v=>{ let r=st.addRow(v); r.getCell(1).font={bold:true}; r.getCell(1).fill={type:"pattern",pattern:"solid",fgColor:{argb:C.gray}} }); st.getCell("B3").numFmt=currency; st.getCell("B9").numFmt="dd-mmm-yyyy hh:mm AM/PM";
+return wb.xlsx.writeBuffer();
+}
+
+/* ========== Archive and bulk functions (unchanged except commit admin check) ========== */
+const ARCHIVE_FOLDER_KEY="badminton-archive-folder";
+function archiveInfo(name){ let m=name.match(/^(.+)_AR_(0[1-9]|1[0-2])(\d{4})-(0[1-9]|1[0-2])(\d{4})(?:_R(\d+))?\.xlsx$/i); if(!m)return null; let start=`${m[3]}-${m[2]}`, end=`${m[5]}-${m[4]}`; return start<=end?{name,prefix:m[1],startMonth:start,endMonth:end,revision:Number(m[6]||1)}:null }
+async function putArchiveFolder(h){ let d=await db(); return new Promise((ok,no)=>{ let t=d.transaction(STORE,"readwrite"); t.objectStore(STORE).put(h,ARCHIVE_FOLDER_KEY); t.oncomplete=()=>{d.close();ok()}; t.onerror=()=>no(t.error) }) }
+async function readArchiveFolder(){ let d=await db(); return new Promise((ok,no)=>{ let r=d.transaction(STORE).objectStore(STORE).get(ARCHIVE_FOLDER_KEY); r.onsuccess=()=>{d.close();ok(r.result||null)}; r.onerror=()=>no(r.error) }) }
+async function chooseArchiveFolder(){ if(!window.showDirectoryPicker)return alert("Use Microsoft Edge or Chrome to select an archive folder."); try{ archiveFolderHandle=await showDirectoryPicker({mode:"readwrite"}); await putArchiveFolder(archiveFolderHandle); await refreshArchiveIndex() }catch(e){ if(e.name!=="AbortError")alert(e.message) } }
+function indexedMonths(){ let z=new Set(); archiveIndex.forEach(x=>monthRange(x.startMonth,x.endMonth).forEach(m=>z.add(m))); return[...z].sort() }
+function rebuildArchiveSelectors(){ let months=indexedMonths(), years=[...new Set(months.map(m=>m.slice(0,4)))].sort(); $("archiveYear").innerHTML='<option value="">Select archived year</option>'+years.map(y=>`<option>${y}</option>`).join(""); $("archiveMonth").innerHTML='<option value="">Select archived month</option>'+months.map(m=>`<option value="${m}">${fmtMonth(m)}</option>`).join("") }
+async function refreshArchiveIndex(){ if(!archiveFolderHandle)archiveFolderHandle=await readArchiveFolder(); if(!archiveFolderHandle){ $("archiveFolderStatus").textContent="No archive folder selected."; return } try{ let p=await archiveFolderHandle.queryPermission({mode:"read"}); if(p!=="granted")p=await archiveFolderHandle.requestPermission({mode:"read"}); if(p!=="granted")throw Error("Archive folder access was not granted."); let good=[], bad=[]; for await(let [name,h] of archiveFolderHandle.entries()){ if(h.kind!=="file"||!name.toLowerCase().endsWith(".xlsx"))continue; let i=archiveInfo(name); i?good.push({...i,handle:h}):bad.push(name) } archiveIndex=good; rebuildArchiveSelectors(); $("archiveFolderStatus").textContent=`Archive folder: ${archiveFolderHandle.name}`; $("archiveIndexMessage").textContent=`Indexed ${good.length} archive file(s).`+(bad.length?` Ignored ${bad.length} incorrectly named file(s).`:""); if(!good.length&&bad.length)alert("Excel files were found, but filenames are invalid.\n\nRequired: Name_AR_MMYYYY-MMYYYY.xlsx\nExample: Badminton_AR_022026-082026.xlsx\n\nCurrent master remains unchanged.") }catch(e){ archiveIndex=[]; rebuildArchiveSelectors(); $("archiveFolderStatus").textContent="Archive folder unavailable. Choose it again."; alert("Archive folder could not be accessed. Select the archive folder again.\n\nRequired filename: Name_AR_MMYYYY-MMYYYY.xlsx\n\nCurrent master remains unchanged.") } }
+function filterArchiveMonths(){ let y=$("archiveYear").value, months=indexedMonths().filter(m=>!y||m.startsWith(y+"-")); $("archiveMonth").innerHTML='<option value="">Select archived month</option>'+months.map(m=>`<option value="${m}">${fmtMonth(m)}</option>`).join("") }
+function matchingArchives(){ let y=$("archiveYear").value,m=$("archiveMonth").value,list=archiveIndex.filter(x=>m?x.startMonth<=m&&x.endMonth>=m:monthRange(x.startMonth,x.endMonth).some(z=>z.startsWith(y+"-"))),latest=new Map(); list.forEach(x=>{ let k=x.startMonth+"|"+x.endMonth,o=latest.get(k); if(!o||x.revision>o.revision)latest.set(k,x) }); return[...latest.values()] }
+function archiveOnlyState(states,y,m){ let members=new Map(), tx=new Map(), ad=new Map(); states.forEach(s=>{ s.members.forEach(x=>members.set(x.id,x)); s.transactions.forEach(x=>tx.set(x.id,x)); s.adjustments.forEach(x=>ad.set(x.id,x)) }); let keep=x=>m?x===m:y?x.startsWith(y+"-"):true; return{monthlyFee:states[0]?.monthlyFee||state.monthlyFee,reviewMonth:m||y+"-12",members:[...members.values()],transactions:[...tx.values()].filter(t=>keep(t.feeMonth||monthOf(t.date))),adjustments:[...ad.values()].filter(a=>keep(a.month)),importedFileName:"Archive view"} }
+function archiveReadOnly(on){ archiveViewActive=on; ["importButton","saveSettingsButton","saveMemberButton","saveTransactionButton","bulkClearButton","bulkClearTopButton","undoBulkButton","archiveDataButton"].forEach(id=>{ if($(id))$(id).disabled=on }); $("archiveModeBanner").classList.toggle("hidden",!on); $("closeArchiveViewButton").classList.toggle("hidden",!on) }
+async function viewArchive(){ if(!archiveIndex.length)await refreshArchiveIndex(); let y=$("archiveYear").value,m=$("archiveMonth").value; if(!y&&!m)return alert("Select an archived year or month."); let files=matchingArchives(); if(!files.length)return alert("No indexed archive covers that period. If files moved, choose the archive folder again.\n\nCurrent master remains unchanged."); try{ let states=[]; for(let i of files){ let f=await i.handle.getFile(), w=XLSX.read(await f.arrayBuffer(),{type:"array",cellDates:true}); if(!isMaster(w))throw Error(i.name+" is not a valid archive workbook."); states.push(buildState(w,i.name)) } if(!archiveViewActive)currentStateBeforeArchiveView=JSON.parse(JSON.stringify(state)); state=archiveOnlyState(states,y,m); render(); archiveReadOnly(true); $("archiveModeDetails").textContent=`Period: ${m?fmtMonth(m):y} · Source: ${files.map(x=>x.name).join(", ")}`; $("applicationStatus").textContent="Archive loaded in read-only mode." }catch(e){ if(currentStateBeforeArchiveView)state=currentStateBeforeArchiveView; archiveViewActive=false; render(); archiveReadOnly(false); alert(e.message+"\n\nCurrent master remains intact.") } }
+function closeArchiveView(){ if(!archiveViewActive)return; state=currentStateBeforeArchiveView; currentStateBeforeArchiveView=null; archiveViewActive=false; render(); archiveReadOnly(false); $("applicationStatus").textContent="Current master view restored." }
+function rangeRecords(a,b){ return{tx:state.transactions.filter(t=>{ let m=t.feeMonth||monthOf(t.date); return m>=a&&m<=b }), ad:state.adjustments.filter(x=>x.month>=a&&x.month<=b)} }
+function archivePreview(){ let a=$("archiveStartMonth").value,b=$("archiveEndMonth").value,p=$("archivePrefix").value.trim(),ok=a&&b&&a<=b&&b<=(state.reviewMonth||curMonth())&&p,r=ok?rangeRecords(a,b):{tx:[],ad:[]}; $("archivePreviewText").textContent=ok?`File: ${p}_AR_${a.slice(5,7)}${a.slice(0,4)}-${b.slice(5,7)}${b.slice(0,4)}.xlsx · Transactions: ${r.tx.length} · Adjustments: ${r.ad.length}`:"Select a valid period ending on or before the current review month."; $("confirmArchiveButton").disabled=!ok||(!r.tx.length&&!r.ad.length) }
+function openArchive(){ if(archiveViewActive)return alert("Close Archive View first."); let months=[...state.transactions.map(t=>t.feeMonth||monthOf(t.date)),...state.adjustments.map(a=>a.month)].filter(Boolean).sort(),review=state.reviewMonth||curMonth(); $("archiveStartMonth").value=months[0]||review; $("archiveEndMonth").value=review; $("archiveNewReviewMonth").value=addMonths(review,1); $("archiveModal").classList.remove("hidden"); archivePreview() }
+async function archiveName(prefix,a,b){ let base=`${prefix}_AR_${a.slice(5,7)}${a.slice(0,4)}-${b.slice(5,7)}${b.slice(0,4)}`,rev=1; if(archiveFolderHandle)for await(let [n] of archiveFolderHandle.entries()){ let i=archiveInfo(n); if(i&&i.prefix.toLowerCase()===prefix.toLowerCase()&&i.startMonth===a&&i.endMonth===b)rev=Math.max(rev,i.revision+1)} return rev===1?base+".xlsx":`${base}_R${rev}.xlsx` }
+async function createArchive(){ let a=$("archiveStartMonth").value,b=$("archiveEndMonth").value,p=$("archivePrefix").value.trim().replace(/[^a-z0-9_-]+/gi,"_"),newReview=$("archiveNewReviewMonth").value,r=rangeRecords(a,b),before=JSON.parse(JSON.stringify(state)); if(!r.tx.length&&!r.ad.length)return alert("No records in the selected period."); let closing=0; before.transactions.filter(t=>(t.feeMonth||monthOf(t.date))<=b&&t.affectsBalance!==false).forEach(t=>closing+=t.direction==="Expense"?-Number(t.amount):Number(t.amount)); try{ let old=state; state={monthlyFee:old.monthlyFee,reviewMonth:b,members:JSON.parse(JSON.stringify(old.members)),transactions:JSON.parse(JSON.stringify(r.tx)),adjustments:JSON.parse(JSON.stringify(r.ad)),importedFileName:old.importedFileName}; archiveExportStart=a; archiveExportEnd=b; let bytes=await workbookBytes(); archiveExportStart=""; archiveExportEnd=""; state=old; let name=await archiveName(p,a,b); if(!archiveFolderHandle)throw Error("Choose Archive Folder before creating an archive."); let perm=await archiveFolderHandle.queryPermission({mode:"readwrite"}); if(perm!=="granted")perm=await archiveFolderHandle.requestPermission({mode:"readwrite"}); if(perm!=="granted")throw Error("Archive folder write access was not granted."); let h=await archiveFolderHandle.getFileHandle(name,{create:true}), w=await h.createWritable(); await w.write(bytes); await w.close(); let remainingTx=before.transactions.filter(t=>{ let m=t.feeMonth||monthOf(t.date); return !(m>=a&&m<=b)}), remainingAd=before.adjustments.filter(x=>!(x.month>=a&&x.month<=b)); let freshMonth=newReview||addMonths(b,1), freshDate=freshMonth+"-01", freshMembers=before.members.map(m=>({...m,joiningDate:monthOf(m.joiningDate)>freshMonth?m.joiningDate:freshDate})); state={...before,reviewMonth:freshMonth,members:freshMembers,transactions:[{id:uid(),order:1,date:freshDate,direction:"Income",category:"Opening Balance",memberId:"",feeMonth:"",name:"",description:`Balance carried forward after archive ending ${fmtMonth(b)}`,amount:closing,affectsBalance:true,source:"Archive Carry Forward"},...remainingTx.map((t,i)=>({...t,order:i+2}))],adjustments:remainingAd}; saveLocal(); render(); $("archiveModal").classList.add("hidden"); await refreshArchiveIndex(); alert(`Archive created: ${name}\nOpening balance carried forward: ${money(closing)}`) }catch(e){ archiveExportStart=""; archiveExportEnd=""; state=before; saveLocal(); render(); alert("Archive failed: "+e.message+"\n\nCurrent master was not changed.") } }
+$("archiveDataButton").onclick=openArchive; $("chooseArchiveFolderButton").onclick=chooseArchiveFolder; $("refreshArchiveIndexButton").onclick=refreshArchiveIndex; $("viewArchiveButton").onclick=viewArchive; $("closeArchiveViewButton").onclick=closeArchiveView; $("archiveYear").onchange=filterArchiveMonths; $("archiveMonth").onchange=()=>{ let m=$("archiveMonth").value; if(m)$("archiveYear").value=m.slice(0,4) }; $("cancelArchiveButton").onclick=()=>$("archiveModal").classList.add("hidden"); $("confirmArchiveButton").onclick=createArchive; ["archivePrefix","archiveStartMonth","archiveEndMonth","archiveNewReviewMonth"].forEach(id=>$(id).addEventListener("input",archivePreview));
+
+let bulkPreviewRecords=[];
+function bulkMembers(){ let scope=$("bulkMemberScope").value; if(scope==="all")return active(); if(scope==="one"){ let m=member($("bulkOneMember").value); return m&&m.active&&!m.deleted?[m]:[] } let ids=[...$("memberSelector").selectedOptions].map(o=>o.value); return active().filter(m=>ids.includes(m.id)) }
+function bulkMonthsFor(m){ let scope=$("bulkMonthScope").value, review=state.reviewMonth||curMonth(), join=monthOf(m.joiningDate); if(scope==="current")return[review]; if(scope==="single")return $("bulkSingleMonth").value?[$("bulkSingleMonth").value]:[]; if(scope==="range"){ let a=$("bulkStartMonth").value,b=$("bulkEndMonth").value; return a&&b&&a<=b?monthRange(a,b).filter(x=>x<=review):[] } return monthRange(join,review) }
+function updateBulkFields(){ $("bulkOneMemberContainer").classList.toggle("hidden",$("bulkMemberScope").value!=="one"); let scope=$("bulkMonthScope").value; $("bulkSingleMonthContainer").classList.toggle("hidden",scope!=="single"); $("bulkRangeStartContainer").classList.toggle("hidden",scope!=="range"); $("bulkRangeEndContainer").classList.toggle("hidden",scope!=="range"); buildBulkPreview() }
+function buildBulkPreview(){ bulkPreviewRecords=[]; let mode=$("bulkBalanceMode").value; for(let m of bulkMembers()) for(let mo of bulkMonthsFor(m)){ let pending=monthData(m,mo).pending; if(pending>0)bulkPreviewRecords.push({memberId:m.id,memberName:m.name,month:mo,amount:pending}) } let total=bulkPreviewRecords.reduce((s,r)=>s+r.amount,0); $("bulkClearPreviewText").textContent=`Members affected: ${new Set(bulkPreviewRecords.map(r=>r.memberId)).size} · Pending records: ${bulkPreviewRecords.length} · Total: ${money(total)} · Cash balance change: ${mode==="income"?"+"+money(total):money(0)}`; $("bulkClearPreviewList").innerHTML=bulkPreviewRecords.slice(0,100).map(r=>`<div class="preview-row"><span>${esc(r.memberName)} · ${fmtMonth(r.month)}</span><strong>${money(r.amount)}</strong><span>${mode==="income"?"Actual income":"Status only"}</span></div>`).join("")+(bulkPreviewRecords.length>100?`<p class="muted">Plus ${bulkPreviewRecords.length-100} more records.</p>`:""); $("confirmBulkClearButton").disabled=!bulkPreviewRecords.length||!$("bulkClearDate").value }
+function openBulkClear(){ let a=active(); $("bulkOneMember").innerHTML=a.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join(""); $("bulkClearDate").value=today(); $("bulkSingleMonth").value=state.reviewMonth||curMonth(); $("bulkStartMonth").value=addMonths(state.reviewMonth||curMonth(),-1); $("bulkEndMonth").value=state.reviewMonth||curMonth(); $("bulkMemberScope").value=[...$("memberSelector").selectedOptions].length?"selected":"all"; $("bulkMonthScope").value="current"; $("bulkBalanceMode").value="status"; $("bulkClearModal").classList.remove("hidden"); updateBulkFields() }
+function closeBulkClear(){ $("bulkClearModal").classList.add("hidden"); bulkPreviewRecords=[] }
+function confirmBulkClear(){ buildBulkPreview(); if(!bulkPreviewRecords.length)return; let op=uid(), date=$("bulkClearDate").value, note=$("bulkClearNote").value.trim()||"Bulk pending clearance", income=$("bulkBalanceMode").value==="income", order=nextOrder(); for(let r of bulkPreviewRecords){ if(income)state.transactions.push({id:uid(),paymentGroupId:op,bulkOperationId:op,order:order++,date,direction:"Income",category:r.month<(state.reviewMonth||curMonth())?"Arrears Payment":"Monthly Fee",memberId:r.memberId,feeMonth:r.month,name:"",description:note,amount:r.amount,affectsBalance:true,allocationMode:"bulk",allocationType:"Bulk pending clearance",source:"Bulk Clear Pending"}); else state.adjustments.push({id:uid(),bulkOperationId:op,memberId:r.memberId,month:r.month,date,amount:r.amount,note,affectsBalance:false}) } let count=bulkPreviewRecords.length,total=bulkPreviewRecords.reduce((s,r)=>s+r.amount,0); closeBulkClear(); commit(`Bulk clearance completed: ${count} records, ${money(total)}, ${income?"cash balance updated":"status only"}.`) }
+function undoLastBulk(){ let records=[...state.transactions,...state.adjustments].filter(x=>x.bulkOperationId); if(!records.length)return alert("No bulk clearance operation is available to undo."); let last=records.sort((a,b)=>String(a.date||"").localeCompare(String(b.date||""))||String(a.bulkOperationId).localeCompare(String(b.bulkOperationId))).pop(), op=last.bulkOperationId, tx=state.transactions.filter(x=>x.bulkOperationId===op), ad=state.adjustments.filter(x=>x.bulkOperationId===op), total=[...tx,...ad].reduce((s,x)=>s+Number(x.amount||0),0); if(!confirm(`Undo the last bulk clearance?\n\nRecords: ${tx.length+ad.length}\nAmount: ${money(total)}\nCash-impacting records: ${tx.length}`))return; state.transactions=state.transactions.filter(x=>x.bulkOperationId!==op); state.adjustments=state.adjustments.filter(x=>x.bulkOperationId!==op); commit("Last bulk clearance undone.") }
+$("bulkClearTopButton").onclick=openBulkClear; $("bulkClearButton").onclick=openBulkClear; $("undoBulkButton").onclick=undoLastBulk; $("cancelBulkClearButton").onclick=closeBulkClear; $("confirmBulkClearButton").onclick=confirmBulkClear; for(let id of["bulkMemberScope","bulkOneMember","bulkMonthScope","bulkSingleMonth","bulkStartMonth","bulkEndMonth","bulkBalanceMode","bulkClearDate"]) $(id).addEventListener("change",updateBulkFields);
+
+if($("downloadExcelButton"))$("downloadExcelButton").onclick=async()=>{ let b=new Blob([await workbookBytes()],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}), u=URL.createObjectURL(b), a=document.createElement("a"); a.href=u; a.download=`Badminton_Master_${today()}.xlsx`; a.click(); setTimeout(()=>URL.revokeObjectURL(u),1000) };
+if($("importButton"))$("importButton").onclick=()=>{$("spreadsheetInput").value=""; $("spreadsheetInput").click()};
+$("spreadsheetInput").onchange=async e=>{ let f=e.target.files[0]; if(!f)return; let before=JSON.parse(JSON.stringify(state)); try{ let w=XLSX.read(await f.arrayBuffer(),{type:"array",cellDates:true}); if(isMaster(w)){ applyState(buildState(w,f.name)); commit("Master workbook imported to shared database"); return } let rs=XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]],{defval:"",raw:true}), members=[], map=new Map(), ts=[]; rs.forEach((r,i)=>{ let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v])), a=amount(x.amount||x.fee||x.expense||x.value); if(!a)return; let name=clean(x.name||x.member||x.membername), type=String(x.type||x.transactiontype||"").toLowerCase(), desc=String(x.description||x.details||""), dir=/expense|debit/.test(type)?"Expense":"Income", cat=dir==="Expense"?(/court/.test(desc+name)?"Court Fee":"Other Expense"):(/advance/.test(desc)?"Advance Fee":name?"Monthly Fee":"Other Income"), m=null; if(dir==="Income"&&feeCat(cat)&&name){ let k=norm(name); if(!map.has(k)){ m={id:uid(),name,joiningDate:normDate(x.date)||today(),active:true,deleted:false}; map.set(k,m); members.push(m)} else m=map.get(k)} let d=normDate(x.date||x.paymentdate); ts.push({id:uid(),order:i+1,date:d,direction:dir,category:cat,memberId:m?m.id:"",feeMonth:String(x.applicablemonth||x.feemonth||monthOf(d)),name:m?"":name,description:desc||"Payment",amount:a,affectsBalance:true,source:"Imported"}) }); if(!ts.length)throw Error("No usable transaction rows found."); state={monthlyFee:state.monthlyFee,reviewMonth:ts.map(t=>t.feeMonth).filter(Boolean).sort().pop()||curMonth(),members,transactions:ts,adjustments:[],importedFileName:f.name}; resetMember(); resetTransaction(); commit("Spreadsheet imported") }catch(err){ state=before; saveLocal(); render(); alert(err.message)} finally{e.target.value=""} };
+const runtimeSync=document.createElement("div"); runtimeSync.id="syncPanel"; runtimeSync.className="sync-runtime hidden"; document.body.appendChild(runtimeSync);
+$("memberSearchInput").addEventListener("input",renderMemberPicker); $("toggleGroupMembersButton").addEventListener("click",()=>{ groupMembersExpanded=!groupMembersExpanded; renderGroupShowcase() });
+const THEME_KEY="badminton-interface-theme"; function readThemePreference(){ try{ return localStorage.getItem(THEME_KEY)||"lavender" }catch(error){ console.info("Theme preference storage is unavailable in this preview; using Lavender Mist."); return"lavender" } } function saveThemePreference(theme){ try{ localStorage.setItem(THEME_KEY,theme) }catch(error){ console.info("Theme preference cannot be saved in this preview.") } } function applyInterfaceTheme(theme){ const allowed=["lavender","mint","sky","peach","rose","aqua","lemon","slate","berry","sand","coral","mono"], chosen=allowed.includes(theme)?theme:"lavender"; document.body.classList.remove("theme-lavender","theme-mint","theme-sky","theme-peach","theme-rose","theme-aqua","theme-lemon","theme-slate","theme-berry","theme-sand","theme-coral","theme-mono"); document.body.classList.add("theme-"+chosen); const selector=$("interfaceTheme"); if(selector)selector.value=chosen; saveThemePreference(chosen) } $("interfaceTheme").addEventListener("change",event=>applyInterfaceTheme(event.target.value)); applyInterfaceTheme(readThemePreference());
+
+let activePage="dashboard";
+function showPage(page){ activePage=page; document.querySelectorAll(".nav-button").forEach(b=>b.classList.toggle("active",b.dataset.page===page)); document.querySelectorAll(".page-section[data-page]").forEach(s=>{ let show=s.dataset.page===page; s.classList.toggle("page-hidden",!show); if(show){ s.classList.remove("section-enter"); void s.offsetWidth; s.classList.add("section-enter") } }); window.scrollTo({top:0,behavior:"smooth"}) }
+document.querySelectorAll(".nav-button[data-page]").forEach(b=>{ b.onclick=event=>{ event.preventDefault(); event.stopPropagation(); showPage(b.dataset.page); } });
+document.querySelector(".app-nav")?.addEventListener("click",event=>{ const b=event.target.closest(".nav-button[data-page]"); if(!b)return; event.preventDefault(); event.stopPropagation(); showPage(b.dataset.page); },true);
+
+loadLocal(); state.reviewMonth=state.reviewMonth||curMonth(); resetMember(); resetTransaction(); render();
+readArchiveFolder().then(h=>{ archiveFolderHandle=h; if(h)refreshArchiveIndex() }).catch(()=>{});
+
+/* ============================================================
+   ===== SUPABASE + AUTH (modified) =====
+   ============================================================ */
+const SUPABASE_URL = "https://vhovlxzllbnufujzbtim.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_X6mduaVBNx5TOtkMSk95BQ_Ud30XEWi";
+
+// Create Supabase client
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+// Auth state
+let isAdmin = false;
+let authSession = null;
+
+// DOM refs for auth
+const authStatus = document.getElementById('authStatus');
+const loginButton = document.getElementById('loginButton');
+const logoutButton = document.getElementById('logoutButton');
+const loginModal = document.getElementById('loginModal');
+const loginEmail = document.getElementById('loginEmail');
+const loginPassword = document.getElementById('loginPassword');
+const loginError = document.getElementById('loginError');
+const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+const loginCancelBtn = document.getElementById('loginCancelBtn');
+
+// --- Admin check ---
+async function checkAdminStatus() {
+  if (!authSession) return false;
+  try {
+    const { data, error } = await supabase
+      .from('private.app_admins')
+      .select('user_id')
+      .eq('user_id', authSession.user.id)
+      .maybeSingle();
+    if (error) throw error;
+    return !!data;
+  } catch (e) {
+    console.warn('Admin check failed:', e);
+    return false;
+  }
+}
+
+// --- Update UI based on auth ---
+async function updateAuthUI() {
+  if (authSession && isAdmin) {
+    authStatus.textContent = '👑 Admin';
+    authStatus.className = 'admin';
+    loginButton.style.display = 'none';
+    logoutButton.style.display = 'inline-block';
+    // Enable write buttons
+    enableWriteControls(true);
+  } else {
+    authStatus.textContent = 'Public';
+    authStatus.className = 'muted';
+    loginButton.style.display = 'inline-block';
+    logoutButton.style.display = 'none';
+    enableWriteControls(false);
+  }
+}
+
+// --- Enable/disable write controls ---
+function enableWriteControls(enabled) {
+  // These are the main write buttons/actions
+  const elements = [
+    'saveSettingsButton',
+    'saveMemberButton',
+    'saveTransactionButton',
+    'bulkClearButton',
+    'bulkClearTopButton',
+    'undoBulkButton',
+    'archiveDataButton',
+    // Also the transaction form submit is handled via check in submit handler
+  ];
+  elements.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = !enabled;
+  });
+  // Also the member add button (inside member form) is already handled by saveMemberButton.
+  // The "Add Member" button is not separate, it's the form submit.
+  // For the active members card, the "Select All", "Clear" are not write, they are UI only.
+  // Inline member edit/delete buttons are generated dynamically, we handle them in render? Actually they call window functions which check isAdmin.
+  // We already check isAdmin in those functions.
+}
+
+// --- Login function ---
+async function handleLogin(email, password) {
+  try {
+    loginError.textContent = '';
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    // Close modal
+    loginModal.classList.add('hidden');
+    // Refresh session
+    await refreshAuth();
+    // Reload data to ensure we have all permissions (optional)
+    await loadSupabaseState(true);
+    showToast('✅ Logged in as admin', 'success');
+  } catch (e) {
+    loginError.textContent = '❌ ' + (e.message || 'Login failed');
+    console.error('Login error:', e);
+  }
+}
+
+// --- Logout ---
+async function handleLogout() {
+  try {
+    await supabase.auth.signOut();
+    authSession = null;
+    isAdmin = false;
+    updateAuthUI();
+    showToast('Logged out', '');
+    // Reload data (public view)
+    await loadSupabaseState(true);
+  } catch (e) {
+    console.error('Logout error:', e);
+    showToast('Logout failed', 'error');
+  }
+}
+
+// --- Refresh auth state ---
+async function refreshAuth() {
+  const { data: { session } } = await supabase.auth.getSession();
+  authSession = session;
+  if (session) {
+    isAdmin = await checkAdminStatus();
+  } else {
+    isAdmin = false;
+  }
+  updateAuthUI();
+  return { session, isAdmin };
+}
+
+// --- Override commit to check admin ---
+const originalCommit = commit; // we will replace it
+commit = function(msg) {
+  if (archiveViewActive) {
+    alert('Archive view is read only. Close Archive View before making changes.');
+    return Promise.resolve();
+  }
+  if (!isAdmin) {
+    alert('Please login as admin to save changes.');
+    return Promise.resolve();
+  }
+  saveLocal(); render(); $("applicationStatus").textContent=msg||"Saved";
+  return supabaseReady ? syncSupabaseState() : Promise.resolve();
+};
+
+// --- Modify sbFetch to use session token if available ---
+const originalSbFetch = sbFetch;
+sbFetch = async function(path, options={}) {
+  let token = SUPABASE_PUBLISHABLE_KEY;
+  if (authSession && authSession.access_token) {
+    token = authSession.access_token;
+  }
+  const headers = {
+    apikey: SUPABASE_PUBLISHABLE_KEY,
+    Authorization: `Bearer ${token}`,
+    Accept: "application/json",
+    ...(options.body ? {"Content-Type":"application/json","Prefer":"return=minimal"} : {}),
+    ...(options.headers||{})
+  };
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {...options, headers});
+  if(!res.ok){
+    let detail = "";
+    try { detail = await res.text(); } catch(e) {}
+    throw new Error(`Supabase ${res.status}: ${detail || res.statusText}`);
+  }
+  if(res.status===204) return null;
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+};
+
+// --- Also update writeAppSetting to use sbFetch (already does) ---
+
+// --- Hook into auth state changes ---
+supabase.auth.onAuthStateChange(async (event, session) => {
+  authSession = session;
+  if (session) {
+    isAdmin = await checkAdminStatus();
+  } else {
+    isAdmin = false;
+  }
+  updateAuthUI();
+  // Optionally reload data after login/logout to reflect any permission changes.
+  if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+    await loadSupabaseState(false);
+  }
+});
+
+// --- Login button click ---
+loginButton.addEventListener('click', () => {
+  loginModal.classList.remove('hidden');
+  loginError.textContent = '';
+  loginPassword.value = '';
+  loginEmail.value = 'vigilancekeeper@gmail.com';
+});
+
+// --- Login submit ---
+loginSubmitBtn.addEventListener('click', () => {
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value;
+  if (!email || !password) {
+    loginError.textContent = 'Please enter email and password';
+    return;
+  }
+  handleLogin(email, password);
+});
+
+// --- Login cancel ---
+loginCancelBtn.addEventListener('click', () => {
+  loginModal.classList.add('hidden');
+});
+
+// --- Enter key in password field ---
+loginPassword.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') loginSubmitBtn.click();
+});
+
+// --- Logout button ---
+logoutButton.addEventListener('click', handleLogout);
+
+// --- Click outside modal to close ---
+loginModal.addEventListener('click', (e) => {
+  if (e.target === loginModal) loginModal.classList.add('hidden');
+});
+
+// --- Toast helper (original function already exists) ---
+function showToast(msg, type='') {
+  const t = document.getElementById('autosaveToast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className = 'autosave-toast show ' + (type === 'error' ? 'error' : '');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// --- Load Supabase state (already defined) but we need to ensure auth is checked ---
+// We will override loadSupabaseState to first refresh auth
+const originalLoadSupabaseState = loadSupabaseState;
+loadSupabaseState = async function(showToast=true) {
+  await refreshAuth();
+  return originalLoadSupabaseState(showToast);
+};
+
+// --- Also modify the member and transaction delete/edit functions to check admin ---
+// These are already using commit which checks admin.
+
+// --- Override the inline delete buttons to also check admin in the window functions ---
+// The window functions already call commit, so they are safe.
+
+// --- Initial startup: get auth state and load data ---
+(async function init() {
+  try {
+    await refreshAuth();
+    await loadSupabaseState(false);
+  } catch(e) {
+    console.error('Init error:', e);
+    showToast('Failed to initialize', 'error');
+  }
+})();
+
+console.log('🏸 Badminton Group Manager with Auth loaded');
+</script>
+</body>
+</html>
