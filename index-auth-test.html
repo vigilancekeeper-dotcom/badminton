@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Badminton Group Manager</title>
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* ===== BASE ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f5f7fb;
+            padding: 2rem 1.5rem;
+            color: #1e293b;
+        }
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* ===== AUTH BAR ===== */
+        .auth-bar {
+            background: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 14px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e9edf4;
+        }
+        .auth-status {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+        }
+        .auth-status .badge {
+            background: #eef2f6;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #334155;
+        }
+        .auth-status .badge.admin {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .auth-status .badge.readonly {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .btn {
+            background: white;
+            border: 1px solid #d0d8e5;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #1e293b;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .btn:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+        }
+        .btn-primary {
+            background: #1e293b;
+            border-color: #1e293b;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0f172a;
+            border-color: #0f172a;
+        }
+        .btn-success {
+            background: #0b7e4b;
+            border-color: #0b7e4b;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #0a6a40;
+            border-color: #0a6a40;
+        }
+        .btn-danger {
+            background: #b91c1c;
+            border-color: #b91c1c;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #991b1b;
+            border-color: #991b1b;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #d0d8e5;
+        }
+
+        /* ===== LOGIN MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: white;
+            padding: 2.5rem 2rem 2rem;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .modal h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        .modal .sub {
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .modal label {
+            font-weight: 500;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 0.3rem;
+            color: #334155;
+        }
+        .modal input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 1px solid #d0d8e5;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            background: #fafcff;
+        }
+        .modal input:focus {
+            outline: 2px solid #1e293b;
+            outline-offset: 1px;
+        }
+        .modal .actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 0.5rem;
+        }
+        .modal .error {
+            color: #b91c1c;
+            font-size: 0.9rem;
+            margin: 0.5rem 0 0;
+        }
+
+        /* ===== DASHBOARD GRID ===== */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat {
+            background: white;
+            padding: 1.25rem 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e9edf4;
+        }
+        .stat .label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .stat .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 0.2rem;
+        }
+        .stat .value.green {
+            color: #0b7e4b;
+        }
+        .stat .value.red {
+            color: #b91c1c;
+        }
+        .stat .value.orange {
+            color: #b45309;
+        }
+
+        /* ===== SECTION ===== */
+        .section {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e9edf4;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        .section-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .section-header .actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* ===== TABLES ===== */
+        .table-wrap {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        th {
+            text-align: left;
+            padding: 0.6rem 0.5rem 0.6rem 0;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 2px solid #e9edf4;
+        }
+        td {
+            padding: 0.6rem 0.5rem 0.6rem 0;
+            border-bottom: 1px solid #f1f4f9;
+            vertical-align: middle;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #eef2f6;
+            color: #334155;
+        }
+        .status-badge.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .status-badge.inactive {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+        .status-badge.deleted {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .amount-income {
+            color: #0b7e4b;
+            font-weight: 600;
+        }
+        .amount-expense {
+            color: #b91c1c;
+            font-weight: 600;
+        }
+
+        .disabled-op {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .disabled-op .btn {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .inline-btn {
+            background: none;
+            border: none;
+            color: #475569;
+            cursor: pointer;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.85rem;
+        }
+        .inline-btn:hover {
+            color: #0f172a;
+        }
+        .inline-btn.danger:hover {
+            color: #b91c1c;
+        }
+
+        .empty {
+            color: #94a3b8;
+            padding: 1rem 0;
+            font-style: italic;
+        }
+
+        /* ===== FORMS ===== */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem 1rem;
+            align-items: flex-end;
+            margin-top: 0.5rem;
+        }
+        .form-row .field {
+            flex: 1 0 140px;
+            min-width: 120px;
+        }
+        .form-row label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #64748b;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        .form-row input,
+        .form-row select {
+            width: 100%;
+            padding: 0.5rem 0.7rem;
+            border: 1px solid #d0d8e5;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: #fafcff;
+        }
+        .form-row input:focus,
+        .form-row select:focus {
+            outline: 2px solid #1e293b;
+            outline-offset: 1px;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1e293b;
+            color: white;
+            padding: 0.9rem 1.8rem;
+            border-radius: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast.error {
+            background: #991b1b;
+        }
+        .toast.success {
+            background: #0b7e4b;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 700px) {
+            body {
+                padding: 1rem;
+            }
+            .auth-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+            .auth-status {
+                flex-wrap: wrap;
+            }
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .form-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .form-row .field {
+                flex: 1 1 auto;
+                min-width: unset;
+            }
+        }
+        @media (max-width: 450px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app" id="app">
+        <!-- HEADER -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <div>
+                <h1>🏸 Badminton Group Manager</h1>
+                <div class="subtitle">Live shared dashboard — Supabase</div>
+            </div>
+        </div>
+
+        <!-- AUTH BAR -->
+        <div class="auth-bar" id="authBar">
+            <div class="auth-status">
+                <span id="authDisplay">🔓 Public / Read‑only</span>
+                <span class="badge readonly" id="authBadge">Read‑only</span>
+            </div>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <button class="btn btn-primary" id="loginBtn">🔐 Owner Login</button>
+                <button class="btn btn-outline" id="logoutBtn" style="display:none;">🚪 Logout</button>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="grid" id="statsGrid">
+            <div class="stat"><div class="label">Total Members</div><div class="value" id="statMembers">—</div></div>
+            <div class="stat"><div class="label">Monthly Fee</div><div class="value" id="statMonthlyFee">—</div></div>
+            <div class="stat"><div class="label">Total Balance</div><div class="value" id="statBalance">—</div></div>
+            <div class="stat"><div class="label">Pending Fees</div><div class="value orange" id="statPending">—</div></div>
+        </div>
+
+        <!-- MEMBERS -->
+        <div class="section" id="membersSection">
+            <div class="section-header">
+                <h2>👥 Members</h2>
+                <div class="actions">
+                    <button class="btn btn-success" id="addMemberBtn" disabled>➕ Add Member</button>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Name</th><th>Joining</th><th>Status</th><th style="text-align:right;">Actions</th></tr></thead>
+                    <tbody id="membersBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TRANSACTIONS -->
+        <div class="section" id="transactionsSection">
+            <div class="section-header">
+                <h2>💰 Transactions</h2>
+                <div class="actions">
+                    <button class="btn btn-success" id="addTransactionBtn" disabled>➕ Add Transaction</button>
+                </div>
+            </div>
+            <!-- Add Transaction Form -->
+            <div id="transactionForm" style="display:none; background:#f8fafc; border-radius:12px; padding:1rem; margin-bottom:1rem; border:1px solid #e9edf4;">
+                <div class="form-row">
+                    <div class="field">
+                        <label>Member</label>
+                        <select id="txMemberId"><option value="">— Select —</option></select>
+                    </div>
+                    <div class="field">
+                        <label>Direction</label>
+                        <select id="txDirection"><option value="Income">Income</option><option value="Expense">Expense</option></select>
+                    </div>
+                    <div class="field">
+                        <label>Category</label>
+                        <input type="text" id="txCategory" value="Monthly Fee" />
+                    </div>
+                    <div class="field">
+                        <label>Amount (₹)</label>
+                        <input type="number" id="txAmount" value="1000" step="1" />
+                    </div>
+                    <div class="field">
+                        <label>Month (YYYY-MM)</label>
+                        <input type="month" id="txMonth" />
+                    </div>
+                    <div class="field" style="flex:0 0 auto;">
+                        <button class="btn btn-success" id="txSaveBtn">💾 Save</button>
+                        <button class="btn btn-outline" id="txCancelBtn">Cancel</button>
+                    </div>
+                </div>
+                <div id="txError" style="color:#b91c1c; font-size:0.9rem; margin-top:0.5rem;"></div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Date</th><th>Member</th><th>Direction</th><th>Category</th><th>Amount</th><th>Month</th><th style="text-align:right;">Actions</th></tr></thead>
+                    <tbody id="transactionsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div class="section">
+            <div class="section-header">
+                <h2>⚙️ Settings</h2>
+            </div>
+            <div class="form-row">
+                <div class="field" style="flex:0 0 220px;">
+                    <label>Monthly Fee (₹)</label>
+                    <input type="number" id="settingMonthlyFee" value="1000" step="1" />
+                </div>
+                <div class="field" style="flex:0 0 auto;">
+                    <button class="btn btn-primary" id="saveSettingsBtn" disabled>💾 Save Settings</button>
+                </div>
+            </div>
+            <div id="settingsStatus" style="margin-top:0.5rem; font-size:0.9rem; color:#64748b;"></div>
+        </div>
+
+        <!-- TOAST -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <h2>🔐 Owner Login</h2>
+            <div class="sub">Enter your credentials to manage the group.</div>
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="you@example.com" value="vigilancekeeper@gmail.com" />
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" />
+            <div id="loginError" class="error"></div>
+            <div class="actions">
+                <button class="btn btn-outline" id="loginCancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="loginSubmitBtn">Log In</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // 1. SUPABASE CLIENT
+        // ============================================================
+        const SUPABASE_URL = 'https://vhovlxzllbnufujzbtim.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_X6mduaVBNx5TOtkMSk95BQ_Ud30XEWi';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ============================================================
+        // 2. STATE
+        // ============================================================
+        let state = {
+            members: [],
+            transactions: [],
+            monthlyFee: 1000,
+            isAdmin: false,
+            session: null,
+            loading: false,
+        };
+
+        // ============================================================
+        // 3. DOM REFS
+        // ============================================================
+        const $ = (sel) => document.querySelector(sel);
+        const $$ = (sel) => document.querySelectorAll(sel);
+
+        const el = {
+            authDisplay: $('#authDisplay'),
+            authBadge: $('#authBadge'),
+            loginBtn: $('#loginBtn'),
+            logoutBtn: $('#logoutBtn'),
+            loginModal: $('#loginModal'),
+            loginEmail: $('#loginEmail'),
+            loginPassword: $('#loginPassword'),
+            loginError: $('#loginError'),
+            loginSubmitBtn: $('#loginSubmitBtn'),
+            loginCancelBtn: $('#loginCancelBtn'),
+
+            statMembers: $('#statMembers'),
+            statMonthlyFee: $('#statMonthlyFee'),
+            statBalance: $('#statBalance'),
+            statPending: $('#statPending'),
+
+            membersBody: $('#membersBody'),
+            transactionsBody: $('#transactionsBody'),
+
+            addMemberBtn: $('#addMemberBtn'),
+            addTransactionBtn: $('#addTransactionBtn'),
+
+            transactionForm: $('#transactionForm'),
+            txMemberId: $('#txMemberId'),
+            txDirection: $('#txDirection'),
+            txCategory: $('#txCategory'),
+            txAmount: $('#txAmount'),
+            txMonth: $('#txMonth'),
+            txSaveBtn: $('#txSaveBtn'),
+            txCancelBtn: $('#txCancelBtn'),
+            txError: $('#txError'),
+
+            settingMonthlyFee: $('#settingMonthlyFee'),
+            saveSettingsBtn: $('#saveSettingsBtn'),
+            settingsStatus: $('#settingsStatus'),
+
+            toast: $('#toast'),
+        };
+
+        // ============================================================
+        // 4. TOAST
+        // ============================================================
+        let toastTimer = null;
+
+        function showToast(msg, type = '') {
+            const t = el.toast;
+            t.textContent = msg;
+            t.className = 'toast show ' + type;
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { t.className = 'toast'; }, 3000);
+        }
+
+        // ============================================================
+        // 5. AUTH
+        // ============================================================
+        async function checkAuth() {
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                if (error) throw error;
+
+                state.session = session;
+                state.isAdmin = !!(session && session.user);
+
+                // Double-check admin via app_admins table
+                if (state.isAdmin) {
+                    const { data: adminCheck, error: adminErr } = await supabase
+                        .from('private.app_admins')
+                        .select('user_id')
+                        .eq('user_id', session.user.id)
+                        .maybeSingle();
+
+                    if (adminErr || !adminCheck) {
+                        state.isAdmin = false;
+                    }
+                }
+
+                updateAuthUI();
+                updateControls();
+                return state.session;
+            } catch (e) {
+                console.warn('Auth check error:', e);
+                state.isAdmin = false;
+                state.session = null;
+                updateAuthUI();
+                updateControls();
+                return null;
+            }
+        }
+
+        function updateAuthUI() {
+            if (state.isAdmin) {
+                el.authDisplay.textContent = '👑 Admin / Owner';
+                el.authBadge.textContent = 'Admin';
+                el.authBadge.className = 'badge admin';
+                el.loginBtn.style.display = 'none';
+                el.logoutBtn.style.display = 'inline-flex';
+            } else {
+                el.authDisplay.textContent = '🔓 Public / Read‑only';
+                el.authBadge.textContent = 'Read‑only';
+                el.authBadge.className = 'badge readonly';
+                el.loginBtn.style.display = 'inline-flex';
+                el.logoutBtn.style.display = 'none';
+            }
+        }
+
+        function updateControls() {
+            const canWrite = state.isAdmin;
+            el.addMemberBtn.disabled = !canWrite;
+            el.addTransactionBtn.disabled = !canWrite;
+            el.saveSettingsBtn.disabled = !canWrite;
+        }
+
+        async function handleLogin(email, password) {
+            try {
+                el.loginError.textContent = '';
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password,
+                });
+                if (error) throw error;
+
+                el.loginModal.classList.remove('active');
+                await checkAuth();
+                showToast('✅ Logged in as Admin', 'success');
+                await loadAllData();
+            } catch (e) {
+                el.loginError.textContent = '❌ ' + (e.message || 'Login failed');
+                console.error('Login error:', e);
+            }
+        }
+
+        async function handleLogout() {
+            try {
+                await supabase.auth.signOut();
+                state.isAdmin = false;
+                state.session = null;
+                updateAuthUI();
+                updateControls();
+                showToast('Logged out', '');
+                await loadAllData();
+            } catch (e) {
+                console.error('Logout error:', e);
+                showToast('Logout failed', 'error');
+            }
+        }
+
+        // ============================================================
+        // 6. DATA LOADING
+        // ============================================================
+        async function loadAllData() {
+            try {
+                await Promise.all([
+                    loadMembers(),
+                    loadTransactions(),
+                    loadSettings(),
+                ]);
+                renderAll();
+            } catch (e) {
+                console.error('Load error:', e);
+                showToast('Error loading data', 'error');
+            }
+        }
+
+        async function loadMembers() {
+            const { data, error } = await supabase
+                .from('members')
+                .select('*')
+                .order('name');
+            if (error) throw error;
+            state.members = data || [];
+            return state.members;
+        }
+
+        async function loadTransactions() {
+            const { data, error } = await supabase
+                .from('transactions')
+                .select('*')
+                .order('transaction_date', { ascending: false });
+            if (error) throw error;
+            state.transactions = data || [];
+            return state.transactions;
+        }
+
+        async function loadSettings() {
+            const { data, error } = await supabase
+                .from('app_settings')
+                .select('key, value')
+                .eq('key', 'Monthly Fee');
+            if (error) throw error;
+            if (data && data.length > 0) {
+                state.monthlyFee = parseFloat(data[0].value) || 1000;
+                el.settingMonthlyFee.value = state.monthlyFee;
+            }
+            return state.monthlyFee;
+        }
+
+        // ============================================================
+        // 7. RENDER
+        // ============================================================
+        function renderAll() {
+            renderStats();
+            renderMembers();
+            renderTransactions();
+            populateMemberSelect();
+        }
+
+        function renderStats() {
+            const members = state.members.filter(m => m.member_state !== 'Deleted');
+            const activeMembers = members.filter(m => m.member_state === 'Active');
+            el.statMembers.textContent = activeMembers.length;
+
+            el.statMonthlyFee.textContent = '₹' + state.monthlyFee;
+
+            let balance = 0;
+            state.transactions.forEach(tx => {
+                if (tx.direction === 'Income') balance += (tx.amount || 0);
+                else if (tx.direction === 'Expense') balance -= (tx.amount || 0);
+            });
+            el.statBalance.textContent = '₹' + balance.toFixed(0);
+
+            let pending = 0;
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            activeMembers.forEach(m => {
+                const paid = state.transactions
+                    .filter(tx =>
+                        tx.member_id === m.id &&
+                        tx.direction === 'Income' &&
+                        tx.category === 'Monthly Fee' &&
+                        tx.applicable_month === currentMonth
+                    )
+                    .reduce((sum, tx) => sum + (tx.amount || 0), 0);
+                const due = state.monthlyFee - paid;
+                if (due > 0) pending += due;
+            });
+            el.statPending.textContent = '₹' + pending.toFixed(0);
+        }
+
+        function renderMembers() {
+            const tbody = el.membersBody;
+            const members = state.members.filter(m => m.member_state !== 'Deleted');
+            if (members.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty">No members yet</td></tr>';
+                return;
+            }
+            tbody.innerHTML = members.map(m => `
+                    <tr>
+                        <td><strong>${escHtml(m.name)}</strong></td>
+                        <td>${m.joining_date || '—'}</td>
+                        <td><span class="status-badge ${m.member_state?.toLowerCase() || ''}">${m.member_state || 'Active'}</span></td>
+                        <td style="text-align:right;">
+                            ${state.isAdmin ? `
+                                <button class="inline-btn" onclick="deleteMember('${m.id}')" title="Delete">🗑️</button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `).join('');
+        }
+
+        function renderTransactions() {
+            const tbody = el.transactionsBody;
+            const txs = state.transactions;
+            if (txs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty">No transactions yet</td></tr>';
+                return;
+            }
+            tbody.innerHTML = txs.map(tx => `
+                    <tr>
+                        <td>${tx.transaction_date || '—'}</td>
+                        <td>${escHtml(tx.member_name || '—')}</td>
+                        <td>${tx.direction || '—'}</td>
+                        <td>${escHtml(tx.category || '—')}</td>
+                        <td class="${tx.direction === 'Income' ? 'amount-income' : 'amount-expense'}">₹${(tx.amount || 0).toFixed(0)}</td>
+                        <td>${tx.applicable_month || '—'}</td>
+                        <td style="text-align:right;">
+                            ${state.isAdmin ? `
+                                <button class="inline-btn danger" onclick="deleteTransaction('${tx.id}')" title="Delete">🗑️</button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `).join('');
+        }
+
+        function populateMemberSelect() {
+            const sel = el.txMemberId;
+            const active = state.members.filter(m => m.member_state === 'Active');
+            sel.innerHTML = '<option value="">— Select —</option>' +
+                active.map(m => `<option value="${m.id}">${escHtml(m.name)}</option>`).join('');
+        }
+
+        function escHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ============================================================
+        // 8. MEMBER OPERATIONS
+        // ============================================================
+        window.deleteMember = async function(id) {
+            if (!state.isAdmin) return;
+            if (!confirm('Delete this member?')) return;
+            try {
+                const { error } = await supabase
+                    .from('members')
+                    .update({ member_state: 'Deleted' })
+                    .eq('id', id);
+                if (error) throw error;
+                showToast('Member marked as deleted', 'success');
+                await loadAllData();
+            } catch (e) {
+                console.error('Delete member error:', e);
+                showToast('Failed to delete member', 'error');
+            }
+        };
+
+        el.addMemberBtn.addEventListener('click', async function() {
+            if (!state.isAdmin) return;
+            const name = prompt('Enter member name:');
+            if (!name || name.trim() === '') return;
+            try {
+                const { error } = await supabase
+                    .from('members')
+                    .insert([{
+                        name: name.trim(),
+                        member_state: 'Active',
+                        joining_date: new Date().toISOString().slice(0, 10),
+                    }]);
+                if (error) throw error;
+                showToast(`✅ Member "${name.trim()}" added`, 'success');
+                await loadAllData();
+            } catch (e) {
+                console.error('Add member error:', e);
+                showToast('Failed to add member', 'error');
+            }
+        });
+
+        // ============================================================
+        // 9. TRANSACTION OPERATIONS (FIXED COLUMN NAMES)
+        // ============================================================
+        el.addTransactionBtn.addEventListener('click', function() {
+            if (!state.isAdmin) return;
+            const now = new Date();
+            const defaultMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+            el.txMonth.value = defaultMonth;
+            el.transactionForm.style.display = 'block';
+            el.txError.textContent = '';
+            populateMemberSelect();
+        });
+
+        el.txCancelBtn.addEventListener('click', function() {
+            el.transactionForm.style.display = 'none';
+            el.txError.textContent = '';
+        });
+
+        el.txSaveBtn.addEventListener('click', async function() {
+            if (!state.isAdmin) return;
+
+            const memberId = el.txMemberId.value;
+            const direction = el.txDirection.value;
+            const category = el.txCategory.value.trim();
+            const amount = parseFloat(el.txAmount.value);
+            const applicableMonth = el.txMonth.value;
+            const transactionDate = new Date().toISOString().slice(0, 10);
+
+            if (!memberId) {
+                el.txError.textContent = 'Please select a member';
+                return;
+            }
+            if (!amount || amount <= 0) {
+                el.txError.textContent = 'Please enter a valid amount';
+                return;
+            }
+            if (!applicableMonth) {
+                el.txError.textContent = 'Please select a month';
+                return;
+            }
+
+            const member = state.members.find(m => m.id === memberId);
+            if (!member) {
+                el.txError.textContent = 'Selected member not found';
+                return;
+            }
+
+            try {
+                el.txSaveBtn.disabled = true;
+                el.txSaveBtn.textContent = 'Saving...';
+
+                // ============================================================
+                // CRITICAL FIX: Using the correct column names
+                // ============================================================
+                const newTx = {
+                    member_id: memberId,
+                    member_name: member.name,
+                    direction: direction,
+                    category: category,
+                    amount: amount,
+                    applicable_month: applicableMonth,
+                    transaction_date: transactionDate,
+                    transaction_order: 0,
+                    affects_balance: true,
+                    source: 'GUI',
+                    allocation_mode: 'Oldest pending, current month, then future advance',
+                    allocation_type: 'standard',
+                };
+
+                console.log('Inserting transaction with correct columns:', newTx);
+
+                const { data, error } = await supabase
+                    .from('transactions')
+                    .insert([newTx])
+                    .select();
+
+                if (error) {
+                    console.error('Supabase INSERT error:', error);
+                    throw error;
+                }
+
+                console.log('Transaction inserted successfully:', data);
+
+                el.transactionForm.style.display = 'none';
+                el.txError.textContent = '';
+                showToast(`✅ Transaction added for ${member.name}`, 'success');
+                await loadAllData();
+
+            } catch (e) {
+                console.error('Transaction save error:', e);
+                el.txError.textContent = '❌ ' + (e.message || 'Failed to save transaction');
+                showToast('Failed to save transaction: ' + (e.message || 'Unknown error'), 'error');
+            } finally {
+                el.txSaveBtn.disabled = false;
+                el.txSaveBtn.textContent = '💾 Save';
+            }
+        });
+
+        window.deleteTransaction = async function(id) {
+            if (!state.isAdmin) return;
+            if (!confirm('Delete this transaction?')) return;
+            try {
+                const { error } = await supabase
+                    .from('transactions')
+                    .delete()
+                    .eq('id', id);
+                if (error) throw error;
+                showToast('Transaction deleted', 'success');
+                await loadAllData();
+            } catch (e) {
+                console.error('Delete transaction error:', e);
+                showToast('Failed to delete transaction', 'error');
+            }
+        };
+
+        // ============================================================
+        // 10. SETTINGS
+        // ============================================================
+        el.saveSettingsBtn.addEventListener('click', async function() {
+            if (!state.isAdmin) return;
+            const fee = parseFloat(el.settingMonthlyFee.value);
+            if (!fee || fee < 0) {
+                el.settingsStatus.textContent = '❌ Please enter a valid fee amount';
+                return;
+            }
+            try {
+                el.saveSettingsBtn.disabled = true;
+                el.settingsStatus.textContent = 'Saving...';
+
+                const { error } = await supabase
+                    .from('app_settings')
+                    .upsert({
+                        key: 'Monthly Fee',
+                        value: String(fee),
+                        updated_at: new Date().toISOString(),
+                    }, { onConflict: 'key' });
+
+                if (error) throw error;
+                state.monthlyFee = fee;
+                el.settingsStatus.textContent = '✅ Settings saved!';
+                showToast('✅ Monthly fee updated to ₹' + fee, 'success');
+                renderStats();
+            } catch (e) {
+                console.error('Settings save error:', e);
+                el.settingsStatus.textContent = '❌ Failed to save: ' + e.message;
+                showToast('Failed to save settings', 'error');
+            } finally {
+                el.saveSettingsBtn.disabled = false;
+            }
+        });
+
+        // ============================================================
+        // 11. LOGIN MODAL
+        // ============================================================
+        el.loginBtn.addEventListener('click', function() {
+            el.loginModal.classList.add('active');
+            el.loginError.textContent = '';
+            el.loginPassword.value = '';
+            el.loginPassword.focus();
+        });
+
+        el.loginCancelBtn.addEventListener('click', function() {
+            el.loginModal.classList.remove('active');
+        });
+
+        el.loginSubmitBtn.addEventListener('click', function() {
+            const email = el.loginEmail.value.trim();
+            const password = el.loginPassword.value;
+            if (!email || !password) {
+                el.loginError.textContent = 'Please enter email and password';
+                return;
+            }
+            handleLogin(email, password);
+        });
+
+        el.loginPassword.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                el.loginSubmitBtn.click();
+            }
+        });
+
+        el.loginModal.addEventListener('click', function(e) {
+            if (e.target === el.loginModal) {
+                el.loginModal.classList.remove('active');
+            }
+        });
+
+        // ============================================================
+        // 12. LOGOUT
+        // ============================================================
+        el.logoutBtn.addEventListener('click', handleLogout);
+
+        // ============================================================
+        // 13. INIT
+        // ============================================================
+        async function init() {
+            try {
+                await checkAuth();
+                await loadAllData();
+                console.log('✅ Application initialized');
+                console.log('  - Admin mode:', state.isAdmin);
+                console.log('  - Members:', state.members.length);
+                console.log('  - Transactions:', state.transactions.length);
+                console.log('  - Monthly Fee:', state.monthlyFee);
+            } catch (e) {
+                console.error('Init error:', e);
+                showToast('Failed to initialize', 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const defaultMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+            if (el.txMonth) el.txMonth.value = defaultMonth;
+            init();
+        });
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            const now = new Date();
+            const defaultMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+            if (el.txMonth) el.txMonth.value = defaultMonth;
+            init();
+        }
+
+        console.log('🏸 Badminton Group Manager loaded');
+        console.log('🔑 Supabase URL:', SUPABASE_URL);
+    </script>
+</body>
+</html>
