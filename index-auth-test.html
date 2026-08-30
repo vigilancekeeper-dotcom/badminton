@@ -350,7 +350,7 @@
 </head>
 <body>
 
-<!-- ===== ORIGINAL DASHBOARD HTML (unchanged) ===== -->
+<!-- ===== ORIGINAL DASHBOARD HTML (with added test checkbox in member form) ===== -->
 <main class="wrap">
 <header class="header"><div><div class="green">🏸 Badminton Group Accounts</div><h1>Badminton Group Manager</h1><p>Manage income, expenses and monthly fees with shared live database data.</p></div>
 <div class="auth-controls">
@@ -361,18 +361,21 @@
 <input accept=".xlsx,.xls,.csv" class="hidden" id="spreadsheetInput" type="file"/>
 </header>
 <nav aria-label="Sections" class="app-nav"><button class="nav-button active" data-page="dashboard" type="button">Dashboard</button><button class="nav-button" data-page="members" type="button">Members</button><button class="nav-button" data-page="transactions" type="button">Transactions</button><button class="nav-button" data-page="archive" type="button">Archive</button><button class="nav-button" data-page="settings" type="button">Settings</button></nav>
-<!-- All sections (same as your original) -->
+<!-- All sections -->
 <section class="card page-section page-hidden archive-studio-card" data-page="archive" id="archivePanel"><div class="section-head"><div><span class="section-kicker">READ-ONLY HISTORY</span><h2>Archive History</h2><p id="archiveFolderStatus">No archive folder selected.</p></div><div class="actions"><button id="chooseArchiveFolderButton" type="button">Choose Archive Folder</button><button id="archiveDataButton" type="button">Archive Data</button><button id="refreshArchiveIndexButton">Refresh Archive Index</button><button class="hidden" id="closeArchiveViewButton">Close Archive View</button></div></div><div class="pad"><div class="archive-controls"><div class="field studio-field studio-tone-3"><label>Archived Year</label><select id="archiveYear"><option value="">Select archived year</option></select></div><div class="field studio-field studio-tone-4"><label>Archived Month</label><select id="archiveMonth"><option value="">Select archived month</option></select></div><div class="archive-view-action"><button class="blue" id="viewArchiveButton">View Archive</button></div></div><div class="muted archive-index-message" id="archiveIndexMessage">Choose the folder containing archive workbooks.</div></div><div class="pad hidden" id="archiveModeBanner" style="background:#e5f4ee;border-top:1px solid #8dc7ad;color:#174c36"><strong>ARCHIVE VIEW: READ ONLY</strong><div class="muted" id="archiveModeDetails"></div></div></section>
 <section class="summary page-section" data-page="dashboard"><article class="card"><small>Total Income</small><strong class="green" id="totalIncome">₹0</strong></article><article class="card"><small>Total Expenses</small><strong class="red" id="totalExpenses">₹0</strong></article><article class="card"><small>Cash Balance</small><strong class="blue-t" id="cashBalance">₹0</strong></article><article class="card"><small>Selected Month Pending</small><strong class="yellow" id="pendingTotal">₹0</strong></article><article class="card"><small>Active Members</small><strong id="activeMemberCount">0</strong></article></section>
 <section class="card page-section group-showcase" data-page="dashboard" id="groupShowcase"><div class="section-head"><div><h2>Our Badminton Group</h2><p>Meet the active members of the group.</p></div><div class="group-count" id="groupMemberCount">0 Active Members</div></div><div class="pad"><div class="group-name-grid" id="groupNameGrid"></div><div class="group-show-more"><button class="hidden" id="toggleGroupMembersButton" type="button">Show All Members</button></div></div></section>
 <section class="card page-section page-hidden settings-studio-card" data-page="settings"><div class="section-head"><div><span class="section-kicker">APPEARANCE &amp; PREFERENCES</span><h2>Settings</h2><p>Standard monthly fee and review month.</p></div></div><div class="pad row"><div class="settings-controls"><div class="field"><label>Monthly Fee</label><input id="monthlyFee" min="1" type="number"/></div><div class="field"><label>Review Month</label><input id="reviewMonth" type="month"/></div><div class="field theme-field"><label><span aria-hidden="true" class="field-icon">✦</span>Interface Theme</label><select id="interfaceTheme"><option value="lavender">Lavender Mist</option><option value="mint">Mint Court</option><option value="sky">Sky Rally</option><option value="peach">Peach Shuttle</option><option value="rose">Rose Quartz</option><option value="aqua">Aqua Breeze</option><option value="lemon">Lemon Glow</option><option value="slate">Soft Slate</option><option value="berry">Berry Cream</option><option value="sand">Warm Sand</option><option value="coral">Coral Bloom</option><option value="mono">Pearl Mono</option></select></div><div class="settings-action"><button class="primary" id="saveSettingsButton">Save Settings</button></div></div></div></section>
-<section class="card page-section page-hidden member-form-card" data-page="members"><div class="section-head"><div><span class="section-kicker">MEMBER PROFILE</span><h2 id="memberFormTitle">Add Member</h2><p>Add or edit members.</p></div></div><div class="pad"><form id="memberForm"><div class="grid"><div class="field span2 member-form-field member-field-1"><label><span aria-hidden="true" class="field-icon">👤</span>Member Name</label><input id="memberName" required=""/></div><div class="field member-form-field member-field-2"><label><span aria-hidden="true" class="field-icon">📅</span>Joining Date</label><input id="joiningDate" required="" type="date"/></div><div class="field member-form-field member-field-3"><label><span aria-hidden="true" class="field-icon">●</span>State</label>
-  <select id="memberState">
-    <option value="active">Active</option>
-    <option value="inactive">Inactive</option>
-    <option value="test">Test</option>
-  </select>
-</div></div><div class="actions" style="margin-top:12px"><button class="primary" id="saveMemberButton" type="submit">Add Member</button><button class="hidden" id="cancelMemberButton" type="button">Cancel</button></div></form></div></section>
+<section class="card page-section page-hidden member-form-card" data-page="members"><div class="section-head"><div><span class="section-kicker">MEMBER PROFILE</span><h2 id="memberFormTitle">Add Member</h2><p>Add or edit members.</p></div></div><div class="pad"><form id="memberForm"><div class="grid"><div class="field span2 member-form-field member-field-1"><label><span aria-hidden="true" class="field-icon">👤</span>Member Name</label><input id="memberName" required=""/></div><div class="field member-form-field member-field-2"><label><span aria-hidden="true" class="field-icon">📅</span>Joining Date</label><input id="joiningDate" required="" type="date"/></div><div class="field member-form-field member-field-3"><label><span aria-hidden="true" class="field-icon">●</span>State</label><select id="memberState"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+<!-- NEW: Test member checkbox -->
+<div class="field member-form-field" style="grid-column: span 1;">
+  <label><span aria-hidden="true" class="field-icon">🧪</span>Test Member</label>
+  <div style="display:flex;align-items:center;gap:10px;padding-top:8px;">
+    <input type="checkbox" id="memberIsTest" style="width:20px;height:20px;accent-color:#16865b;cursor:pointer;" />
+    <span style="color:#668174;font-size:13px;">Mark this member as test (excluded from main reports)</span>
+  </div>
+</div>
+</div><div class="actions" style="margin-top:12px"><button class="primary" id="saveMemberButton" type="submit">Add Member</button><button class="hidden" id="cancelMemberButton" type="button">Cancel</button></div></form></div></section>
 <section class="card page-section page-hidden active-members-card" data-page="members"><div class="section-head"><div><h2>Active Member Details</h2><p>Monthly status, partial payments and advances.</p></div><div class="actions"><button class="primary member-action-button" id="bulkClearButton">Bulk Clear Pending</button><button class="member-action-button" id="undoBulkButton">Undo Last Bulk Clearance</button><button class="member-action-button" id="selectAllMembersButton">Select All</button><button class="member-action-button" id="clearMemberSelectionButton">Clear</button></div></div><div class="pad"><div class="member-picker"><div class="member-picker-top"><div class="member-search-wrap"><span aria-hidden="true">⌕</span><input autocomplete="off" id="memberSearchInput" placeholder="Search active members..." type="search"/></div><div class="member-selection-summary" id="memberSelectionSummary">Select one or more members to view details</div></div><div class="member-choice-grid" id="memberChoiceGrid"></div></div><div class="selected-details-heading"><div><span class="section-kicker">SELECTED MEMBERS</span><h3>Member Details</h3></div><span class="selected-details-count" id="selectedDetailsCount">0 selected</span></div><select aria-hidden="true" class="native-member-selector" id="memberSelector" multiple="" style="min-height:120px" tabindex="-1"></select><div class="member-grid" id="memberCards"></div></div></section>
 <section class="card page-section page-hidden" data-page="members"><div class="section-head"><div><h2>Inactive / Deleted Members</h2></div><select id="removedMemberSelector"><option value="">Select member</option></select></div><div class="pad hidden" id="removedMemberDetails"></div></section>
 <section class="card page-section page-hidden transaction-studio-card" data-page="transactions"><div class="section-head"><div><span class="section-kicker">NEW ACCOUNT ENTRY</span><h2 id="transactionFormTitle">Add Transaction</h2><p>Automatic member payments clear oldest pending first, then current month, then future advance.</p></div></div><div class="pad"><form id="transactionForm"><div class="grid"><div class="field studio-field studio-tone-1"><label><span aria-hidden="true" class="field-icon">◷</span>Transaction Date</label><input id="transactionDate" required="" type="date"/></div><div class="field studio-field studio-tone-2"><label><span aria-hidden="true" class="field-icon">⇄</span>Direction</label><select id="transactionDirection"><option>Income</option><option>Expense</option></select></div><div class="field studio-field studio-tone-3" id="incomeCategoryContainer"><label><span aria-hidden="true" class="field-icon">₹</span>Income Type</label><select id="incomeCategory"><option>Monthly Fee</option><option>Advance Fee</option><option>Arrears Payment</option><option>Opening Balance</option><option>Interest</option><option>Court Fee Contribution</option><option>Shuttle Reimbursement</option><option>Other Income</option></select></div><div class="field hidden studio-field studio-tone-4" id="expenseCategoryContainer"><label><span aria-hidden="true" class="field-icon">₹</span>Expense Type</label><select id="expenseCategory"><option>Court Fee</option><option>Shuttle Purchase</option><option>Equipment</option><option>Member Reimbursement</option><option>Other Expense</option></select></div><div class="field studio-field studio-tone-5" id="transactionMemberContainer"><label><span aria-hidden="true" class="field-icon">●</span>Member</label><select id="transactionMember"><option value="">Select member</option></select></div><div class="field studio-field studio-tone-6" id="allocationMethodContainer"><label><span aria-hidden="true" class="field-icon">↯</span>Fee Allocation</label><select id="allocationMethod"><option value="automatic">Automatic: Oldest pending first</option><option value="manual">Manual: Selected month only</option></select></div><div class="field studio-field studio-tone-1" id="feeMonthContainer"><label id="feeMonthLabel"><span aria-hidden="true" class="field-icon">▣</span>Applicable Month</label><input id="feeMonth" type="month"/><small class="help" id="feeMonthHelp"></small></div><div class="field span2 studio-field studio-tone-2" id="transactionNameContainer"><label id="transactionNameLabel"><span aria-hidden="true" class="field-icon">◎</span>Paid To / Received From</label><input id="transactionName" placeholder="Optional"/></div><div class="field span2 studio-field studio-tone-3"><label><span aria-hidden="true" class="field-icon">≡</span>Description</label><select id="transactionDescriptionChoice"><option>Contribution</option><option>Monthly Fee Payment</option><option>Advance Payment</option><option>Arrears Payment</option><option>Payment</option><option>Court Booking Payment</option><option>Shuttle Purchase</option><option>Equipment Purchase</option><option>Opening Balance</option><option>Interest Received</option><option>Reimbursement</option><option>Other / Custom</option></select></div><div class="field span2 hidden studio-field studio-tone-4" id="customDescriptionContainer"><label><span aria-hidden="true" class="field-icon">✎</span>Custom Description</label><input id="transactionDescription"/></div><div class="field studio-field studio-tone-5"><label><span aria-hidden="true" class="field-icon">₹</span>Amount</label><input id="transactionAmount" min="0.01" required="" step="0.01" type="number"/></div></div><div class="preview hidden" id="allocationPreview"><h3>Payment Allocation Preview</h3><div class="muted" id="allocationPreviewMessage"></div><div id="allocationPreviewList"></div></div><div class="actions" style="margin-top:12px"><button class="primary" id="saveTransactionButton" type="submit">Add Transaction</button><button class="hidden" id="cancelTransactionButton" type="button">Cancel</button><span class="muted" id="applicationStatus">Ready</span></div></form></div></section>
@@ -384,9 +387,29 @@
 <div class="modal-bg hidden" id="archiveModal"><div class="modal" style="width:min(700px,100%)"><h2>Archive Data</h2><p>The archive file is created first. Current-master data is changed only after the archive is saved.</p><div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:14px"><div class="field studio-field studio-tone-1"><label>Archive Name Prefix</label><input id="archivePrefix" value="Badminton"/></div><div class="field studio-field studio-tone-2"><label>Start Month</label><input id="archiveStartMonth" type="month"/></div><div class="field studio-field studio-tone-3"><label>End Month</label><input id="archiveEndMonth" type="month"/></div><div class="field studio-field studio-tone-4"><label>New Current Review Month</label><input id="archiveNewReviewMonth" type="month"/></div></div><div class="preview"><h3>Archive Preview</h3><div class="muted" id="archivePreviewText"></div></div><div class="actions" style="margin-top:14px"><button class="primary" disabled="" id="confirmArchiveButton">Create Archive</button><button id="cancelArchiveButton">Cancel</button></div></div></div>
 <div class="modal-bg hidden" id="bulkClearModal"><div class="modal" style="width:min(700px,100%)"><h2>Bulk Clear Pending</h2><p>Clear exact pending amounts. Status-only is the safe default and does not change cash balance.</p><div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:14px"><div class="field"><label>Member Scope</label><select id="bulkMemberScope"><option value="selected">Members selected on main screen</option><option value="all">All active members</option><option value="one">One member</option></select></div><div class="field hidden" id="bulkOneMemberContainer"><label>Member</label><select id="bulkOneMember"></select></div><div class="field"><label>Month Scope</label><select id="bulkMonthScope"><option value="current">Current review month</option><option value="single">One selected month</option><option value="range">Selected month range</option><option value="allPending">All pending months up to review month</option></select></div><div class="field hidden" id="bulkSingleMonthContainer"><label>Selected Month</label><input id="bulkSingleMonth" type="month"/></div><div class="field hidden" id="bulkRangeStartContainer"><label>Start Month</label><input id="bulkStartMonth" type="month"/></div><div class="field hidden" id="bulkRangeEndContainer"><label>End Month</label><input id="bulkEndMonth" type="month"/></div><div class="field"><label>Balance Treatment</label><select id="bulkBalanceMode"><option value="status">Status only, do not change cash balance</option><option value="income">Record actual income and change cash balance</option></select></div><div class="field"><label>Clearance Date</label><input id="bulkClearDate" type="date"/></div><div class="field span2"><label>Note</label><input id="bulkClearNote" value="Bulk pending clearance"/></div></div><div class="preview"><h3>Preview</h3><div class="muted" id="bulkClearPreviewText"></div><div id="bulkClearPreviewList" style="max-height:220px;overflow:auto;margin-top:8px"></div></div><div class="actions" style="margin-top:14px"><button class="primary" disabled="" id="confirmBulkClearButton">Confirm Bulk Clearance</button><button id="cancelBulkClearButton">Cancel</button></div></div></div>
 <div class="modal-bg hidden" id="setPaidModal"><div class="modal"><h2>Set Paid / Clear Pending</h2><p id="setPaidMessage"></p><div class="field"><label>Date</label><input id="setPaidDate" type="date"/></div><div class="field"><label>Amount</label><input id="setPaidAmount" min="0.01" type="number"/></div><div class="field"><label>Change Cash Balance?</label><select id="setPaidBalanceEffect"><option value="yes">Yes, record income</option><option value="no">No, status only</option></select></div><div class="field"><label>Note</label><input id="setPaidNote" value="Manual pending clearance"/></div><div class="actions" style="margin-top:12px"><button class="primary" id="confirmSetPaidButton">Confirm</button><button id="cancelSetPaidButton">Cancel</button></div></div></div>
+<!-- Login modal (existing) - we will remove it and only use the overlay -->
+<div class="modal-bg hidden" id="loginModal">
+  <div class="modal">
+    <h2>🔐 Owner Login</h2>
+    <p class="muted">Enter your credentials to manage the group.</p>
+    <div class="field" style="margin-top:16px;">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="vigilancekeeper@gmail.com" value="vigilancekeeper@gmail.com" autocomplete="username" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+    <div id="loginError" class="login-error"></div>
+    <div class="actions" style="margin-top:16px;">
+      <button id="loginCancelBtn" type="button">Cancel</button>
+      <button id="loginSubmitBtn" class="primary" type="button">Log In</button>
+    </div>
+  </div>
+</div>
 <div id="autosaveToast" class="autosave-toast"></div>
 
-<!-- ===== LOGIN OVERLAY (shown when not logged in) ===== -->
+<!-- ===== LOGIN OVERLAY ===== -->
 <div id="loginOverlay">
   <div class="overlay-box">
     <h2>🏸 Group Manager</h2>
@@ -423,10 +446,10 @@
 
 <script>
 // ============================================================================
-// ORIGINAL APPLICATION SCRIPT (FULL)
+// ORIGINAL APPLICATION SCRIPT (UPDATED)
 // ============================================================================
 "use strict";
-/* EARLY NAVIGATION WIRING: menu navigation must remain independent of database/loading code. */
+/* EARLY NAVIGATION WIRING */
 (function(){
   function navigate(page){
     document.querySelectorAll(".nav-button[data-page]").forEach(function(b){
@@ -464,15 +487,18 @@ function renderGroupShowcase(){const grid=$("groupNameGrid"),count=$("groupMembe
 function renderSelectors(){let sel=[...$("memberSelector").selectedOptions].map(o=>o.value),a=active().sort((x,y)=>x.name.localeCompare(y.name)),tm=$("transactionMember").value;$("memberSelector").innerHTML=a.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join("");[...$("memberSelector").options].forEach(o=>o.selected=sel.includes(o.value));$("transactionMember").innerHTML='<option value="">Select member</option>'+a.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join("");if(a.some(m=>m.id===tm))$("transactionMember").value=tm;renderMemberPicker();let r=state.members.filter(m=>!m.active||m.deleted);$("removedMemberSelector").innerHTML='<option value="">Select member</option>'+r.map(m=>`<option value="${m.id}">${esc(m.name)} (${m.deleted?"Deleted":"Inactive"})</option>`).join("")}
 function selectedMemberIds(){return[...$("memberSelector").selectedOptions].map(o=>o.value)}
 function updateMemberSelectionSummary(){const ids=selectedMemberIds(),summary=$("memberSelectionSummary"),count=$("selectedDetailsCount");if(summary)summary.textContent=ids.length?`${ids.length} member${ids.length===1?"":"s"} selected`:"Select one or more members to view details";if(count)count.textContent=`${ids.length} selected`}
-function renderMemberPicker(){const grid=$("memberChoiceGrid"),search=$("memberSearchInput");if(!grid)return;const query=(search?.value||"").trim().toLowerCase(),selected=new Set(selectedMemberIds()),members=active().sort((a,b)=>a.name.localeCompare(b.name)).filter(m=>m.name.toLowerCase().includes(query));grid.innerHTML=members.length?members.map(m=>`<button type="button" class="member-choice ${selected.has(m.id)?"selected":""}" data-member-id="${m.id}" aria-pressed="${selected.has(m.id)}">${esc(m.name)}</button>`).join(""):'<div class="member-choice-empty">No active members match the search.</div>';grid.querySelectorAll(".member-choice").forEach(button=>button.addEventListener("click",()=>{const option=[...$("memberSelector").options].find(o=>o.value===button.dataset.memberId);if(option)option.selected=!option.selected;renderMemberPicker();renderCards()}));updateMemberSelectionSummary()}
-function renderCards(){let ids=[...$("memberSelector").selectedOptions].map(o=>o.value),review=state.reviewMonth||curMonth();$("memberCards").innerHTML=ids.map(id=>{let m=member(id),d=monthData(m,review),css=d.pending===0?"paid":d.applied>0?"partial":"";let shownMonths=archiveViewActive?[...new Set([...state.transactions.map(t=>t.feeMonth),...state.adjustments.map(a=>a.month)].filter(Boolean))].sort():[-2,-1,0,1,2].map(n=>addMonths(review,n));let rows=shownMonths.map(mo=>{let x=monthData(m,mo);return`<div class="month"><strong>${fmtMonth(mo)}</strong><span>Paid ${money(x.applied)} · Pending ${money(x.pending)}</span>${x.pending>0?`<button type="button" onclick="openPaid('${m.id}','${mo}',${x.pending})">Set Paid</button>`:""}</div>`}).join("");return`<article class="member ${css}"><h3>${esc(m.name)}</h3><p>Joining: ${esc(m.joiningDate)}</p><p>Current paid ${money(d.applied)} · pending ${money(d.pending)}</p><div class="months">${rows}</div><div class="actions"><button onclick="editMember('${m.id}')">Edit</button><button onclick="deactivateMember('${m.id}')">Deactivate</button><button class="danger" onclick="deleteMember('${m.id}')">Delete</button></div></article>`}).join("")}
+function renderMemberPicker(){const grid=$("memberChoiceGrid"),search=$("memberSearchInput");if(!grid)return;const query=(search?.value||"").trim().toLowerCase(),selected=new Set(selectedMemberIds()),members=active().sort((a,b)=>a.name.localeCompare(b.name)).filter(m=>m.name.toLowerCase().includes(query));grid.innerHTML=members.length?members.map(m=>{
+  let label = m.isTest ? esc(m.name) + ' 🧪' : esc(m.name);
+  return `<button type="button" class="member-choice ${selected.has(m.id)?"selected":""}" data-member-id="${m.id}" aria-pressed="${selected.has(m.id)}">${label}</button>`;
+}).join(""):'<div class="member-choice-empty">No active members match the search.</div>';grid.querySelectorAll(".member-choice").forEach(button=>button.addEventListener("click",()=>{const option=[...$("memberSelector").options].find(o=>o.value===button.dataset.memberId);if(option)option.selected=!option.selected;renderMemberPicker();renderCards()}));updateMemberSelectionSummary()}
+function renderCards(){let ids=[...$("memberSelector").selectedOptions].map(o=>o.value),review=state.reviewMonth||curMonth();$("memberCards").innerHTML=ids.map(id=>{let m=member(id),d=monthData(m,review),css=d.pending===0?"paid":d.applied>0?"partial":"";let testBadge = m.isTest ? ' <span style="background:#fbbf24;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700;color:#78350f;">🧪 Test</span>' : '';let shownMonths=archiveViewActive?[...new Set([...state.transactions.map(t=>t.feeMonth),...state.adjustments.map(a=>a.month)].filter(Boolean))].sort():[-2,-1,0,1,2].map(n=>addMonths(review,n));let rows=shownMonths.map(mo=>{let x=monthData(m,mo);return`<div class="month"><strong>${fmtMonth(mo)}</strong><span>Paid ${money(x.applied)} · Pending ${money(x.pending)}</span>${x.pending>0?`<button type="button" onclick="openPaid('${m.id}','${mo}',${x.pending})">Set Paid</button>`:""}</div>`}).join("");return`<article class="member ${css}"><h3>${esc(m.name)}${testBadge}</h3><p>Joining: ${esc(m.joiningDate)}</p><p>Current paid ${money(d.applied)} · pending ${money(d.pending)}</p><div class="months">${rows}</div><div class="actions"><button onclick="editMember('${m.id}')">Edit</button><button onclick="deactivateMember('${m.id}')">Deactivate</button><button class="danger" onclick="deleteMember('${m.id}')">Delete</button></div></article>`}).join("")}
 function renderRemoved(){let m=member($("removedMemberSelector").value),c=$("removedMemberDetails");if(!m){c.classList.add("hidden");return}c.classList.remove("hidden");c.innerHTML=`<h3>${esc(m.name)}</h3><p>${m.deleted?"Deleted":"Inactive"}</p><div class="removed-member-actions"><button onclick="restoreMember('${m.id}')">Restore</button>${m.deleted?`<button class="permanent-delete-button" onclick="permanentlyDeleteMember('${m.id}')">Delete Permanently</button>`:""}</div>`}
 function renderMonths(){let old=$("financialMonth").value,ms=[...new Set([...state.transactions.map(t=>t.feeMonth||monthOf(t.date)),...state.adjustments.map(a=>a.month)].filter(Boolean))].sort().reverse();$("financialMonth").innerHTML='<option value="">All Months</option>'+ms.map(m=>`<option value="${m}">${fmtMonth(m)}</option>`).join("");if(ms.includes(old))$("financialMonth").value=old}
 function getAllocationLabel(record){if(record.isAdjustment)return record.bulkOperationId?"Bulk status-only":"Status only";if(record.allocationMode==="bulk"||record.source==="Bulk Clear Pending")return"Bulk payment";if(record.paymentGroupId){let count=state.transactions.filter(t=>t.paymentGroupId===record.paymentGroupId).length;if(count>1)return`Split payment (${count})`}if(record.allocationMode==="automatic")return"Auto allocated";return"Single entry"}
 function feeStatusSource(memberId,month,data){let parts=[];if(data.direct>0)parts.push("Direct payment");if(data.arrears>0)parts.push("Arrears");if(data.advance>0)parts.push("Advance");if(data.manual>0){let isBulk=state.adjustments.some(a=>a.memberId===memberId&&a.month===month&&a.bulkOperationId);parts.push(isBulk?"Bulk status-only":"Status-only adjustment")}return parts.length?parts.join(", "):"No payment recorded"}
 function renderFeeStatus(){const month=$("feeStatusMonth")?.value||state.reviewMonth||curMonth(),filter=$("feeStatusFilter")?.value||"All",body=$("feeStatusTableBody");if(!body)return;if(!$("feeStatusMonth").value)$("feeStatusMonth").value=month;let rows=active().sort((a,b)=>a.name.localeCompare(b.name)).map(m=>{let d=monthData(m,month),status=d.pending===0?(d.advance>0?"Advance":"Paid"):d.applied>0?"Partial":"Pending";return{m,d,status,source:feeStatusSource(m.id,month,d)}}).filter(x=>filter==="All"||x.status===filter);body.innerHTML=rows.map(x=>`<tr><td><strong>${esc(x.m.name)}</strong></td><td>${money(x.d.required)}</td><td>${money(x.d.direct)}</td><td>${money(x.d.arrears)}</td><td>${money(x.d.advance)}</td><td>${money(x.d.manual)}</td><td>${money(x.d.applied)}</td><td>${money(x.d.pending)}</td><td><span class="status-pill status-${x.status.toLowerCase()}">${x.status}</span></td><td class="source-list">${esc(x.source)}</td></tr>`).join("")||'<tr><td colspan="10">No members match this status filter.</td></tr>'}
 function renderRecords(){let v=$("financialView").value,mo=$("financialMonth").value,w=$("financialTableWrapper");if(!v){w.classList.add("hidden");return}w.classList.remove("hidden");let rows=v==="Adjustments"?state.adjustments.filter(a=>!mo||a.month===mo).map(a=>({...a,feeMonth:a.month,direction:"Status",category:"Manual Adjustment",description:a.note,calculatedBalance:"",isAdjustment:true})):transactions().filter(t=>(v==="All"||t.direction===v)&&(!mo||(t.feeMonth||monthOf(t.date))===mo));$("financialTableBody").innerHTML=rows.map(r=>{let m=member(r.memberId);return`<tr><td>${esc(r.date)}</td><td>${esc(r.feeMonth||"")}</td><td>${esc(m?m.name:r.name||"General")}</td><td>${esc(r.direction)}</td><td>${esc(r.category)}</td><td>${esc(r.description||"")}</td><td>${money(r.amount)}</td><td>${r.calculatedBalance===""?"":money(r.calculatedBalance)}</td><td>${esc(getAllocationLabel(r))}</td><td>${r.isAdjustment?`<button onclick="deleteAdjustment('${r.id}')">Delete</button>`:`<button onclick="editTransaction('${r.id}')">Edit</button> <button onclick="deleteTransaction('${r.id}')">Delete</button>`}</td></tr>`}).join("")||'<tr><td colspan="10">No records</td></tr>'}
-function resetMember(){editingMemberId="";$("memberForm").reset();$("joiningDate").value=today();$("memberState").value="active";$("memberFormTitle").textContent="Add Member";$("saveMemberButton").textContent="Add Member";$("cancelMemberButton").classList.add("hidden")}
+function resetMember(){editingMemberId="";$("memberForm").reset();$("joiningDate").value=today();$("memberState").value="active";$("memberIsTest").checked=false;$("memberFormTitle").textContent="Add Member";$("saveMemberButton").textContent="Add Member";$("cancelMemberButton").classList.add("hidden")}
 function requiresMonth(dir,cat){return dir==="Expense"&&cat==="Court Fee"||dir==="Income"&&(feeCat(cat)||cat==="Court Fee Contribution")}function category(){return $("transactionDirection").value==="Income"?$("incomeCategory").value:$("expenseCategory").value}function description(){return $("transactionDescriptionChoice").value==="Other / Custom"?$("transactionDescription").value.trim():$("transactionDescriptionChoice").value}
 function updateFields(){let dir=$("transactionDirection").value,cat=category(),mem=dir==="Income"&&feeCat(cat),req=requiresMonth(dir,cat);$("incomeCategoryContainer").classList.toggle("hidden",dir!=="Income");$("expenseCategoryContainer").classList.toggle("hidden",dir!=="Expense");$("transactionMemberContainer").classList.toggle("hidden",!mem);$("allocationMethodContainer").classList.toggle("hidden",!mem);$("feeMonthContainer").classList.toggle("hidden",!req);$("transactionNameContainer").classList.toggle("hidden",mem);$("transactionNameLabel").textContent=dir==="Expense"?"Paid To (optional)":"Received From (optional)";$("feeMonthLabel").textContent=dir==="Expense"&&cat==="Court Fee"?"Court Fee Applicable Month":"Applicable Month";$("feeMonthHelp").textContent=mem?"Automatic mode clears oldest pending first.":"Select the month this transaction applies to.";if(req&&!$("feeMonth").value)$("feeMonth").value=state.reviewMonth||curMonth();preview()}
 function defaultDesc(){let c=category(),d=$("transactionDirection").value==="Income"?({"Monthly Fee":"Monthly Fee Payment","Advance Fee":"Advance Payment","Arrears Payment":"Arrears Payment","Opening Balance":"Opening Balance","Interest":"Interest Received","Court Fee Contribution":"Contribution","Shuttle Reimbursement":"Reimbursement","Other Income":"Other / Custom"}[c]||"Contribution"):({"Court Fee":"Court Booking Payment","Shuttle Purchase":"Shuttle Purchase","Equipment":"Equipment Purchase","Member Reimbursement":"Reimbursement","Other Expense":"Other / Custom"}[c]||"Payment");$("transactionDescriptionChoice").value=d;toggleCustom()}
@@ -480,50 +506,53 @@ function toggleCustom(){$("customDescriptionContainer").classList.toggle("hidden
 function resetTransaction(){editingTransactionId="";$("transactionForm").reset();$("transactionDate").value=today();$("transactionDirection").value="Income";$("incomeCategory").value="Monthly Fee";$("allocationMethod").value="automatic";$("feeMonth").value=state.reviewMonth||curMonth();$("transactionDescriptionChoice").value="Monthly Fee Payment";$("transactionFormTitle").textContent="Add Transaction";$("saveTransactionButton").textContent="Add Transaction";$("cancelTransactionButton").classList.add("hidden");$("allocationPreview").classList.add("hidden");toggleCustom();updateFields()}
 function allocate(mem,pay,target){let l=ledger(mem),left=pay,out=[],monthly=Number(state.monthlyFee);for(let mo of monthRange(monthOf(mem.joiningDate),target)){if(left<=0)break;let p=(l.months[mo]||{pending:monthly}).pending;if(p>0){let a=Math.min(p,left);out.push({month:mo,amount:a,category:mo<target?"Arrears Payment":"Monthly Fee",type:mo<target?"Oldest pending":"Current month"});left-=a}}let mo=addMonths(target,1),g=0;while(left>0&&g++<120){let p=(l.months[mo]||{pending:monthly}).pending;if(p>0){let a=Math.min(p,left);out.push({month:mo,amount:a,category:"Advance Fee",type:a<monthly?"Partial advance":"Future advance"});left-=a}mo=addMonths(mo,1)}return out}
 function preview(){let box=$("allocationPreview");box.classList.add("hidden");if(editingTransactionId||$("transactionDirection").value!=="Income"||!feeCat(category()))return;let m=member($("transactionMember").value),a=amount($("transactionAmount").value),mo=$("feeMonth").value;if(!m||!a||!mo)return;let arr=$("allocationMethod").value==="automatic"?allocate(m,a,mo):[{month:mo,amount:a,category:category(),type:"Manual selection"}];box.classList.remove("hidden");$("allocationPreviewMessage").textContent=`${money(a)} will be saved as ${arr.length} month-level record(s).`;$("allocationPreviewList").innerHTML=arr.map(x=>`<div class="preview-row"><strong>${fmtMonth(x.month)}</strong><span>${money(x.amount)}</span><span>${esc(x.type)}</span></div>`).join("")}
-window.editMember=function(id){
-  const m=member(id);
-  if(!m){ debugLog('❌ editMember: member not found for id '+id, 'error'); return; }
-  debugLog('✏️ Editing member: '+m.name+' (state: '+m.member_state+')', 'info');
-  editingMemberId=id;
-  document.getElementById("memberName").value=m.name;
-  document.getElementById("joiningDate").value=m.joiningDate||"";
-  // Set the dropdown to the member's state, default to 'active'
-  const stateEl=document.getElementById("memberState");
-  const states=['active','inactive','test'];
-  const currentState=m.member_state || (m.active ? 'active' : 'inactive');
-  stateEl.value=states.includes(currentState) ? currentState : 'active';
-  document.getElementById("memberFormTitle").textContent="Edit Member";
-  document.getElementById("saveMemberButton").textContent="Update Member";
-  document.getElementById("cancelMemberButton").classList.remove("hidden");
+window.editMember = id => {
+  let m = member(id);
+  if (!m) return;
+  // Navigate to Members page
+  showPage('members'); // or window.__badmintonNavigate('members');
+  // Populate form
+  editingMemberId = id;
+  $("memberName").value = m.name;
+  $("joiningDate").value = m.joiningDate;
+  $("memberState").value = m.active ? "active" : "inactive";
+  $("memberIsTest").checked = !!m.isTest;
+  $("memberFormTitle").textContent = "Edit Member";
+  $("saveMemberButton").textContent = "Update Member";
+  $("cancelMemberButton").classList.remove("hidden");
 };
-window.deactivateMember=id=>{let m=member(id);m.active=false;m.deleted=false;commit("Member deactivated")};
-window.deleteMember=function(id){
-  let m=member(id);
-  if(!m) return;
-  // If member is test, hard delete
-  if(m.member_state==="test"){
-    if(!confirm(`Permanently delete test member "${m.name}" and all their transactions/adjustments? This cannot be undone.`)) return;
-    // Remove from state
-    state.members = state.members.filter(x=>x.id!==id);
-    state.transactions = state.transactions.filter(t=>t.memberId!==id);
-    state.adjustments = state.adjustments.filter(a=>a.memberId!==id);
-    commit("Test member and all records permanently deleted");
+window.deactivateMember=id=>{let m=member(id);m.active=false;m.deleted=false;commit("Member deactivated")};window.deleteMember=id=>{if(confirm("Move member to Deleted Members?")){let m=member(id);m.active=false;m.deleted=true;commit("Member deleted")}};window.restoreMember=id=>{let m=member(id);m.active=true;m.deleted=false;commit("Member restored")};
+window.permanentlyDeleteMember = id => {
+  const m = member(id);
+  if (!m || !m.deleted) return;
+  // If member is test, delete all linked records and then delete the member
+  if (m.isTest) {
+    if (!confirm(`🧪 Test member "${m.name}" – all their transactions and adjustments will be permanently deleted.\n\nContinue?`)) return;
+    // Remove all transactions and adjustments linked to this member
+    state.transactions = state.transactions.filter(t => t.memberId !== id);
+    state.adjustments = state.adjustments.filter(a => a.memberId !== id);
+    // Remove member itself
+    state.members = state.members.filter(x => x.id !== id);
+    $("removedMemberSelector").value = "";
+    commit("Test member and all linked records permanently deleted.");
     return;
   }
-  // Normal soft-delete
-  if(confirm("Move member to Deleted Members?")){
-    m.active=false; m.deleted=true;
-    commit("Member deleted");
+  // Non‑test members: block if they have linked records
+  const linkedTransactions = state.transactions.filter(t => t.memberId === id);
+  const linkedAdjustments = state.adjustments.filter(a => a.memberId === id);
+  if (linkedTransactions.length || linkedAdjustments.length) {
+    alert(`Permanent deletion is blocked because ${m.name} still has linked financial history.\n\nTransactions: ${linkedTransactions.length}\nStatus adjustments: ${linkedAdjustments.length}\n\nKeeping the member record protects balances, audit history, and archive references. The member can remain Deleted or be restored.`);
+    return;
   }
+  if (!confirm(`Permanently delete ${m.name}?\n\nThis member has no linked current-master transactions or adjustments. This action cannot be undone.`)) return;
+  state.members = state.members.filter(x => x.id !== id);
+  $("removedMemberSelector").value = "";
+  commit("Member permanently deleted");
 };
-window.restoreMember=id=>{let m=member(id);m.active=true;m.deleted=false;commit("Member restored")};
-window.permanentlyDeleteMember=id=>{const m=member(id);if(!m||!m.deleted)return;const linkedTransactions=state.transactions.filter(t=>t.memberId===id),linkedAdjustments=state.adjustments.filter(a=>a.memberId===id);if(linkedTransactions.length||linkedAdjustments.length){alert(`Permanent deletion is blocked because ${m.name} still has linked financial history.\n\nTransactions: ${linkedTransactions.length}\nStatus adjustments: ${linkedAdjustments.length}\n\nKeeping the member record protects balances, audit history, and archive references. The member can remain Deleted or be restored.`);return}if(!confirm(`Permanently delete ${m.name}?\n\nThis member has no linked current-master transactions or adjustments. This action cannot be undone.`))return;state.members=state.members.filter(x=>x.id!==id);$("removedMemberSelector").value="";commit("Member permanently deleted")};
-window.deleteTransaction=id=>{if(confirm("Delete this transaction?")){state.transactions=state.transactions.filter(t=>t.id!==id);commit("Transaction deleted")}};
-window.deleteAdjustment=id=>{state.adjustments=state.adjustments.filter(a=>a.id!==id);commit("Adjustment deleted")};
+window.deleteTransaction=id=>{if(confirm("Delete this transaction?")){state.transactions=state.transactions.filter(t=>t.id!==id);commit("Transaction deleted")}};window.deleteAdjustment=id=>{state.adjustments=state.adjustments.filter(a=>a.id!==id);commit("Adjustment deleted")};
 window.editTransaction=id=>{let t=state.transactions.find(x=>x.id===id);editingTransactionId=id;$("transactionDate").value=t.date;$("transactionDirection").value=t.direction;if(t.direction==="Income")$("incomeCategory").value=t.category;else $("expenseCategory").value=t.category;$("transactionMember").value=t.memberId||"";$("feeMonth").value=t.feeMonth||"";$("transactionName").value=t.name||"";$("transactionAmount").value=t.amount;let opts=[...$("transactionDescriptionChoice").options].map(o=>o.value);if(opts.includes(t.description))$("transactionDescriptionChoice").value=t.description;else{$("transactionDescriptionChoice").value="Other / Custom";$("transactionDescription").value=t.description||""}toggleCustom();updateFields();$("transactionFormTitle").textContent="Edit Transaction";$("saveTransactionButton").textContent="Update Transaction";$("cancelTransactionButton").classList.remove("hidden")};
 window.openPaid=(id,mo,p)=>{pendingPaidRequest={id,mo};$("setPaidMessage").textContent=`${member(id).name}, ${fmtMonth(mo)}`;$("setPaidDate").value=today();$("setPaidAmount").value=p;$("setPaidModal").classList.remove("hidden")};$("cancelSetPaidButton").onclick=()=>$("setPaidModal").classList.add("hidden");$("confirmSetPaidButton").onclick=()=>{let a=amount($("setPaidAmount").value),m=member(pendingPaidRequest.id),balance=$("setPaidBalanceEffect").value==="yes";if(balance)state.transactions.push({id:uid(),paymentGroupId:uid(),order:nextOrder(),date:$("setPaidDate").value,direction:"Income",category:pendingPaidRequest.mo<(state.reviewMonth||curMonth())?"Arrears Payment":"Monthly Fee",memberId:m.id,feeMonth:pendingPaidRequest.mo,name:"",description:$("setPaidNote").value,amount:a,affectsBalance:true,source:"Set Paid"});else state.adjustments.push({id:uid(),memberId:m.id,month:pendingPaidRequest.mo,date:$("setPaidDate").value,amount:a,note:$("setPaidNote").value,affectsBalance:false});$("setPaidModal").classList.add("hidden");commit("Payment status updated")};function nextOrder(){return state.transactions.reduce((m,t)=>Math.max(m,Number(t.order||0)),0)+1}
-$("memberForm").onsubmit=e=>{e.preventDefault();let name=clean($("memberName").value),date=$("joiningDate").value,stateVal=$("memberState").value;if(editingMemberId){let m=member(editingMemberId);m.name=name;m.joiningDate=date;m.member_state=stateVal;m.active=(stateVal==="active");m.deleted=false;}else state.members.push({id:uid(),name,joiningDate:date,member_state:stateVal,active:(stateVal==="active"),deleted:false});resetMember();commit("Member saved")};
-$("cancelMemberButton").onclick=resetMember;
+$("memberForm").onsubmit=e=>{e.preventDefault();let name=clean($("memberName").value),date=$("joiningDate").value,on=$("memberState").value==="active",isTest=$("memberIsTest").checked;if(editingMemberId){let m=member(editingMemberId);Object.assign(m,{name,joiningDate:date,active:on,deleted:on?false:m.deleted,isTest})}else state.members.push({id:uid(),name,joiningDate:date,active:on,deleted:false,isTest});resetMember();commit("Member saved")};$("cancelMemberButton").onclick=resetMember;
 $("saveSettingsButton").onclick=async()=>{
   if(!supabaseReady){
     while(supabaseLoading) await new Promise(r=>setTimeout(r,50));
@@ -547,7 +576,7 @@ $("saveSettingsButton").onclick=async()=>{
 };$("transactionDirection").onchange=()=>{defaultDesc();updateFields()};$("incomeCategory").onchange=()=>{defaultDesc();updateFields()};$("expenseCategory").onchange=()=>{defaultDesc();updateFields()};$("transactionDescriptionChoice").onchange=toggleCustom;for(let id of["transactionMember","allocationMethod","feeMonth","transactionAmount"])$(id).addEventListener(id==="transactionAmount"?"input":"change",preview);
 $("transactionForm").onsubmit=e=>{e.preventDefault();let dir=$("transactionDirection").value,cat=category(),memReq=dir==="Income"&&feeCat(cat),mid=memReq?$("transactionMember").value:"",mo=requiresMonth(dir,cat)?$("feeMonth").value:"",a=amount($("transactionAmount").value),data={date:$("transactionDate").value,direction:dir,category:cat,memberId:mid,feeMonth:mo,name:memReq?"":$("transactionName").value.trim(),description:description(),amount:a,affectsBalance:true};if(!data.date||!a||memReq&&!mid||requiresMonth(dir,cat)&&!mo)return alert("Complete all required transaction fields.");if(editingTransactionId){state.transactions=state.transactions.map(t=>t.id===editingTransactionId?{...t,...data,source:"GUI Edit"}:t);resetTransaction();return commit("Transaction updated")};if(memReq&&$("allocationMethod").value==="automatic"){let arr=allocate(member(mid),a,mo),group=uid(),order=nextOrder();arr.forEach(x=>state.transactions.push({...data,id:uid(),paymentGroupId:group,order:order++,category:x.category,feeMonth:x.month,amount:x.amount,allocationMode:"automatic",allocationType:x.type,source:"GUI Auto Allocation"}));resetTransaction();return commit(`${money(a)} split into ${arr.length} month records`)}state.transactions.push({...data,id:uid(),paymentGroupId:memReq?uid():"",order:nextOrder(),allocationMode:memReq?"manual":"",source:"GUI"});resetTransaction();commit("Transaction saved")};$("cancelTransactionButton").onclick=resetTransaction;$("memberSelector").onchange=()=>{renderMemberPicker();renderCards()};$("removedMemberSelector").onchange=renderRemoved;$("financialView").onchange=renderRecords;$("financialMonth").onchange=renderRecords;$("feeStatusMonth").onchange=renderFeeStatus;$("feeStatusFilter").onchange=renderFeeStatus;$("selectAllMembersButton").onclick=()=>{[...$("memberSelector").options].forEach(o=>o.selected=true);renderMemberPicker();renderCards()};$("clearMemberSelectionButton").onclick=()=>{[...$("memberSelector").options].forEach(o=>o.selected=false);renderMemberPicker();renderCards()};
 function rows(w,n){return w.Sheets[n]?XLSX.utils.sheet_to_json(w.Sheets[n],{defval:"",raw:true}):[]}function matrix(w,n){return w.Sheets[n]?XLSX.utils.sheet_to_json(w.Sheets[n],{header:1,defval:"",raw:true}):[]}function setting(mat,name){let key=norm(name);for(let r of mat)for(let i=0;i<r.length;i++)if(norm(r[i])===key)return r[i+1]??"";return""}function isMaster(w){return["Transactions","Members","Settings"].every(n=>w.SheetNames.includes(n))}
-function buildState(w,file){if(!isMaster(w))throw Error("Not a Badminton Group Manager master workbook.");let sm=matrix(w,"Settings"), members=rows(w,"Members").map(r=>{let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v])),st=String(x.memberstate||"Active").toLowerCase();return{id:String(x.memberid||x.id||"").trim(),name:clean(x.membername||x.name),joiningDate:normDate(x.joiningdate)||today(),active:st==="active",deleted:st==="deleted",member_state:st}}).filter(m=>m.id&&m.name),ids=new Set(members.map(m=>m.id));let ts=rows(w,"Transactions").map((r,i)=>{let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v])),mid=String(x.memberid||"").trim();return{id:String(x.transactionid||x.id||uid()),paymentGroupId:String(x.paymentgroupid||""),bulkOperationId:String(x.bulkoperationid||""),order:Number(x.order||i+1),date:normDate(x.date),feeMonth:String(x.applicablemonth||x.feemonth||"").slice(0,7),memberId:ids.has(mid)?mid:"",name:ids.has(mid)?"":clean(x.name),direction:String(x.direction),category:String(x.category),description:String(x.description||""),amount:amount(x.amount),affectsBalance:!/^no|false|0$/i.test(String(x.affectsbalance)),allocationMode:String(x.allocationmode||""),allocationType:String(x.allocationtype||""),source:String(x.source||"Master Workbook")}}).filter(t=>t.amount>0&&["Income","Expense"].includes(t.direction));let ad=rows(w,"Manual Adjustments").map(r=>{let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v]));return{id:String(x.adjustmentid||x.id||uid()),bulkOperationId:String(x.bulkoperationid||""),date:normDate(x.date),month:String(x.month||"").slice(0,7),memberId:String(x.memberid||""),amount:amount(x.amount),note:String(x.note||""),affectsBalance:false}}).filter(a=>ids.has(a.memberId)&&a.month&&a.amount);return{monthlyFee:amount(setting(sm,"Monthly Fee"))||1000,reviewMonth:String(setting(sm,"Review Month")||curMonth()).slice(0,7),members,transactions:ts,adjustments:ad,importedFileName:String(setting(sm,"Imported File")||file||"")}}
+function buildState(w,file){if(!isMaster(w))throw Error("Not a Badminton Group Manager master workbook.");let sm=matrix(w,"Settings"), members=rows(w,"Members").map(r=>{let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v])),st=String(x.memberstate||"Active").toLowerCase();return{id:String(x.memberid||x.id||"").trim(),name:clean(x.membername||x.name),joiningDate:normDate(x.joiningdate)||today(),active:st==="active",deleted:st==="deleted",isTest:!!x.istest}}).filter(m=>m.id&&m.name),ids=new Set(members.map(m=>m.id));let ts=rows(w,"Transactions").map((r,i)=>{let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v])),mid=String(x.memberid||"").trim();return{id:String(x.transactionid||x.id||uid()),paymentGroupId:String(x.paymentgroupid||""),bulkOperationId:String(x.bulkoperationid||""),order:Number(x.order||i+1),date:normDate(x.date),feeMonth:String(x.applicablemonth||x.feemonth||"").slice(0,7),memberId:ids.has(mid)?mid:"",name:ids.has(mid)?"":clean(x.name),direction:String(x.direction),category:String(x.category),description:String(x.description||""),amount:amount(x.amount),affectsBalance:!/^no|false|0$/i.test(String(x.affectsbalance)),allocationMode:String(x.allocationmode||""),allocationType:String(x.allocationtype||""),source:String(x.source||"Master Workbook")}}).filter(t=>t.amount>0&&["Income","Expense"].includes(t.direction));let ad=rows(w,"Manual Adjustments").map(r=>{let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v]));return{id:String(x.adjustmentid||x.id||uid()),bulkOperationId:String(x.bulkoperationid||""),date:normDate(x.date),month:String(x.month||"").slice(0,7),memberId:String(x.memberid||""),amount:amount(x.amount),note:String(x.note||""),affectsBalance:false}}).filter(a=>ids.has(a.memberId)&&a.month&&a.amount);return{monthlyFee:amount(setting(sm,"Monthly Fee"))||1000,reviewMonth:String(setting(sm,"Review Month")||curMonth()).slice(0,7),members,transactions:ts,adjustments:ad,importedFileName:String(setting(sm,"Imported File")||file||"")}}
 async function readHandle(h){let f=await h.getFile(),w=XLSX.read(await f.arrayBuffer(),{type:"array",cellDates:true});return buildState(w,f.name)}function applyState(s){state=s;saveLocal();resetMember();resetTransaction();render()}
 async function workbookBytes(){
 if(!window.ExcelJS)throw Error("ExcelJS did not load.");
@@ -556,16 +585,16 @@ const C={navy:"FF17365D",navy2:"FF0F243E",white:"FFFFFFFF",green:"FFC6EFCE",gree
 const currency='₹#,##0.00;[Red]-₹#,##0.00;-';const s=summary(),review=state.reviewMonth||curMonth();
 function title(ws,range,text){ws.mergeCells(range);let c=ws.getCell(range.split(':')[0]);c.value=text;c.font={bold:true,size:18,color:{argb:C.white}};c.fill={type:"pattern",pattern:"solid",fgColor:{argb:C.navy}};c.alignment={vertical:"middle",horizontal:"left"};ws.getRow(c.row).height=30}
 function header(row){row.eachCell(c=>{c.font={bold:true,color:{argb:C.white}};c.fill={type:"pattern",pattern:"solid",fgColor:{argb:C.navy2}};c.alignment={horizontal:"center",vertical:"middle"}});row.height=24}
-function statusStyle(cell,status){let fill=C.gray,font=C.grayText;if(status==="Paid"){fill=C.green;font=C.greenText}else if(status==="Partial"){fill=C.yellow;font=C.yellowText}else if(status==="Pending"){fill=C.red;font=C.redText}else if(status==="Advance"){fill=C.blue;font=C.blueText}else if(status==="Test"){fill=C.purple;font=C.purpleText}cell.fill={type:"pattern",pattern:"solid",fgColor:{argb:fill}};cell.font={bold:true,color:{argb:font}}}
-function shadeRow(row,status){let fill=status==="Paid"?C.green:status==="Partial"?C.yellow:status==="Pending"?C.red:status==="Advance"?C.blue:status==="Test"?C.purple:C.gray;row.eachCell(c=>c.fill={type:"pattern",pattern:"solid",fgColor:{argb:fill}})}
+function statusStyle(cell,status){let fill=C.gray,font=C.grayText;if(status==="Paid"){fill=C.green;font=C.greenText}else if(status==="Partial"){fill=C.yellow;font=C.yellowText}else if(status==="Pending"){fill=C.red;font=C.redText}else if(status==="Advance"){fill=C.blue;font=C.blueText}cell.fill={type:"pattern",pattern:"solid",fgColor:{argb:fill}};cell.font={bold:true,color:{argb:font}}}
+function shadeRow(row,status){let fill=status==="Paid"?C.green:status==="Partial"?C.yellow:status==="Pending"?C.red:status==="Advance"?C.blue:C.gray;row.eachCell(c=>c.fill={type:"pattern",pattern:"solid",fgColor:{argb:fill}})}
 const dash=wb.addWorksheet("Dashboard",{views:[{showGridLines:false}]});title(dash,"A1:H2","Badminton Group Financial Dashboard");dash.columns=[{width:24},{width:20},{width:4},{width:24},{width:20},{width:4},{width:24},{width:24}];
 dash.getCell("A4").value="Review Month";dash.getCell("B4").value=fmtMonth(review);dash.getCell("D4").value="Monthly Fee";dash.getCell("E4").value=Number(state.monthlyFee||0);dash.getCell("A6").value="Total Income";dash.getCell("B6").value=s.inc;dash.getCell("D6").value="Total Expenses";dash.getCell("E6").value=s.exp;dash.getCell("G6").value="Cash Balance";dash.getCell("H6").value=s.bal;dash.getCell("A8").value="Pending Fees";dash.getCell("B8").value=s.pending;dash.getCell("D8").value="Active Members";dash.getCell("E8").value=s.count;dash.getCell("G8").value="Last Updated";dash.getCell("H8").value=new Date();
 ["A4","D4","A6","D6","G6","A8","D8","G8"].forEach(a=>{let c=dash.getCell(a);c.font={bold:true};c.fill={type:"pattern",pattern:"solid",fgColor:{argb:C.gray}}});["E4","B6","E6","H6","B8"].forEach(a=>dash.getCell(a).numFmt=currency);dash.getCell("H8").numFmt="dd-mmm-yyyy hh:mm AM/PM";
 dash.mergeCells("A11:D11");let ph=dash.getCell("A11");ph.value="Pending Members";ph.font={bold:true,size:14,color:{argb:C.white}};ph.fill={type:"pattern",pattern:"solid",fgColor:{argb:C.redText}};dash.addRow(["Member","Required","Paid","Pending"]);header(dash.getRow(12));let pc=0;active().sort((a,b)=>a.name.localeCompare(b.name)).forEach(m=>{let d=monthData(m,review);if(d.pending<=0)return;pc++;let r=dash.addRow([m.name,d.required,d.applied,d.pending]);shadeRow(r,"Pending");for(let i=2;i<=4;i++)r.getCell(i).numFmt=currency});if(!pc){let r=dash.addRow(["No pending members for the selected month."]);dash.mergeCells(`A${r.number}:D${r.number}`);shadeRow(r,"Paid")}
-const monthly=wb.addWorksheet("Monthly Status",{views:[{state:"frozen",ySplit:4}]});title(monthly,"A1:K2",`Monthly Status - ${fmtMonth(review)}`);monthly.addRow([]);monthly.addRow(["Member","Joining Date","Member State","Required","Direct","Arrears","Advance","Manual","Applied","Pending","Payment Status"]);header(monthly.getRow(4));monthly.columns=[{width:30},{width:16},{width:16},{width:15},{width:15},{width:15},{width:15},{width:15},{width:15},{width:15},{width:17}];[...state.members].sort((a,b)=>a.name.localeCompare(b.name)).forEach(m=>{let d=monthData(m,review),ms=m.member_state?m.member_state.charAt(0).toUpperCase()+m.member_state.slice(1):"Active",st=!m.active||m.deleted?ms:d.pending===0?(d.advance>0?"Advance":"Paid"):d.applied>0?"Partial":"Pending";let r=monthly.addRow([m.name,m.joiningDate,ms,d.required,d.direct,d.arrears,d.advance,d.manual,d.applied,d.pending,st]);shadeRow(r,st);statusStyle(r.getCell(11),st);for(let i=4;i<=10;i++)r.getCell(i).numFmt=currency});monthly.autoFilter={from:"A4",to:"K4"};
+const monthly=wb.addWorksheet("Monthly Status",{views:[{state:"frozen",ySplit:4}]});title(monthly,"A1:K2",`Monthly Status - ${fmtMonth(review)}`);monthly.addRow([]);monthly.addRow(["Member","Joining Date","Member State","Required","Direct","Arrears","Advance","Manual","Applied","Pending","Payment Status"]);header(monthly.getRow(4));monthly.columns=[{width:30},{width:16},{width:16},{width:15},{width:15},{width:15},{width:15},{width:15},{width:15},{width:15},{width:17}];[...state.members].sort((a,b)=>a.name.localeCompare(b.name)).forEach(m=>{let d=monthData(m,review),ms=m.deleted?"Deleted":m.active?"Active":"Inactive",st=!m.active||m.deleted?ms:d.pending===0?(d.advance>0?"Advance":"Paid"):d.applied>0?"Partial":"Pending",r=monthly.addRow([m.name,m.joiningDate,ms,d.required,d.direct,d.arrears,d.advance,d.manual,d.applied,d.pending,st]);shadeRow(r,st);statusStyle(r.getCell(11),st);for(let i=4;i<=10;i++)r.getCell(i).numFmt=currency});monthly.autoFilter={from:"A4",to:"K4"};
 const tx=wb.addWorksheet("Transactions",{views:[{state:"frozen",ySplit:1}]});tx.columns=[{header:"Transaction ID",key:"id",width:38},{header:"Payment Group ID",key:"paymentGroupId",width:38},{header:"Order",key:"order",width:10},{header:"Date",key:"date",width:15},{header:"Applicable Month",key:"feeMonth",width:18},{header:"Member ID",key:"memberId",width:38},{header:"Name",key:"name",width:28},{header:"Direction",key:"direction",width:14},{header:"Category",key:"category",width:22},{header:"Description",key:"description",width:30},{header:"Amount",key:"amount",width:15},{header:"Affects Balance",key:"affectsBalance",width:18},{header:"Running Balance",key:"calculatedBalance",width:18},{header:"Allocation Mode",key:"allocationMode",width:18},{header:"Allocation Type",key:"allocationType",width:20},{header:"Bulk Operation ID",key:"bulkOperationId",width:38},{header:"Source",key:"source",width:22}];header(tx.getRow(1));transactions().forEach(t=>{let m=member(t.memberId),r=tx.addRow({...t,name:m?m.name:t.name,affectsBalance:t.affectsBalance!==false?"Yes":"No"});r.getCell("amount").numFmt=currency;r.getCell("calculatedBalance").numFmt=currency;r.getCell("direction").font={bold:true,color:{argb:t.direction==="Income"?C.greenText:C.redText}}});tx.autoFilter={from:"A1",to:"Q1"};
-const ms=wb.addWorksheet("Members",{views:[{state:"frozen",ySplit:1}]});ms.columns=[{header:"Member ID",key:"id",width:38},{header:"Member Name",key:"name",width:28},{header:"Joining Date",key:"joiningDate",width:16},{header:"Member State",key:"memberState",width:16}];header(ms.getRow(1));[...state.members].sort((a,b)=>a.name.localeCompare(b.name)).forEach(m=>{let st=m.member_state?m.member_state.charAt(0).toUpperCase()+m.member_state.slice(1):"Active";let r=ms.addRow({...m,memberState:st});statusStyle(r.getCell("memberState"),st)});ms.autoFilter={from:"A1",to:"D1"};
-const led=wb.addWorksheet("Member Ledger",{views:[{state:"frozen",ySplit:1}]});led.columns=[{header:"Member ID",key:"memberId",width:38},{header:"Member",key:"member",width:28},{header:"Month",key:"month",width:15},{header:"Required",key:"required",width:15},{header:"Direct",key:"direct",width:15},{header:"Arrears",key:"arrears",width:15},{header:"Advance",key:"advance",width:15},{header:"Manual",key:"manual",width:15},{header:"Applied",key:"applied",width:15},{header:"Pending",key:"pending",width:15},{header:"Status",key:"status",width:15}];header(led.getRow(1));state.members.forEach(m=>monthRange(archiveExportStart||monthOf(m.joiningDate),archiveExportEnd||addMonths(review,12)).forEach(mo=>{let d=monthData(m,mo),st=!m.active||m.deleted?"Inactive":d.pending===0?(d.advance>0?"Advance":"Paid"):d.applied>0?"Partial":"Pending";if(m.member_state==="test")st="Test";let r=led.addRow({memberId:m.id,member:m.name,month:mo,required:d.required,direct:d.direct,arrears:d.arrears,advance:d.advance,manual:d.manual,applied:d.applied,pending:d.pending,status:st});for(let i=4;i<=10;i++)r.getCell(i).numFmt=currency;statusStyle(r.getCell("status"),st)}));led.autoFilter={from:"A1",to:"K1"};
+const ms=wb.addWorksheet("Members",{views:[{state:"frozen",ySplit:1}]});ms.columns=[{header:"Member ID",key:"id",width:38},{header:"Member Name",key:"name",width:28},{header:"Joining Date",key:"joiningDate",width:16},{header:"Member State",key:"memberState",width:16},{header:"Is Test",key:"isTest",width:12}];header(ms.getRow(1));[...state.members].sort((a,b)=>a.name.localeCompare(b.name)).forEach(m=>{let st=m.deleted?"Deleted":m.active?"Active":"Inactive",r=ms.addRow({...m,memberState:st,isTest:m.isTest?"Yes":""});statusStyle(r.getCell("memberState"),st)});ms.autoFilter={from:"A1",to:"E1"};
+const led=wb.addWorksheet("Member Ledger",{views:[{state:"frozen",ySplit:1}]});led.columns=[{header:"Member ID",key:"memberId",width:38},{header:"Member",key:"member",width:28},{header:"Month",key:"month",width:15},{header:"Required",key:"required",width:15},{header:"Direct",key:"direct",width:15},{header:"Arrears",key:"arrears",width:15},{header:"Advance",key:"advance",width:15},{header:"Manual",key:"manual",width:15},{header:"Applied",key:"applied",width:15},{header:"Pending",key:"pending",width:15},{header:"Status",key:"status",width:15}];header(led.getRow(1));state.members.forEach(m=>monthRange(archiveExportStart||monthOf(m.joiningDate),archiveExportEnd||addMonths(review,12)).forEach(mo=>{let d=monthData(m,mo),st=m.deleted?"Deleted":!m.active?"Inactive":d.pending===0?(d.advance>0?"Advance":"Paid"):d.applied>0?"Partial":"Pending",r=led.addRow({memberId:m.id,member:m.name,month:mo,required:d.required,direct:d.direct,arrears:d.arrears,advance:d.advance,manual:d.manual,applied:d.applied,pending:d.pending,status:st});for(let i=4;i<=10;i++)r.getCell(i).numFmt=currency;statusStyle(r.getCell("status"),st)}));led.autoFilter={from:"A1",to:"K1"};
 const ad=wb.addWorksheet("Manual Adjustments",{views:[{state:"frozen",ySplit:1}]});ad.columns=[{header:"Adjustment ID",key:"id",width:38},{header:"Bulk Operation ID",key:"bulkOperationId",width:38},{header:"Date",key:"date",width:15},{header:"Month",key:"month",width:15},{header:"Member ID",key:"memberId",width:38},{header:"Member",key:"member",width:28},{header:"Amount",key:"amount",width:15},{header:"Affects Balance",key:"affectsBalance",width:18},{header:"Note",key:"note",width:35}];header(ad.getRow(1));state.adjustments.forEach(a=>{let r=ad.addRow({...a,member:member(a.memberId)?.name||"",affectsBalance:"No"});r.getCell("amount").numFmt=currency});ad.autoFilter={from:"A1",to:"I1"};
 const st=wb.addWorksheet("Settings",{views:[{showGridLines:false}]});title(st,"A1:B2","Badminton Group Manager Settings");st.columns=[{width:32},{width:55}];[["Monthly Fee",Number(state.monthlyFee||0)],["Review Month",state.reviewMonth],["Imported File",state.importedFileName||""],["Default Allocation","Oldest pending, current month, then future advance"],["Bulk Clear Default","Status only, no cash balance change"],["Workbook Version","4"],["Last Updated",new Date()]].forEach(v=>{let r=st.addRow(v);r.getCell(1).font={bold:true};r.getCell(1).fill={type:"pattern",pattern:"solid",fgColor:{argb:C.gray}}});st.getCell("B3").numFmt=currency;st.getCell("B9").numFmt="dd-mmm-yyyy hh:mm AM/PM";
 return wb.xlsx.writeBuffer();}
@@ -600,7 +629,7 @@ function confirmBulkClear(){buildBulkPreview();if(!bulkPreviewRecords.length)ret
 function undoLastBulk(){let records=[...state.transactions,...state.adjustments].filter(x=>x.bulkOperationId);if(!records.length)return alert("No bulk clearance operation is available to undo.");let last=records.sort((a,b)=>String(a.date||"").localeCompare(String(b.date||""))||String(a.bulkOperationId).localeCompare(String(b.bulkOperationId))).pop(),op=last.bulkOperationId,tx=state.transactions.filter(x=>x.bulkOperationId===op),ad=state.adjustments.filter(x=>x.bulkOperationId===op),total=[...tx,...ad].reduce((s,x)=>s+Number(x.amount||0),0);if(!confirm(`Undo the last bulk clearance?\n\nRecords: ${tx.length+ad.length}\nAmount: ${money(total)}\nCash-impacting records: ${tx.length}`))return;state.transactions=state.transactions.filter(x=>x.bulkOperationId!==op);state.adjustments=state.adjustments.filter(x=>x.bulkOperationId!==op);commit("Last bulk clearance undone.")}
 $("bulkClearTopButton").onclick=openBulkClear;$("bulkClearButton").onclick=openBulkClear;$("undoBulkButton").onclick=undoLastBulk;$("cancelBulkClearButton").onclick=closeBulkClear;$("confirmBulkClearButton").onclick=confirmBulkClear;for(let id of["bulkMemberScope","bulkOneMember","bulkMonthScope","bulkSingleMonth","bulkStartMonth","bulkEndMonth","bulkBalanceMode","bulkClearDate"])$(id).addEventListener("change",updateBulkFields);
 if($("downloadExcelButton"))$("downloadExcelButton").onclick=async()=>{let b=new Blob([await workbookBytes()],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=`Badminton_Master_${today()}.xlsx`;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};if($("importButton"))$("importButton").onclick=()=>{$("spreadsheetInput").value="";$("spreadsheetInput").click()};
-$("spreadsheetInput").onchange=async e=>{let f=e.target.files[0];if(!f)return;let before=JSON.parse(JSON.stringify(state));try{let w=XLSX.read(await f.arrayBuffer(),{type:"array",cellDates:true});if(isMaster(w)){applyState(buildState(w,f.name));commit("Master workbook imported to shared database");return}let rs=XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]],{defval:"",raw:true}),members=[],map=new Map(),ts=[];rs.forEach((r,i)=>{let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v])),a=amount(x.amount||x.fee||x.expense||x.value);if(!a)return;let name=clean(x.name||x.member||x.membername),type=String(x.type||x.transactiontype||"").toLowerCase(),desc=String(x.description||x.details||""),dir=/expense|debit/.test(type)?"Expense":"Income",cat=dir==="Expense"?(/court/.test(desc+name)?"Court Fee":"Other Expense"):(/advance/.test(desc)?"Advance Fee":name?"Monthly Fee":"Other Income"),m=null;if(dir==="Income"&&feeCat(cat)&&name){let k=norm(name);if(!map.has(k)){m={id:uid(),name,joiningDate:normDate(x.date)||today(),active:true,deleted:false};map.set(k,m);members.push(m)}else m=map.get(k)}let d=normDate(x.date||x.paymentdate);ts.push({id:uid(),order:i+1,date:d,direction:dir,category:cat,memberId:m?m.id:"",feeMonth:String(x.applicablemonth||x.feemonth||monthOf(d)),name:m?"":name,description:desc||"Payment",amount:a,affectsBalance:true,source:"Imported"})});if(!ts.length)throw Error("No usable transaction rows found.");state={monthlyFee:state.monthlyFee,reviewMonth:ts.map(t=>t.feeMonth).filter(Boolean).sort().pop()||curMonth(),members,transactions:ts,adjustments:[],importedFileName:f.name};resetMember();resetTransaction();commit("Spreadsheet imported")}catch(err){state=before;saveLocal();render();alert(err.message)}finally{e.target.value=""}};
+$("spreadsheetInput").onchange=async e=>{let f=e.target.files[0];if(!f)return;let before=JSON.parse(JSON.stringify(state));try{let w=XLSX.read(await f.arrayBuffer(),{type:"array",cellDates:true});if(isMaster(w)){applyState(buildState(w,f.name));commit("Master workbook imported to shared database");return}let rs=XLSX.utils.sheet_to_json(w.Sheets[w.SheetNames[0]],{defval:"",raw:true}),members=[],map=new Map(),ts=[];rs.forEach((r,i)=>{let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v])),a=amount(x.amount||x.fee||x.expense||x.value);if(!a)return;let name=clean(x.name||x.member||x.membername),type=String(x.type||x.transactiontype||"").toLowerCase(),desc=String(x.description||x.details||""),dir=/expense|debit/.test(type)?"Expense":"Income",cat=dir==="Expense"?(/court/.test(desc+name)?"Court Fee":"Other Expense"):(/advance/.test(desc)?"Advance Fee":name?"Monthly Fee":"Other Income"),m=null;if(dir==="Income"&&feeCat(cat)&&name){let k=norm(name);if(!map.has(k)){m={id:uid(),name,joiningDate:normDate(x.date)||today(),active:true,deleted:false,isTest:false};map.set(k,m);members.push(m)}else m=map.get(k)}let d=normDate(x.date||x.paymentdate);ts.push({id:uid(),order:i+1,date:d,direction:dir,category:cat,memberId:m?m.id:"",feeMonth:String(x.applicablemonth||x.feemonth||monthOf(d)),name:m?"":name,description:desc||"Payment",amount:a,affectsBalance:true,source:"Imported"})});if(!ts.length)throw Error("No usable transaction rows found.");state={monthlyFee:state.monthlyFee,reviewMonth:ts.map(t=>t.feeMonth).filter(Boolean).sort().pop()||curMonth(),members,transactions:ts,adjustments:[],importedFileName:f.name};resetMember();resetTransaction();commit("Spreadsheet imported")}catch(err){state=before;saveLocal();render();alert(err.message)}finally{e.target.value=""}};
 const runtimeSync=document.createElement("div");runtimeSync.id="syncPanel";runtimeSync.className="sync-runtime hidden";document.body.appendChild(runtimeSync);
 $("memberSearchInput").addEventListener("input",renderMemberPicker);$("toggleGroupMembersButton").addEventListener("click",()=>{groupMembersExpanded=!groupMembersExpanded;renderGroupShowcase()});const THEME_KEY="badminton-interface-theme";function readThemePreference(){try{return localStorage.getItem(THEME_KEY)||"lavender"}catch(error){console.info("Theme preference storage is unavailable in this preview; using Lavender Mist.");return"lavender"}}function saveThemePreference(theme){try{localStorage.setItem(THEME_KEY,theme)}catch(error){console.info("Theme preference cannot be saved in this preview.")}}function applyInterfaceTheme(theme){const allowed=["lavender","mint","sky","peach","rose","aqua","lemon","slate","berry","sand","coral","mono"],chosen=allowed.includes(theme)?theme:"lavender";document.body.classList.remove("theme-lavender","theme-mint","theme-sky","theme-peach","theme-rose","theme-aqua","theme-lemon","theme-slate","theme-berry","theme-sand","theme-coral","theme-mono");document.body.classList.add("theme-"+chosen);const selector=$("interfaceTheme");if(selector)selector.value=chosen;saveThemePreference(chosen)}$("interfaceTheme").addEventListener("change",event=>applyInterfaceTheme(event.target.value));applyInterfaceTheme(readThemePreference());let activePage="dashboard";function showPage(page){activePage=page;document.querySelectorAll(".nav-button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".page-section[data-page]").forEach(s=>{let show=s.dataset.page===page;s.classList.toggle("page-hidden",!show);if(show){s.classList.remove("section-enter");void s.offsetWidth;s.classList.add("section-enter")}});window.scrollTo({top:0,behavior:"smooth"})}document.querySelectorAll(".nav-button[data-page]").forEach(b=>{b.onclick=event=>{event.preventDefault();event.stopPropagation();showPage(b.dataset.page);};});document.querySelector(".app-nav")?.addEventListener("click",event=>{const b=event.target.closest(".nav-button[data-page]");if(!b)return;event.preventDefault();event.stopPropagation();showPage(b.dataset.page);},true);loadLocal();state.reviewMonth=state.reviewMonth||curMonth();resetMember();resetTransaction();render();readArchiveFolder().then(h=>{archiveFolderHandle=h;if(h)refreshArchiveIndex()}).catch(()=>{});
 /* ===== Supabase shared-data layer ===== */
@@ -612,14 +641,16 @@ let supabaseSaving = false;
 let supabaseSnapshot = {members:new Set(),transactions:new Set(),adjustments:new Set()};
 
 async function sbFetch(path, options={}) {
+  let token = AUTH_SUPABASE_ANON_KEY;
+  if (authSession && authSession.access_token) token = authSession.access_token;
   const headers = {
-    apikey: SUPABASE_PUBLISHABLE_KEY,
-    Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+    apikey: AUTH_SUPABASE_ANON_KEY,
+    Authorization: `Bearer ${token}`,
     Accept: "application/json",
     ...(options.body ? {"Content-Type":"application/json","Prefer":"return=minimal"} : {}),
     ...(options.headers||{})
   };
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {...options, headers});
+  const res = await fetch(`${AUTH_SUPABASE_URL}/rest/v1/${path}`, {...options, headers});
   if(!res.ok){
     let detail = "";
     try { detail = await res.text(); } catch(e) {}
@@ -631,7 +662,7 @@ async function sbFetch(path, options={}) {
 }
 
 function dbMember(m){
-  return {id:m.id,name:m.name,joining_date:m.joiningDate,member_state:m.member_state?m.member_state.charAt(0).toUpperCase()+m.member_state.slice(1):"Active"};
+  return {id:m.id,name:m.name,joining_date:m.joiningDate,member_state:m.deleted?"Deleted":m.active?"Active":"Inactive",is_test:!!m.isTest};
 }
 function dbTransaction(t){
   return {id:t.id,payment_group_id:t.paymentGroupId||null,transaction_order:Number(t.order||0),transaction_date:t.date,applicable_month:(t.feeMonth?String(t.feeMonth).slice(0,7)+"-01":null),member_id:t.memberId||null,member_name:t.name||"",direction:t.direction,category:t.category,description:t.description||"",amount:Number(t.amount||0),affects_balance:t.affectsBalance!==false,allocation_mode:t.allocationMode||null,allocation_type:t.allocationType||null,bulk_operation_id:t.bulkOperationId||null,source:t.source||"GUI Edit"};
@@ -641,7 +672,14 @@ function dbAdjustment(a){
 }
 function fromDbMember(r){
   const st=String(r.member_state||"Active").toLowerCase();
-  return {id:String(r.id),name:clean(r.name),joiningDate:normDate(r.joining_date)||today(),active:st==="active",deleted:st==="deleted",member_state:st};
+  return {
+    id:String(r.id),
+    name:clean(r.name),
+    joiningDate:normDate(r.joining_date)||today(),
+    active:st==="active",
+    deleted:st==="deleted",
+    isTest:!!r.is_test
+  };
 }
 function fromDbTransaction(r,i){
   return {id:String(r.id),paymentGroupId:String(r.payment_group_id||""),bulkOperationId:String(r.bulk_operation_id||""),order:Number(r.transaction_order||i+1),date:normDate(r.transaction_date),feeMonth:String(r.applicable_month||"").slice(0,7),memberId:String(r.member_id||""),name:clean(r.member_name||""),direction:String(r.direction),category:String(r.category),description:String(r.description||""),amount:amount(r.amount),affectsBalance:r.affects_balance!==false,allocationMode:String(r.allocation_mode||""),allocationType:String(r.allocation_type||""),source:String(r.source||"Imported")};
@@ -751,6 +789,7 @@ async function syncSupabaseState(){
 
 function commit(msg){
   if(archiveViewActive)return Promise.resolve(alert("Archive view is read only. Close Archive View before making changes."));
+  if (!isAdmin) { alert('Please login as admin to save changes.'); return Promise.resolve(); }
   saveLocal(); render(); $("applicationStatus").textContent=msg||"Saved";
   return supabaseReady ? syncSupabaseState() : Promise.resolve();
 }
@@ -766,10 +805,9 @@ function setSync(cls,msg){
   const toast=$("autosaveToast"); if(toast&&(cls==="connected"||cls==="error")){toast.textContent=msg;toast.className="autosave-toast show "+(cls==="error"?"error":"");clearTimeout(window.__autosaveToastTimer);window.__autosaveToastTimer=setTimeout(()=>toast.classList.remove("show"),2600)}
 }
 // ============================================================================
-// AUTH AND OVERLAY LOGIC (ADDED)
+// AUTH AND OVERLAY LOGIC
 // ============================================================================
 
-// ---- Debug helper ----
 if (typeof debugLog === 'undefined') {
   window.debugLog = function(msg, type) {
     console.log('[DEBUG]', msg);
@@ -784,8 +822,6 @@ if (typeof debugLog === 'undefined') {
     }
   };
 }
-
-// ---- showToast ----
 if (typeof showToast === 'undefined') {
   window.showToast = function(msg, type) {
     const t = document.getElementById('autosaveToast');
@@ -796,8 +832,6 @@ if (typeof showToast === 'undefined') {
     window._toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
   };
 }
-
-// ---- Debug panel toggle ----
 (function() {
   const toggleBtn = document.getElementById('debugToggle');
   const panel = document.getElementById('debugPanel');
@@ -814,7 +848,6 @@ if (typeof showToast === 'undefined') {
   }
 })();
 
-// ---- Supabase auth client ----
 const AUTH_SUPABASE_URL = "https://vhovlxzllbnufujzbtim.supabase.co";
 const AUTH_SUPABASE_ANON_KEY = "sb_publishable_X6mduaVBNx5TOtkMSk95BQ_Ud30XEWi";
 
@@ -829,25 +862,22 @@ try {
 let isAdmin = false;
 let authSession = null;
 
-// Auth UI elements
 const authStatus = document.getElementById('authStatus');
 const loginButton = document.getElementById('loginButton');
 const logoutButton = document.getElementById('logoutButton');
-const loginModal = document.getElementById('loginModal'); // will not use
+const loginModal = document.getElementById('loginModal');
 const loginEmail = document.getElementById('loginEmail');
 const loginPassword = document.getElementById('loginPassword');
 const loginError = document.getElementById('loginError');
 const loginSubmitBtn = document.getElementById('loginSubmitBtn');
 const loginCancelBtn = document.getElementById('loginCancelBtn');
 
-// ---- Overlay login form ----
 const loginForm = document.getElementById('loginForm');
 const loginEmailOverlay = document.getElementById('loginEmailOverlay');
 const loginPasswordOverlay = document.getElementById('loginPasswordOverlay');
 const loginOverlayError = document.getElementById('loginOverlayError');
 const loginSubmitOverlay = document.getElementById('loginSubmitOverlay');
 
-// ---- Admin check (robust) ----
 async function checkAdminStatus() {
   if (!authSession) return false;
   const userId = authSession.user.id;
@@ -891,7 +921,6 @@ async function checkAdminStatus() {
   return false;
 }
 
-// ---- Update UI ----
 function updateAuthUI() {
   if (authSession && isAdmin) {
     authStatus.textContent = '👑 Admin';
@@ -922,7 +951,6 @@ function enableWriteControls(enabled) {
   ids.forEach(id => { const el = document.getElementById(id); if(el) el.disabled = !enabled; });
 }
 
-// ---- Login handler ----
 async function handleLogin(email, password) {
   try {
     debugLog('🔑 Attempting login for: ' + email, 'info');
@@ -934,9 +962,7 @@ async function handleLogin(email, password) {
     if (error) throw error;
     debugLog('✅ Login successful!', 'success');
     loginOverlayError.textContent = '';
-    // Hide overlay
     hideLoginOverlay();
-    // Refresh auth and load data
     await refreshAuth();
     await loadSupabaseState(true);
     showToast('✅ Logged in as ' + (isAdmin ? 'Admin' : 'Reader'), 'success');
@@ -950,7 +976,6 @@ async function handleLogin(email, password) {
   }
 }
 
-// ---- Logout ----
 async function handleLogout() {
   try {
     debugLog('🚪 Logging out...', 'info');
@@ -958,14 +983,12 @@ async function handleLogout() {
     authSession = null; isAdmin = false;
     updateAuthUI();
     showToast('Logged out', '');
-    // Show overlay and hide dashboard
     showLoginOverlay();
     document.querySelector('.wrap')?.classList.add('hidden');
-    // Reset state to empty
     state.members = [];
     state.transactions = [];
     state.adjustments = [];
-    render(); // re-render with empty data
+    render();
     debugLog('✅ Logged out.', 'success');
   } catch(e) {
     debugLog('❌ Logout failed: ' + e.message, 'error');
@@ -974,7 +997,6 @@ async function handleLogout() {
   }
 }
 
-// ---- Refresh auth ----
 async function refreshAuth() {
   try {
     const { data: { session } } = await supabaseClient.auth.getSession();
@@ -994,44 +1016,6 @@ async function refreshAuth() {
   }
 }
 
-// ---- Override commit and sbFetch for auth ----
-window.commit = function(msg) {
-  if (archiveViewActive) { alert('Archive view is read only.'); return Promise.resolve(); }
-  if (!isAdmin) { alert('Please login as admin to save changes.'); return Promise.resolve(); }
-  saveLocal(); render(); $("applicationStatus").textContent = msg || "Saved";
-  return supabaseReady ? syncSupabaseState() : Promise.resolve();
-};
-
-window.sbFetch = async function(path, options={}) {
-  let token = AUTH_SUPABASE_ANON_KEY;
-  if (authSession && authSession.access_token) token = authSession.access_token;
-  const headers = {
-    apikey: AUTH_SUPABASE_ANON_KEY,
-    Authorization: `Bearer ${token}`,
-    Accept: "application/json",
-    ...(options.body ? {"Content-Type":"application/json","Prefer":"return=minimal"} : {}),
-    ...(options.headers||{})
-  };
-  debugLog('📡 Fetching: ' + path, 'info');
-  try {
-    const res = await fetch(`${AUTH_SUPABASE_URL}/rest/v1/${path}`, {...options, headers});
-    debugLog('📡 Status: ' + res.status + ' for ' + path, res.ok ? 'success' : 'error');
-    if(!res.ok){
-      let detail = "";
-      try { detail = await res.text(); } catch(e) {}
-      debugLog('❌ Error response: ' + detail, 'error');
-      throw new Error(`Supabase ${res.status}: ${detail || res.statusText}`);
-    }
-    if(res.status===204) return null;
-    const text = await res.text();
-    return text ? JSON.parse(text) : null;
-  } catch(e) {
-    debugLog('❌ Fetch exception: ' + e.message, 'error');
-    throw e;
-  }
-};
-
-// ---- Show/hide overlay ----
 function showLoginOverlay() {
   const overlay = document.getElementById('loginOverlay');
   if (overlay) overlay.style.display = 'flex';
@@ -1043,7 +1027,6 @@ function hideLoginOverlay() {
   document.querySelector('.wrap')?.classList.remove('hidden');
 }
 
-// ---- Login form submit ----
 loginForm.addEventListener('submit', function(e) {
   e.preventDefault();
   const email = loginEmailOverlay.value.trim();
@@ -1055,9 +1038,7 @@ loginForm.addEventListener('submit', function(e) {
   handleLogin(email, password);
 });
 
-// ---- Login button in header (opens overlay) ----
 loginButton.addEventListener('click', function() {
-  // If overlay is not visible, show it.
   const overlay = document.getElementById('loginOverlay');
   if (overlay.style.display !== 'flex') {
     showLoginOverlay();
@@ -1067,10 +1048,8 @@ loginButton.addEventListener('click', function() {
   }
 });
 
-// ---- Logout button ----
 logoutButton.addEventListener('click', handleLogout);
 
-// ---- Init ----
 (async function init() {
   try {
     debugLog('🚀 Initializing auth...', 'info');
