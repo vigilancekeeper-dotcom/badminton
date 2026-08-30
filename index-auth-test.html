@@ -4,13 +4,11 @@
   <meta charset="utf-8"/>
   <meta content="width=device-width,initial-scale=1" name="viewport"/>
   <title>Badminton Group Manager</title>
-  <!-- Your original libraries -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Your original styles (copy exactly from Index_base.html) -->
   <style>
-    /* ===== YOUR ORIGINAL STYLES (copied exactly from Index_base.html) ===== */
+    /* ===== YOUR ORIGINAL STYLES (unchanged) ===== */
     :root{--bg:#020617;--panel:#0f172a;--line:#334155;--text:#f8fafc;--muted:#94a3b8;--green:#059669;--blue:#0284c7;--red:#be123c;--yellow:#b45309}
     *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Segoe UI,Arial,sans-serif}button,input,select{font:inherit}button{border:1px solid #475569;border-radius:9px;padding:9px 13px;background:#1e293b;color:#fff;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}input,select{width:100%;height:40px;border:1px solid #475569;border-radius:8px;padding:0 10px;background:#020617;color:#fff}label{display:block;margin-bottom:6px;color:#cbd5e1}.wrap{width:min(1450px,calc(100% - 24px));margin:auto;padding:24px 0 40px}.row,.actions,.header,.section-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.header,.section-head{justify-content:space-between}.header{align-items:flex-start}.card{margin-top:16px;border:1px solid var(--line);border-radius:15px;background:var(--panel);overflow:hidden}.pad{padding:16px}.section-head{padding:16px;border-bottom:1px solid var(--line)}h1,h2,h3,p{margin:0}h1{font-size:40px;margin:7px 0}p,.muted{color:var(--muted)}.primary{background:var(--green)}.blue{background:var(--blue)}.danger{background:var(--red)}.hidden{display:none!important}.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-top:16px}.summary .card{margin:0;padding:16px}.summary strong{display:block;font-size:22px;margin-top:5px}.green{color:#34d399}.red{color:#fb7185}.blue-t{color:#38bdf8}.yellow{color:#fbbf24}.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:11px}.span2{grid-column:span 2}.sync{border-left:5px solid #64748b}.sync.connected{border-left-color:#34d399}.sync.saving{border-left-color:#fbbf24}.sync.error{border-left-color:#fb7185}.member-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:11px;margin-top:12px}.member{border:1px solid var(--line);border-left:5px solid #fb7185;border-radius:10px;padding:12px;background:#08111f}.member.paid{border-left-color:#34d399}.member.partial{border-left-color:#fbbf24}.months{margin-top:8px}.month{display:grid;grid-template-columns:95px 1fr auto;gap:8px;align-items:center;border-top:1px solid var(--line);padding:7px 0;font-size:12px}.preview{margin-top:12px;border:1px solid var(--line);border-left:5px solid #38bdf8;border-radius:10px;padding:12px}.preview-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:7px;border-top:1px solid var(--line)}.table-wrap{overflow:auto}table{width:100%;min-width:1200px;border-collapse:collapse}th,td{padding:10px;border-top:1px solid var(--line);text-align:left}th{background:#020617;color:var(--muted)}.modal-bg{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;padding:20px;z-index:4}.modal{width:min(500px,100%);background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}.field{min-width:120px}.help{font-size:11px;color:var(--muted);display:block;margin-top:4px}@media(max-width:1000px){.summary{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.summary,.grid{grid-template-columns:1fr}.span2{grid-column:span 1}.month{grid-template-columns:1fr}}
     .archive-controls{display:grid;grid-template-columns:minmax(220px,280px) minmax(220px,280px) auto;gap:16px;align-items:end}.archive-view-action{display:flex;align-items:flex-end}.archive-view-action button{height:40px;white-space:nowrap}.archive-index-message{margin-top:12px;line-height:1.4}@media(max-width:800px){.archive-controls{grid-template-columns:1fr 1fr}.archive-view-action{grid-column:1/-1}.archive-view-action button{width:100%}}@media(max-width:520px){.archive-controls{grid-template-columns:1fr}}
@@ -163,14 +161,66 @@
     .autosave-toast{position:fixed;right:20px;bottom:20px;z-index:150;max-width:360px;padding:11px 15px;border-radius:999px;background:rgba(255,255,255,.96);color:var(--theme-deep);box-shadow:0 10px 26px var(--theme-shadow);font-size:12px;font-weight:700;opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .2s ease,transform .2s ease}.autosave-toast.show{opacity:1;transform:translateY(0)}.autosave-toast.error{color:#923f4d;background:#fff4f6}
     .removed-member-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}.permanent-delete-button{background:linear-gradient(135deg,#ffd8df,#ffb8c5)!important;color:#8e2f43!important;box-shadow:0 9px 21px rgba(166,65,86,.14)!important}.permanent-delete-button:hover:not(:disabled){background:linear-gradient(135deg,#ffcbd5,#f5a5b5)!important;color:#77273a!important}
     .file-menu-wrap,#masterGate{display:none!important}
-    /* ===== AUTH STYLES (added) ===== */
+
+    /* ===== ADDED LOGIN OVERLAY STYLES ===== */
+    #loginOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(24, 42, 30, 0.88);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+    #loginOverlay .overlay-box {
+      background: white;
+      border-radius: 28px;
+      padding: 44px 40px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    #loginOverlay h2 {
+      margin-top: 0;
+      color: #183c2b;
+      font-size: 28px;
+    }
+    #loginOverlay p {
+      color: #668174;
+      margin-bottom: 28px;
+      font-size: 15px;
+    }
+    #loginOverlay .login-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 999px;
+      border: 0;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.15s;
+      margin-bottom: 12px;
+    }
+    #loginOverlay .login-btn:hover { transform: scale(1.02); }
+    .login-btn.reader { background: linear-gradient(135deg, #c9f8dc, #9ceabf); color: #075f2d; }
+    .login-btn.admin { background: linear-gradient(135deg, #d4efff, #9dd8fa); color: #175c82; }
+    #loginOverlay .login-error { color: #c94b5f; margin-top: 12px; font-size: 14px; }
+
+    /* ===== ADDED AUTH CONTROLS STYLES ===== */
     .auth-controls{display:flex;align-items:center;gap:12px;flex-shrink:0;margin-left:auto;}
     .auth-status{font-weight:600;font-size:13px;color:var(--muted);}
     .auth-status.admin{color:var(--green);}
-    #loginModal .modal{max-width:400px;}
+    #loginModal .modal{max-width:420px;}
     #loginModal .modal input{width:100%;}
+    #loginModal .modal .field{margin-bottom:14px;}
     .login-error{color:var(--red);font-size:13px;margin-top:6px;}
-    /* ===== DEBUG PANEL STYLES ===== */
+
+    /* ===== DEBUG PANEL STYLES (with collapsible) ===== */
     #debugPanel {
       position: fixed;
       bottom: 0;
@@ -183,7 +233,7 @@
       font-size: 11px;
       border-top: 2px solid #45475a;
       max-height: 30vh;
-      overflow-y: auto;
+      overflow: hidden;
       padding: 6px 10px 10px;
       box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
       display: flex;
@@ -222,6 +272,7 @@
       cursor: pointer;
       padding: 0 6px;
       line-height: 1.2;
+      min-width: 24px;
     }
     #debugPanel .dp-header .toggle-btn:hover {
       background: #313244;
@@ -256,7 +307,8 @@
   </style>
 </head>
 <body>
-<!-- ===== YOUR ORIGINAL HTML (copied exactly) ===== -->
+
+<!-- ===== YOUR ORIGINAL DASHBOARD HTML (unchanged) ===== -->
 <main class="wrap">
 <header class="header"><div><div class="green">🏸 Badminton Group Accounts</div><h1>Badminton Group Manager</h1><p>Manage income, expenses and monthly fees with shared live database data.</p></div>
 <div class="auth-controls">
@@ -267,18 +319,14 @@
 <input accept=".xlsx,.xls,.csv" class="hidden" id="spreadsheetInput" type="file"/>
 </header>
 <nav aria-label="Sections" class="app-nav"><button class="nav-button active" data-page="dashboard" type="button">Dashboard</button><button class="nav-button" data-page="members" type="button">Members</button><button class="nav-button" data-page="transactions" type="button">Transactions</button><button class="nav-button" data-page="archive" type="button">Archive</button><button class="nav-button" data-page="settings" type="button">Settings</button></nav>
-<!-- Archive -->
+<!-- All sections (same as your original) -->
 <section class="card page-section page-hidden archive-studio-card" data-page="archive" id="archivePanel"><div class="section-head"><div><span class="section-kicker">READ-ONLY HISTORY</span><h2>Archive History</h2><p id="archiveFolderStatus">No archive folder selected.</p></div><div class="actions"><button id="chooseArchiveFolderButton" type="button">Choose Archive Folder</button><button id="archiveDataButton" type="button">Archive Data</button><button id="refreshArchiveIndexButton">Refresh Archive Index</button><button class="hidden" id="closeArchiveViewButton">Close Archive View</button></div></div><div class="pad"><div class="archive-controls"><div class="field studio-field studio-tone-3"><label>Archived Year</label><select id="archiveYear"><option value="">Select archived year</option></select></div><div class="field studio-field studio-tone-4"><label>Archived Month</label><select id="archiveMonth"><option value="">Select archived month</option></select></div><div class="archive-view-action"><button class="blue" id="viewArchiveButton">View Archive</button></div></div><div class="muted archive-index-message" id="archiveIndexMessage">Choose the folder containing archive workbooks.</div></div><div class="pad hidden" id="archiveModeBanner" style="background:#e5f4ee;border-top:1px solid #8dc7ad;color:#174c36"><strong>ARCHIVE VIEW: READ ONLY</strong><div class="muted" id="archiveModeDetails"></div></div></section>
-<!-- Dashboard -->
 <section class="summary page-section" data-page="dashboard"><article class="card"><small>Total Income</small><strong class="green" id="totalIncome">₹0</strong></article><article class="card"><small>Total Expenses</small><strong class="red" id="totalExpenses">₹0</strong></article><article class="card"><small>Cash Balance</small><strong class="blue-t" id="cashBalance">₹0</strong></article><article class="card"><small>Selected Month Pending</small><strong class="yellow" id="pendingTotal">₹0</strong></article><article class="card"><small>Active Members</small><strong id="activeMemberCount">0</strong></article></section>
 <section class="card page-section group-showcase" data-page="dashboard" id="groupShowcase"><div class="section-head"><div><h2>Our Badminton Group</h2><p>Meet the active members of the group.</p></div><div class="group-count" id="groupMemberCount">0 Active Members</div></div><div class="pad"><div class="group-name-grid" id="groupNameGrid"></div><div class="group-show-more"><button class="hidden" id="toggleGroupMembersButton" type="button">Show All Members</button></div></div></section>
-<!-- Settings -->
 <section class="card page-section page-hidden settings-studio-card" data-page="settings"><div class="section-head"><div><span class="section-kicker">APPEARANCE &amp; PREFERENCES</span><h2>Settings</h2><p>Standard monthly fee and review month.</p></div></div><div class="pad row"><div class="settings-controls"><div class="field"><label>Monthly Fee</label><input id="monthlyFee" min="1" type="number"/></div><div class="field"><label>Review Month</label><input id="reviewMonth" type="month"/></div><div class="field theme-field"><label><span aria-hidden="true" class="field-icon">✦</span>Interface Theme</label><select id="interfaceTheme"><option value="lavender">Lavender Mist</option><option value="mint">Mint Court</option><option value="sky">Sky Rally</option><option value="peach">Peach Shuttle</option><option value="rose">Rose Quartz</option><option value="aqua">Aqua Breeze</option><option value="lemon">Lemon Glow</option><option value="slate">Soft Slate</option><option value="berry">Berry Cream</option><option value="sand">Warm Sand</option><option value="coral">Coral Bloom</option><option value="mono">Pearl Mono</option></select></div><div class="settings-action"><button class="primary" id="saveSettingsButton">Save Settings</button></div></div></div></section>
-<!-- Members -->
 <section class="card page-section page-hidden member-form-card" data-page="members"><div class="section-head"><div><span class="section-kicker">MEMBER PROFILE</span><h2 id="memberFormTitle">Add Member</h2><p>Add or edit members.</p></div></div><div class="pad"><form id="memberForm"><div class="grid"><div class="field span2 member-form-field member-field-1"><label><span aria-hidden="true" class="field-icon">👤</span>Member Name</label><input id="memberName" required=""/></div><div class="field member-form-field member-field-2"><label><span aria-hidden="true" class="field-icon">📅</span>Joining Date</label><input id="joiningDate" required="" type="date"/></div><div class="field member-form-field member-field-3"><label><span aria-hidden="true" class="field-icon">●</span>State</label><select id="memberState"><option value="active">Active</option><option value="inactive">Inactive</option></select></div></div><div class="actions" style="margin-top:12px"><button class="primary" id="saveMemberButton" type="submit">Add Member</button><button class="hidden" id="cancelMemberButton" type="button">Cancel</button></div></form></div></section>
 <section class="card page-section page-hidden active-members-card" data-page="members"><div class="section-head"><div><h2>Active Member Details</h2><p>Monthly status, partial payments and advances.</p></div><div class="actions"><button class="primary member-action-button" id="bulkClearButton">Bulk Clear Pending</button><button class="member-action-button" id="undoBulkButton">Undo Last Bulk Clearance</button><button class="member-action-button" id="selectAllMembersButton">Select All</button><button class="member-action-button" id="clearMemberSelectionButton">Clear</button></div></div><div class="pad"><div class="member-picker"><div class="member-picker-top"><div class="member-search-wrap"><span aria-hidden="true">⌕</span><input autocomplete="off" id="memberSearchInput" placeholder="Search active members..." type="search"/></div><div class="member-selection-summary" id="memberSelectionSummary">Select one or more members to view details</div></div><div class="member-choice-grid" id="memberChoiceGrid"></div></div><div class="selected-details-heading"><div><span class="section-kicker">SELECTED MEMBERS</span><h3>Member Details</h3></div><span class="selected-details-count" id="selectedDetailsCount">0 selected</span></div><select aria-hidden="true" class="native-member-selector" id="memberSelector" multiple="" style="min-height:120px" tabindex="-1"></select><div class="member-grid" id="memberCards"></div></div></section>
 <section class="card page-section page-hidden" data-page="members"><div class="section-head"><div><h2>Inactive / Deleted Members</h2></div><select id="removedMemberSelector"><option value="">Select member</option></select></div><div class="pad hidden" id="removedMemberDetails"></div></section>
-<!-- Transactions -->
 <section class="card page-section page-hidden transaction-studio-card" data-page="transactions"><div class="section-head"><div><span class="section-kicker">NEW ACCOUNT ENTRY</span><h2 id="transactionFormTitle">Add Transaction</h2><p>Automatic member payments clear oldest pending first, then current month, then future advance.</p></div></div><div class="pad"><form id="transactionForm"><div class="grid"><div class="field studio-field studio-tone-1"><label><span aria-hidden="true" class="field-icon">◷</span>Transaction Date</label><input id="transactionDate" required="" type="date"/></div><div class="field studio-field studio-tone-2"><label><span aria-hidden="true" class="field-icon">⇄</span>Direction</label><select id="transactionDirection"><option>Income</option><option>Expense</option></select></div><div class="field studio-field studio-tone-3" id="incomeCategoryContainer"><label><span aria-hidden="true" class="field-icon">₹</span>Income Type</label><select id="incomeCategory"><option>Monthly Fee</option><option>Advance Fee</option><option>Arrears Payment</option><option>Opening Balance</option><option>Interest</option><option>Court Fee Contribution</option><option>Shuttle Reimbursement</option><option>Other Income</option></select></div><div class="field hidden studio-field studio-tone-4" id="expenseCategoryContainer"><label><span aria-hidden="true" class="field-icon">₹</span>Expense Type</label><select id="expenseCategory"><option>Court Fee</option><option>Shuttle Purchase</option><option>Equipment</option><option>Member Reimbursement</option><option>Other Expense</option></select></div><div class="field studio-field studio-tone-5" id="transactionMemberContainer"><label><span aria-hidden="true" class="field-icon">●</span>Member</label><select id="transactionMember"><option value="">Select member</option></select></div><div class="field studio-field studio-tone-6" id="allocationMethodContainer"><label><span aria-hidden="true" class="field-icon">↯</span>Fee Allocation</label><select id="allocationMethod"><option value="automatic">Automatic: Oldest pending first</option><option value="manual">Manual: Selected month only</option></select></div><div class="field studio-field studio-tone-1" id="feeMonthContainer"><label id="feeMonthLabel"><span aria-hidden="true" class="field-icon">▣</span>Applicable Month</label><input id="feeMonth" type="month"/><small class="help" id="feeMonthHelp"></small></div><div class="field span2 studio-field studio-tone-2" id="transactionNameContainer"><label id="transactionNameLabel"><span aria-hidden="true" class="field-icon">◎</span>Paid To / Received From</label><input id="transactionName" placeholder="Optional"/></div><div class="field span2 studio-field studio-tone-3"><label><span aria-hidden="true" class="field-icon">≡</span>Description</label><select id="transactionDescriptionChoice"><option>Contribution</option><option>Monthly Fee Payment</option><option>Advance Payment</option><option>Arrears Payment</option><option>Payment</option><option>Court Booking Payment</option><option>Shuttle Purchase</option><option>Equipment Purchase</option><option>Opening Balance</option><option>Interest Received</option><option>Reimbursement</option><option>Other / Custom</option></select></div><div class="field span2 hidden studio-field studio-tone-4" id="customDescriptionContainer"><label><span aria-hidden="true" class="field-icon">✎</span>Custom Description</label><input id="transactionDescription"/></div><div class="field studio-field studio-tone-5"><label><span aria-hidden="true" class="field-icon">₹</span>Amount</label><input id="transactionAmount" min="0.01" required="" step="0.01" type="number"/></div></div><div class="preview hidden" id="allocationPreview"><h3>Payment Allocation Preview</h3><div class="muted" id="allocationPreviewMessage"></div><div id="allocationPreviewList"></div></div><div class="actions" style="margin-top:12px"><button class="primary" id="saveTransactionButton" type="submit">Add Transaction</button><button class="hidden" id="cancelTransactionButton" type="button">Cancel</button><span class="muted" id="applicationStatus">Ready</span></div></form></div></section>
 <section class="card page-section page-hidden" data-page="transactions"><div class="section-head"><div><h2>Financial Records</h2></div><div class="row"><select id="financialView"><option value="">Select</option><option>All</option><option>Income</option><option>Expense</option><option value="Adjustments">Manual Adjustments</option></select><select id="financialMonth"><option value="">All Months</option></select></div></div><div class="table-wrap hidden" id="financialTableWrapper"><table><thead><tr><th>Date</th><th>Applicable Month</th><th>Name</th><th>Direction</th><th>Category</th><th>Description</th><th>Amount</th><th>Balance</th><th>Allocation</th><th>Action</th></tr></thead><tbody id="financialTableBody"></tbody></table></div></section>
 <section class="card page-section" data-page="transactions"><div class="section-head"><div><h2>Monthly Fee Status</h2><p>Shows every active member for the selected month, including payments, advances, and status-only adjustments.</p></div><div class="fee-status-filters"><div class="field"><label for="feeStatusMonth">Month</label><input id="feeStatusMonth" type="month"/></div><div class="field"><label for="feeStatusFilter">Status</label><select id="feeStatusFilter"><option value="All">All</option><option value="Paid">Paid</option><option value="Partial">Partial</option><option value="Pending">Pending</option><option value="Advance">Advance</option></select></div></div></div><div class="table-wrap"><table class="fee-status-table"><thead><tr><th>Member</th><th>Required</th><th>Direct Payment</th><th>Arrears</th><th>Advance Applied</th><th>Status Adjustment</th><th>Total Applied</th><th>Pending</th><th>Status</th><th>Payment Source</th></tr></thead><tbody id="feeStatusTableBody"></tbody></table></div></section>
@@ -288,18 +336,18 @@
 <div class="modal-bg hidden" id="archiveModal"><div class="modal" style="width:min(700px,100%)"><h2>Archive Data</h2><p>The archive file is created first. Current-master data is changed only after the archive is saved.</p><div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:14px"><div class="field studio-field studio-tone-1"><label>Archive Name Prefix</label><input id="archivePrefix" value="Badminton"/></div><div class="field studio-field studio-tone-2"><label>Start Month</label><input id="archiveStartMonth" type="month"/></div><div class="field studio-field studio-tone-3"><label>End Month</label><input id="archiveEndMonth" type="month"/></div><div class="field studio-field studio-tone-4"><label>New Current Review Month</label><input id="archiveNewReviewMonth" type="month"/></div></div><div class="preview"><h3>Archive Preview</h3><div class="muted" id="archivePreviewText"></div></div><div class="actions" style="margin-top:14px"><button class="primary" disabled="" id="confirmArchiveButton">Create Archive</button><button id="cancelArchiveButton">Cancel</button></div></div></div>
 <div class="modal-bg hidden" id="bulkClearModal"><div class="modal" style="width:min(700px,100%)"><h2>Bulk Clear Pending</h2><p>Clear exact pending amounts. Status-only is the safe default and does not change cash balance.</p><div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:14px"><div class="field"><label>Member Scope</label><select id="bulkMemberScope"><option value="selected">Members selected on main screen</option><option value="all">All active members</option><option value="one">One member</option></select></div><div class="field hidden" id="bulkOneMemberContainer"><label>Member</label><select id="bulkOneMember"></select></div><div class="field"><label>Month Scope</label><select id="bulkMonthScope"><option value="current">Current review month</option><option value="single">One selected month</option><option value="range">Selected month range</option><option value="allPending">All pending months up to review month</option></select></div><div class="field hidden" id="bulkSingleMonthContainer"><label>Selected Month</label><input id="bulkSingleMonth" type="month"/></div><div class="field hidden" id="bulkRangeStartContainer"><label>Start Month</label><input id="bulkStartMonth" type="month"/></div><div class="field hidden" id="bulkRangeEndContainer"><label>End Month</label><input id="bulkEndMonth" type="month"/></div><div class="field"><label>Balance Treatment</label><select id="bulkBalanceMode"><option value="status">Status only, do not change cash balance</option><option value="income">Record actual income and change cash balance</option></select></div><div class="field"><label>Clearance Date</label><input id="bulkClearDate" type="date"/></div><div class="field span2"><label>Note</label><input id="bulkClearNote" value="Bulk pending clearance"/></div></div><div class="preview"><h3>Preview</h3><div class="muted" id="bulkClearPreviewText"></div><div id="bulkClearPreviewList" style="max-height:220px;overflow:auto;margin-top:8px"></div></div><div class="actions" style="margin-top:14px"><button class="primary" disabled="" id="confirmBulkClearButton">Confirm Bulk Clearance</button><button id="cancelBulkClearButton">Cancel</button></div></div></div>
 <div class="modal-bg hidden" id="setPaidModal"><div class="modal"><h2>Set Paid / Clear Pending</h2><p id="setPaidMessage"></p><div class="field"><label>Date</label><input id="setPaidDate" type="date"/></div><div class="field"><label>Amount</label><input id="setPaidAmount" min="0.01" type="number"/></div><div class="field"><label>Change Cash Balance?</label><select id="setPaidBalanceEffect"><option value="yes">Yes, record income</option><option value="no">No, status only</option></select></div><div class="field"><label>Note</label><input id="setPaidNote" value="Manual pending clearance"/></div><div class="actions" style="margin-top:12px"><button class="primary" id="confirmSetPaidButton">Confirm</button><button id="cancelSetPaidButton">Cancel</button></div></div></div>
-<!-- Login Modal -->
+<!-- Login modal (existing) -->
 <div class="modal-bg hidden" id="loginModal">
   <div class="modal">
     <h2>🔐 Owner Login</h2>
     <p class="muted">Enter your credentials to manage the group.</p>
     <div class="field" style="margin-top:16px;">
       <label>Email</label>
-      <input type="email" id="loginEmail" placeholder="vigilancekeeper@gmail.com" value="vigilancekeeper@gmail.com" />
+      <input type="email" id="loginEmail" placeholder="vigilancekeeper@gmail.com" value="vigilancekeeper@gmail.com" autocomplete="username" />
     </div>
     <div class="field">
       <label>Password</label>
-      <input type="password" id="loginPassword" placeholder="••••••••" />
+      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" />
     </div>
     <div id="loginError" class="login-error"></div>
     <div class="actions" style="margin-top:16px;">
@@ -308,23 +356,36 @@
     </div>
   </div>
 </div>
-<div id="autosaveToast" class="autosave-toast" aria-live="polite"></div>
-<!-- Debug Panel -->
+<div id="autosaveToast" class="autosave-toast"></div>
+
+<!-- ===== LOGIN OVERLAY (shown when not logged in) ===== -->
+<div id="loginOverlay">
+  <div class="overlay-box">
+    <h2>🏸 Group Manager</h2>
+    <p>Please log in to view the dashboard.</p>
+    <button class="login-btn reader" id="readerLoginBtn">👀 Login as Reader<br><span style="font-weight:400;font-size:13px;">reader@badminton.local / reader</span></button>
+    <button class="login-btn admin" id="adminLoginBtn">🔐 Login as Admin</button>
+    <div id="loginOverlayError" class="login-error"></div>
+  </div>
+</div>
+
+<!-- ===== DEBUG PANEL ===== -->
 <div id="debugPanel">
   <div class="dp-header">
     <span>🐞 DEBUG LOG</span>
     <div>
-      <button class="toggle-btn" id="debugToggle" title="Toggle panel">−</button>
-      <button onclick="document.getElementById('debugLogContainer').innerHTML = '';">Clear</button>
+      <button class="toggle-btn" id="debugToggle">−</button>
+      <button onclick="document.getElementById('debugLogContainer').innerHTML='';">Clear</button>
     </div>
   </div>
   <div class="dp-log-container" id="debugLogContainer"></div>
 </div>
 
-<!-- ============================================================= -->
-<!-- YOUR ORIGINAL SCRIPT (copied exactly from Index_base.html)    -->
-<!-- ============================================================= -->
 <script>
+// ============================================================================
+// ORIGINAL APPLICATION SCRIPT (FULL)
+// ============================================================================
+"use strict";
 /* EARLY NAVIGATION WIRING: menu navigation must remain independent of database/loading code. */
 (function(){
   function navigate(page){
@@ -361,14 +422,12 @@ function monthData(mem,m){return ledger(mem).months[m]||{required:0,direct:0,arr
 function render(){state.reviewMonth=state.reviewMonth||curMonth();$("monthlyFee").value=state.monthlyFee;$("reviewMonth").value=state.reviewMonth;let s=summary();$("totalIncome").textContent=money(s.inc);$("totalExpenses").textContent=money(s.exp);$("cashBalance").textContent=money(s.bal);$("pendingTotal").textContent=money(s.pending);$("activeMemberCount").textContent=s.count;renderSelectors();renderCards();renderRemoved();renderMonths();renderRecords();renderFeeStatus();renderGroupShowcase();updateConnection()}
 function renderGroupShowcase(){const grid=$("groupNameGrid"),count=$("groupMemberCount"),toggle=$("toggleGroupMembersButton");if(!grid||!count||!toggle)return;const members=active().sort((a,b)=>a.name.localeCompare(b.name));count.textContent=`${members.length} Active Member${members.length===1?"":"s"}`;const visible=groupMembersExpanded?members:members.slice(0,8);grid.innerHTML=visible.length?visible.map(m=>`<div class="group-name-chip">${esc(m.name)}</div>`).join(""):'<div class="group-empty">No active members are available.</div>';toggle.classList.toggle("hidden",members.length<=8);toggle.textContent=groupMembersExpanded?"Show Less":"Show All Members"}
 function renderSelectors(){let sel=[...$("memberSelector").selectedOptions].map(o=>o.value),a=active().sort((x,y)=>x.name.localeCompare(y.name)),tm=$("transactionMember").value;$("memberSelector").innerHTML=a.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join("");[...$("memberSelector").options].forEach(o=>o.selected=sel.includes(o.value));$("transactionMember").innerHTML='<option value="">Select member</option>'+a.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join("");if(a.some(m=>m.id===tm))$("transactionMember").value=tm;renderMemberPicker();let r=state.members.filter(m=>!m.active||m.deleted);$("removedMemberSelector").innerHTML='<option value="">Select member</option>'+r.map(m=>`<option value="${m.id}">${esc(m.name)} (${m.deleted?"Deleted":"Inactive"})</option>`).join("")}
-
 function selectedMemberIds(){return[...$("memberSelector").selectedOptions].map(o=>o.value)}
 function updateMemberSelectionSummary(){const ids=selectedMemberIds(),summary=$("memberSelectionSummary"),count=$("selectedDetailsCount");if(summary)summary.textContent=ids.length?`${ids.length} member${ids.length===1?"":"s"} selected`:"Select one or more members to view details";if(count)count.textContent=`${ids.length} selected`}
 function renderMemberPicker(){const grid=$("memberChoiceGrid"),search=$("memberSearchInput");if(!grid)return;const query=(search?.value||"").trim().toLowerCase(),selected=new Set(selectedMemberIds()),members=active().sort((a,b)=>a.name.localeCompare(b.name)).filter(m=>m.name.toLowerCase().includes(query));grid.innerHTML=members.length?members.map(m=>`<button type="button" class="member-choice ${selected.has(m.id)?"selected":""}" data-member-id="${m.id}" aria-pressed="${selected.has(m.id)}">${esc(m.name)}</button>`).join(""):'<div class="member-choice-empty">No active members match the search.</div>';grid.querySelectorAll(".member-choice").forEach(button=>button.addEventListener("click",()=>{const option=[...$("memberSelector").options].find(o=>o.value===button.dataset.memberId);if(option)option.selected=!option.selected;renderMemberPicker();renderCards()}));updateMemberSelectionSummary()}
 function renderCards(){let ids=[...$("memberSelector").selectedOptions].map(o=>o.value),review=state.reviewMonth||curMonth();$("memberCards").innerHTML=ids.map(id=>{let m=member(id),d=monthData(m,review),css=d.pending===0?"paid":d.applied>0?"partial":"";let shownMonths=archiveViewActive?[...new Set([...state.transactions.map(t=>t.feeMonth),...state.adjustments.map(a=>a.month)].filter(Boolean))].sort():[-2,-1,0,1,2].map(n=>addMonths(review,n));let rows=shownMonths.map(mo=>{let x=monthData(m,mo);return`<div class="month"><strong>${fmtMonth(mo)}</strong><span>Paid ${money(x.applied)} · Pending ${money(x.pending)}</span>${x.pending>0?`<button type="button" onclick="openPaid('${m.id}','${mo}',${x.pending})">Set Paid</button>`:""}</div>`}).join("");return`<article class="member ${css}"><h3>${esc(m.name)}</h3><p>Joining: ${esc(m.joiningDate)}</p><p>Current paid ${money(d.applied)} · pending ${money(d.pending)}</p><div class="months">${rows}</div><div class="actions"><button onclick="editMember('${m.id}')">Edit</button><button onclick="deactivateMember('${m.id}')">Deactivate</button><button class="danger" onclick="deleteMember('${m.id}')">Delete</button></div></article>`}).join("")}
 function renderRemoved(){let m=member($("removedMemberSelector").value),c=$("removedMemberDetails");if(!m){c.classList.add("hidden");return}c.classList.remove("hidden");c.innerHTML=`<h3>${esc(m.name)}</h3><p>${m.deleted?"Deleted":"Inactive"}</p><div class="removed-member-actions"><button onclick="restoreMember('${m.id}')">Restore</button>${m.deleted?`<button class="permanent-delete-button" onclick="permanentlyDeleteMember('${m.id}')">Delete Permanently</button>`:""}</div>`}
 function renderMonths(){let old=$("financialMonth").value,ms=[...new Set([...state.transactions.map(t=>t.feeMonth||monthOf(t.date)),...state.adjustments.map(a=>a.month)].filter(Boolean))].sort().reverse();$("financialMonth").innerHTML='<option value="">All Months</option>'+ms.map(m=>`<option value="${m}">${fmtMonth(m)}</option>`).join("");if(ms.includes(old))$("financialMonth").value=old}
-
 function getAllocationLabel(record){if(record.isAdjustment)return record.bulkOperationId?"Bulk status-only":"Status only";if(record.allocationMode==="bulk"||record.source==="Bulk Clear Pending")return"Bulk payment";if(record.paymentGroupId){let count=state.transactions.filter(t=>t.paymentGroupId===record.paymentGroupId).length;if(count>1)return`Split payment (${count})`}if(record.allocationMode==="automatic")return"Auto allocated";return"Single entry"}
 function feeStatusSource(memberId,month,data){let parts=[];if(data.direct>0)parts.push("Direct payment");if(data.arrears>0)parts.push("Arrears");if(data.advance>0)parts.push("Advance");if(data.manual>0){let isBulk=state.adjustments.some(a=>a.memberId===memberId&&a.month===month&&a.bulkOperationId);parts.push(isBulk?"Bulk status-only":"Status-only adjustment")}return parts.length?parts.join(", "):"No payment recorded"}
 function renderFeeStatus(){const month=$("feeStatusMonth")?.value||state.reviewMonth||curMonth(),filter=$("feeStatusFilter")?.value||"All",body=$("feeStatusTableBody");if(!body)return;if(!$("feeStatusMonth").value)$("feeStatusMonth").value=month;let rows=active().sort((a,b)=>a.name.localeCompare(b.name)).map(m=>{let d=monthData(m,month),status=d.pending===0?(d.advance>0?"Advance":"Paid"):d.applied>0?"Partial":"Pending";return{m,d,status,source:feeStatusSource(m.id,month,d)}}).filter(x=>filter==="All"||x.status===filter);body.innerHTML=rows.map(x=>`<tr><td><strong>${esc(x.m.name)}</strong></td><td>${money(x.d.required)}</td><td>${money(x.d.direct)}</td><td>${money(x.d.arrears)}</td><td>${money(x.d.advance)}</td><td>${money(x.d.manual)}</td><td>${money(x.d.applied)}</td><td>${money(x.d.pending)}</td><td><span class="status-pill status-${x.status.toLowerCase()}">${x.status}</span></td><td class="source-list">${esc(x.source)}</td></tr>`).join("")||'<tr><td colspan="10">No members match this status filter.</td></tr>'}
@@ -626,15 +685,11 @@ function setSync(cls,msg){
   const ind=$("connectionIndicator"); if(ind){ind.className="connection-indicator "+(cls||"");ind.textContent=cls==="saving"?"Saving...":cls==="connected"?"Supabase connected":cls==="error"?"Database error":"Database";}
   const toast=$("autosaveToast"); if(toast&&(cls==="connected"||cls==="error")){toast.textContent=msg;toast.className="autosave-toast show "+(cls==="error"?"error":"");clearTimeout(window.__autosaveToastTimer);window.__autosaveToastTimer=setTimeout(()=>toast.classList.remove("show"),2600)}
 }
-loadSupabaseState(false);
-</script>
+// ============================================================================
+// AUTH AND OVERLAY LOGIC (ADDED)
+// ============================================================================
 
-<!-- ============================================================= -->
-<!-- AUTH AND DEBUG LOGIC (added after original script)            -->
-<!-- ============================================================= -->
-<script>
-// ===== DEBUG HELPER (already defined above, but we re-use the debugLog) =====
-// If debugLog is not defined, define it.
+// ---- Debug helper ----
 if (typeof debugLog === 'undefined') {
   window.debugLog = function(msg, type) {
     console.log('[DEBUG]', msg);
@@ -650,19 +705,36 @@ if (typeof debugLog === 'undefined') {
   };
 }
 
-// ===== SHOW TOAST (if not defined) =====
+// ---- showToast ----
 if (typeof showToast === 'undefined') {
-  function showToast(msg, type) {
+  window.showToast = function(msg, type) {
     const t = document.getElementById('autosaveToast');
     if (!t) return;
     t.textContent = msg;
     t.className = 'autosave-toast show ' + (type === 'error' ? 'error' : '');
     clearTimeout(window._toastTimer);
     window._toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
-  }
+  };
 }
 
-// ===== SUPABASE AUTH =====
+// ---- Debug panel toggle ----
+(function() {
+  const toggleBtn = document.getElementById('debugToggle');
+  const panel = document.getElementById('debugPanel');
+  if (toggleBtn && panel) {
+    let collapsed = localStorage.getItem('debugPanelCollapsed') === 'true';
+    if (collapsed) panel.classList.add('collapsed');
+    toggleBtn.textContent = collapsed ? '+' : '−';
+    toggleBtn.addEventListener('click', function() {
+      panel.classList.toggle('collapsed');
+      const isCollapsed = panel.classList.contains('collapsed');
+      localStorage.setItem('debugPanelCollapsed', isCollapsed);
+      toggleBtn.textContent = isCollapsed ? '+' : '−';
+    });
+  }
+})();
+
+// ---- Supabase auth client ----
 const AUTH_SUPABASE_URL = "https://vhovlxzllbnufujzbtim.supabase.co";
 const AUTH_SUPABASE_ANON_KEY = "sb_publishable_X6mduaVBNx5TOtkMSk95BQ_Ud30XEWi";
 
@@ -677,7 +749,7 @@ try {
 let isAdmin = false;
 let authSession = null;
 
-// Auth UI elements (they already exist in the HTML)
+// Auth UI elements
 const authStatus = document.getElementById('authStatus');
 const loginButton = document.getElementById('loginButton');
 const logoutButton = document.getElementById('logoutButton');
@@ -695,7 +767,6 @@ async function checkAdminStatus() {
   const userEmail = authSession.user.email;
   debugLog('🔍 Checking admin status for user: ' + userId, 'info');
 
-  // Try methods in order
   try {
     const { data: rpcData, error: rpcError } = await supabaseClient.rpc('is_app_admin');
     if (!rpcError && rpcData === true) {
@@ -742,13 +813,20 @@ function updateAuthUI() {
     logoutButton.style.display = 'inline-block';
     enableWriteControls(true);
     debugLog('🔓 Admin mode enabled.', 'success');
+  } else if (authSession) {
+    authStatus.textContent = '📖 Reader';
+    authStatus.className = 'auth-status';
+    loginButton.style.display = 'none';
+    logoutButton.style.display = 'inline-block';
+    enableWriteControls(false);
+    debugLog('📖 Reader mode (read-only).', 'info');
   } else {
     authStatus.textContent = 'Public';
     authStatus.className = 'auth-status';
     loginButton.style.display = 'inline-block';
     logoutButton.style.display = 'none';
     enableWriteControls(false);
-    if(!authSession) debugLog('🔒 Public mode (not logged in).', 'info');
+    debugLog('🔒 Public mode (not logged in).', 'info');
   }
 }
 
@@ -761,17 +839,22 @@ function enableWriteControls(enabled) {
 async function handleLogin(email, password) {
   try {
     debugLog('🔑 Attempting login for: ' + email, 'info');
-    loginError.textContent = '';
+    const errorEl = document.getElementById('loginError') || document.getElementById('loginOverlayError');
+    if (errorEl) errorEl.textContent = '';
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) throw error;
     debugLog('✅ Login successful!', 'success');
-    loginModal.classList.add('hidden');
+    if (errorEl) errorEl.textContent = '';
+    const modal = document.getElementById('loginModal');
+    if (modal) modal.classList.add('hidden');
+    hideLoginOverlay();
     await refreshAuth();
     await loadSupabaseState(true);
-    showToast('✅ Logged in as admin', 'success');
+    showToast('✅ Logged in as ' + (isAdmin ? 'Admin' : 'Reader'), 'success');
   } catch(e) {
     debugLog('❌ Login failed: ' + e.message, 'error');
-    loginError.textContent = '❌ ' + (e.message || 'Login failed');
+    const errorEl = document.getElementById('loginError') || document.getElementById('loginOverlayError');
+    if (errorEl) errorEl.textContent = '❌ ' + (e.message || 'Login failed');
     console.error('Login error:', e);
   }
 }
@@ -784,7 +867,13 @@ async function handleLogout() {
     authSession = null; isAdmin = false;
     updateAuthUI();
     showToast('Logged out', '');
-    await loadSupabaseState(true);
+    showLoginOverlay();
+    document.querySelector('.wrap')?.classList.add('hidden');
+    // Reset state to empty (optional)
+    state.members = [];
+    state.transactions = [];
+    state.adjustments = [];
+    render(); // re-render with empty data
     debugLog('✅ Logged out.', 'success');
   } catch(e) {
     debugLog('❌ Logout failed: ' + e.message, 'error');
@@ -813,7 +902,7 @@ async function refreshAuth() {
   }
 }
 
-// ---- Override commit with auth check ----
+// ---- Override commit and sbFetch for auth ----
 window.commit = function(msg) {
   if (archiveViewActive) { alert('Archive view is read only.'); return Promise.resolve(); }
   if (!isAdmin) { alert('Please login as admin to save changes.'); return Promise.resolve(); }
@@ -821,8 +910,6 @@ window.commit = function(msg) {
   return supabaseReady ? syncSupabaseState() : Promise.resolve();
 };
 
-// ---- Override sbFetch to use auth token ----
-const originalSbFetch = window.sbFetch;
 window.sbFetch = async function(path, options={}) {
   let token = AUTH_SUPABASE_ANON_KEY;
   if (authSession && authSession.access_token) token = authSession.access_token;
@@ -852,52 +939,73 @@ window.sbFetch = async function(path, options={}) {
   }
 };
 
-// ---- Auth event listeners ----
-if (loginButton) {
-  loginButton.addEventListener('click', ()=>{
-    loginModal.classList.remove('hidden');
-    loginError.textContent = '';
-    loginPassword.value = '';
-    loginEmail.value = 'vigilancekeeper@gmail.com';
-    debugLog('🔐 Login modal opened.', 'info');
-  });
+// ---- Show/hide overlay ----
+function showLoginOverlay() {
+  const overlay = document.getElementById('loginOverlay');
+  if (overlay) overlay.style.display = 'flex';
+  document.querySelector('.wrap')?.classList.add('hidden');
 }
-if (loginSubmitBtn) {
-  loginSubmitBtn.addEventListener('click', ()=>{
-    const email = loginEmail.value.trim();
-    const password = loginPassword.value;
-    if (!email || !password) { loginError.textContent = 'Please enter email and password'; return; }
-    handleLogin(email, password);
-  });
+function hideLoginOverlay() {
+  const overlay = document.getElementById('loginOverlay');
+  if (overlay) overlay.style.display = 'none';
+  document.querySelector('.wrap')?.classList.remove('hidden');
 }
-if (loginCancelBtn) {
-  loginCancelBtn.addEventListener('click', ()=>loginModal.classList.add('hidden'));
-}
-if (loginPassword) {
-  loginPassword.addEventListener('keydown', (e)=>{ if(e.key==='Enter') loginSubmitBtn.click(); });
-}
-if (logoutButton) {
-  logoutButton.addEventListener('click', handleLogout);
-}
-if (loginModal) {
-  loginModal.addEventListener('click', (e)=>{ if(e.target===loginModal) loginModal.classList.add('hidden'); });
-}
+
+// ---- Reader and Admin buttons ----
+document.getElementById('readerLoginBtn')?.addEventListener('click', function() {
+  handleLogin('reader@badminton.local', 'reader');
+});
+document.getElementById('adminLoginBtn')?.addEventListener('click', function() {
+  const modal = document.getElementById('loginModal');
+  if (modal) {
+    document.getElementById('loginEmail').value = 'vigilancekeeper@gmail.com';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginPassword').focus();
+    modal.classList.remove('hidden');
+  }
+});
+
+// ---- Login modal events ----
+loginButton.addEventListener('click', ()=>{
+  loginModal.classList.remove('hidden');
+  loginError.textContent = '';
+  loginPassword.value = '';
+  loginEmail.value = 'vigilancekeeper@gmail.com';
+  debugLog('🔐 Login modal opened.', 'info');
+});
+
+loginSubmitBtn.addEventListener('click', ()=>{
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value;
+  if (!email || !password) { loginError.textContent = 'Please enter email and password'; return; }
+  handleLogin(email, password);
+});
+
+loginCancelBtn.addEventListener('click', ()=>loginModal.classList.add('hidden'));
+loginPassword.addEventListener('keydown', (e)=>{ if(e.key==='Enter') loginSubmitBtn.click(); });
+logoutButton.addEventListener('click', handleLogout);
+loginModal.addEventListener('click', (e)=>{ if(e.target===loginModal) loginModal.classList.add('hidden'); });
 
 // ---- Init ----
 (async function init() {
   try {
     debugLog('🚀 Initializing auth...', 'info');
     await refreshAuth();
-    // Wait for original data to load? The original already loads, but we can reload.
-    // The original loadSupabaseState is already called; we can just ensure auth is applied.
-    debugLog('✅ Auth initialization complete.', 'success');
+    if (authSession) {
+      hideLoginOverlay();
+      await loadSupabaseState(true);
+      debugLog('✅ Auto-login: data loaded.', 'success');
+    } else {
+      showLoginOverlay();
+      debugLog('🔒 Please log in to view data.', 'info');
+    }
   } catch(e) {
-    debugLog('❌ Auth init error: ' + e.message, 'error');
-    console.error('Auth init error:', e);
+    debugLog('❌ Init error: ' + e.message, 'error');
+    showLoginOverlay();
   }
 })();
 
-console.log('🏸 Badminton Group Manager with Auth and Debug Panel');
+console.log('🏸 Badminton Group Manager with Reader Login');
 </script>
 </body>
 </html>
