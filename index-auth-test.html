@@ -21,12 +21,11 @@
       text-transform: uppercase;
       letter-spacing:0.04em;
     }
-    /* preserve readability for member names and data */
     .member h3,.member-choice,.group-name-chip,.auth-status.reader,.auth-status.admin{
       text-transform:none;
     }
 
-    /* ===== ORIGINAL STYLES (cleaned & kept) ===== */
+    /* ===== ORIGINAL STYLES (kept intact) ===== */
     :root{--bg:#020617;--panel:#0f172a;--line:#334155;--text:#f8fafc;--muted:#94a3b8;--green:#059669;--blue:#0284c7;--red:#be123c;--yellow:#b45309}
     *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Segoe UI,Arial,sans-serif}button,input,select{font:inherit}button{border:1px solid #475569;border-radius:9px;padding:9px 13px;background:#1e293b;color:#fff;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}input,select{width:100%;height:40px;border:1px solid #475569;border-radius:8px;padding:0 10px;background:#020617;color:#fff}label{display:block;margin-bottom:6px;color:#cbd5e1}.wrap{width:min(1450px,calc(100% - 24px));margin:auto;padding:24px 0 40px}.row,.actions,.header,.section-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.header,.section-head{justify-content:space-between}.header{align-items:flex-start}.card{margin-top:16px;border:1px solid var(--line);border-radius:15px;background:var(--panel);overflow:hidden}.pad{padding:16px}.section-head{padding:16px;border-bottom:1px solid var(--line)}h1,h2,h3,p{margin:0}h1{font-size:40px;margin:7px 0}p,.muted{color:var(--muted)}.primary{background:var(--green)}.blue{background:var(--blue)}.danger{background:var(--red)}.hidden{display:none!important}.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-top:16px}.summary .card{margin:0;padding:16px}.summary strong{display:block;font-size:22px;margin-top:5px}.green{color:#34d399}.red{color:#fb7185}.blue-t{color:#38bdf8}.yellow{color:#fbbf24}.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:11px}.span2{grid-column:span 2}.sync{border-left:5px solid #64748b}.sync.connected{border-left-color:#34d399}.sync.saving{border-left-color:#fbbf24}.sync.error{border-left-color:#fb7185}.member-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:11px;margin-top:12px}.member{border:1px solid var(--line);border-left:5px solid #fb7185;border-radius:10px;padding:12px;background:#08111f}.member.paid{border-left-color:#34d399}.member.partial{border-left-color:#fbbf24}.months{margin-top:8px}.month{display:grid;grid-template-columns:95px 1fr auto;gap:8px;align-items:center;border-top:1px solid var(--line);padding:7px 0;font-size:12px}.preview{margin-top:12px;border:1px solid var(--line);border-left:5px solid #38bdf8;border-radius:10px;padding:12px}.preview-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:7px;border-top:1px solid var(--line)}.table-wrap{overflow:auto}table{width:100%;min-width:1200px;border-collapse:collapse}th,td{padding:10px;border-top:1px solid var(--line);text-align:left}th{background:#020617;color:var(--muted)}.modal-bg{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;padding:20px;z-index:4}.modal{width:min(500px,100%);background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}.field{min-width:120px}.help{font-size:11px;color:var(--muted);display:block;margin-top:4px}@media(max-width:1000px){.summary{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.summary,.grid{grid-template-columns:1fr}.span2{grid-column:span 1}.month{grid-template-columns:1fr}}
     :root{--bg:#f4fbf7;--panel:#fff;--line:#c9dfd3;--text:#183c2b;--muted:#668174;--green:#16865b;--blue:#247caf;--red:#c94b5f;--yellow:#b57918;--green-dark:#0e6b47}
@@ -177,7 +176,7 @@
     .removed-member-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}.permanent-delete-button{background:linear-gradient(135deg,#ffd8df,#ffb8c5)!important;color:#8e2f43!important;box-shadow:0 9px 21px rgba(166,65,86,.14)!important}.permanent-delete-button:hover:not(:disabled){background:linear-gradient(135deg,#ffcbd5,#f5a5b5)!important;color:#77273a!important}
     .file-menu-wrap,#masterGate{display:none!important}
 
-    /* ===== LOGIN OVERLAY STYLES ===== */
+    /* ===== LOGIN OVERLAY STYLES (FULLY RESTORED) ===== */
     #loginOverlay {
       position: fixed;
       inset: 0;
@@ -364,7 +363,7 @@
   </style>
 </head>
 <body>
-<!-- ===== DASHBOARD HTML – ARCHIVE REMOVED, THEME FIXED ===== -->
+<!-- ===== DASHBOARD HTML – ARCHIVE REMOVED, LOGIN FULLY RESTORED ===== -->
 <main class="wrap">
 <header class="header"><div><div class="green">🏸 Badminton Group Accounts</div><h1>Badminton Group Manager</h1><p>Manage income, expenses and monthly fees with shared live database data.</p></div>
 <div class="auth-controls">
@@ -404,11 +403,11 @@
 <button class="hidden" id="bulkClearTopButton" type="button">Bulk Clear Pending</button><button class="primary hidden" id="connectMasterButton" type="button">Create &amp; Connect Master</button><button class="hidden" disabled="" id="grantAccessButton">Save Changes</button><button class="hidden" disabled="" id="disconnectButton">Disconnect</button><button class="hidden" disabled="" id="saveMasterButton" type="button">Save</button>
 </main>
 
-<!-- ===== MODALS (Archive modal removed) ===== -->
+<!-- ===== MODALS ===== -->
 <div class="modal-bg hidden" id="bulkClearModal"><div class="modal" style="width:min(700px,100%)"><h2>Bulk Clear Pending</h2><p>Clear exact pending amounts. Status-only is the safe default and does not change cash balance.</p><div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:14px"><div class="field"><label>Member Scope</label><select id="bulkMemberScope"><option value="selected">Members selected on main screen</option><option value="all">All active members</option><option value="one">One member</option></select></div><div class="field hidden" id="bulkOneMemberContainer"><label>Member</label><select id="bulkOneMember"></select></div><div class="field"><label>Month Scope</label><select id="bulkMonthScope"><option value="current">Current review month</option><option value="single">One selected month</option><option value="range">Selected month range</option><option value="allPending">All pending months up to review month</option></select></div><div class="field hidden" id="bulkSingleMonthContainer"><label>Selected Month</label><input id="bulkSingleMonth" type="month"/></div><div class="field hidden" id="bulkRangeStartContainer"><label>Start Month</label><input id="bulkStartMonth" type="month"/></div><div class="field hidden" id="bulkRangeEndContainer"><label>End Month</label><input id="bulkEndMonth" type="month"/></div><div class="field"><label>Balance Treatment</label><select id="bulkBalanceMode"><option value="status">Status only, do not change cash balance</option><option value="income">Record actual income and change cash balance</option></select></div><div class="field"><label>Clearance Date</label><input id="bulkClearDate" type="date"/></div><div class="field span2"><label>Note</label><input id="bulkClearNote" value="Bulk pending clearance"/></div></div><div class="preview"><h3>Preview</h3><div class="muted" id="bulkClearPreviewText"></div><div id="bulkClearPreviewList" style="max-height:220px;overflow:auto;margin-top:8px"></div></div><div class="actions" style="margin-top:14px"><button class="primary" disabled="" id="confirmBulkClearButton">Confirm Bulk Clearance</button><button id="cancelBulkClearButton">Cancel</button></div></div></div>
 <div class="modal-bg hidden" id="setPaidModal"><div class="modal"><h2>Set Paid / Clear Pending</h2><p id="setPaidMessage"></p><div class="field"><label>Date</label><input id="setPaidDate" type="date"/></div><div class="field"><label>Amount</label><input id="setPaidAmount" min="0.01" type="number"/></div><div class="field"><label>Change Cash Balance?</label><select id="setPaidBalanceEffect"><option value="yes">Yes, record income</option><option value="no">No, status only</option></select></div><div class="field"><label>Note</label><input id="setPaidNote" value="Manual pending clearance"/></div><div class="actions" style="margin-top:12px"><button class="primary" id="confirmSetPaidButton">Confirm</button><button id="cancelSetPaidButton">Cancel</button></div></div></div>
 
-<!-- ===== LOGIN MODAL (legacy, kept for compatibility) ===== -->
+<!-- ===== LOGIN MODAL (legacy, kept) ===== -->
 <div class="modal-bg hidden" id="loginModal">
   <div class="modal">
     <h2>🔐 Owner Login</h2>
@@ -430,7 +429,7 @@
 </div>
 <div id="autosaveToast" class="autosave-toast"></div>
 
-<!-- ===== LOGIN OVERLAY ===== -->
+<!-- ===== LOGIN OVERLAY (FULLY RESTORED) ===== -->
 <div id="loginOverlay">
   <div class="overlay-box">
     <h2>🏸 Group Manager</h2>
@@ -467,7 +466,7 @@
 
 <script>
 // ============================================================================
-// APPLICATION SCRIPT – ARCHIVE REMOVED, THEME FIXED, BEAUTIFIED
+// APPLICATION SCRIPT – FULLY RESTORED LOGIN, ARCHIVE REMOVED
 // ============================================================================
 "use strict";
 /* EARLY NAVIGATION WIRING */
@@ -694,7 +693,7 @@ $("transactionDirection").onchange=()=>{defaultDesc();updateFields()};$("incomeC
 $("transactionForm").onsubmit=e=>{e.preventDefault();let dir=$("transactionDirection").value,cat=category(),memReq=dir==="Income"&&feeCat(cat),mid=memReq?$("transactionMember").value:"",mo=requiresMonth(dir,cat)?$("feeMonth").value:"",a=amount($("transactionAmount").value),data={date:$("transactionDate").value,direction:dir,category:cat,memberId:mid,feeMonth:mo,name:memReq?"":$("transactionName").value.trim(),description:description(),amount:a,affectsBalance:true};if(!data.date||!a||memReq&&!mid||requiresMonth(dir,cat)&&!mo)return alert("Complete all required transaction fields.");if(editingTransactionId){state.transactions=state.transactions.map(t=>t.id===editingTransactionId?{...t,...data,source:"GUI Edit"}:t);resetTransaction();return commit("Transaction updated")};if(memReq&&$("allocationMethod").value==="automatic"){let arr=allocate(member(mid),a,mo),group=uid(),order=nextOrder();arr.forEach(x=>state.transactions.push({...data,id:uid(),paymentGroupId:group,order:order++,category:x.category,feeMonth:x.month,amount:x.amount,allocationMode:"automatic",allocationType:x.type,source:"GUI Auto Allocation"}));resetTransaction();return commit(`${money(a)} split into ${arr.length} month records`)}state.transactions.push({...data,id:uid(),paymentGroupId:memReq?uid():"",order:nextOrder(),allocationMode:memReq?"manual":"",source:"GUI"});resetTransaction();commit("Transaction saved")};$("cancelTransactionButton").onclick=resetTransaction;
 // ===== EVENT BINDINGS =====
 $("memberSelector").onchange=()=>{renderMemberPicker();renderCards()};$("removedMemberSelector").onchange=renderRemoved;$("financialView").onchange=renderRecords;$("financialMonth").onchange=renderRecords;$("feeStatusMonth").onchange=renderFeeStatus;$("feeStatusFilter").onchange=renderFeeStatus;$("selectAllMembersButton").onclick=()=>{[...$("memberSelector").options].forEach(o=>o.selected=true);renderMemberPicker();renderCards()};$("clearMemberSelectionButton").onclick=()=>{[...$("memberSelector").options].forEach(o=>o.selected=false);renderMemberPicker();renderCards()};
-// ===== EXCEL IMPORT/EXPORT =====
+// ===== EXCEL IMPORT/EXPORT (unchanged) =====
 function rows(w,n){return w.Sheets[n]?XLSX.utils.sheet_to_json(w.Sheets[n],{defval:"",raw:true}):[]}function matrix(w,n){return w.Sheets[n]?XLSX.utils.sheet_to_json(w.Sheets[n],{header:1,defval:"",raw:true}):[]}function setting(mat,name){let key=norm(name);for(let r of mat)for(let i=0;i<r.length;i++)if(norm(r[i])===key)return r[i+1]??"";return""}function isMaster(w){return["Transactions","Members","Settings"].every(n=>w.SheetNames.includes(n))}
 function buildState(w,file){if(!isMaster(w))throw Error("Not a Badminton Group Manager master workbook.");let sm=matrix(w,"Settings"), members=rows(w,"Members").map(r=>{let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v])),st=String(x.memberstate||"Active").toLowerCase();return{id:String(x.memberid||x.id||"").trim(),name:clean(x.membername||x.name),joiningDate:normDate(x.joiningdate)||today(),active:st==="active"||st==="test",deleted:st==="deleted",isTest:st==="test"}}).filter(m=>m.id&&m.name),ids=new Set(members.map(m=>m.id));let ts=rows(w,"Transactions").map((r,i)=>{let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v])),mid=String(x.memberid||"").trim();return{id:String(x.transactionid||x.id||uid()),paymentGroupId:String(x.paymentgroupid||""),bulkOperationId:String(x.bulkoperationid||""),order:Number(x.order||i+1),date:normDate(x.date),feeMonth:String(x.applicablemonth||x.feemonth||"").slice(0,7),memberId:ids.has(mid)?mid:"",name:ids.has(mid)?"":clean(x.name),direction:String(x.direction),category:String(x.category),description:String(x.description||""),amount:amount(x.amount),affectsBalance:!/^no|false|0$/i.test(String(x.affectsbalance)),allocationMode:String(x.allocationmode||""),allocationType:String(x.allocationtype||""),source:String(x.source||"Master Workbook")}}).filter(t=>t.amount>0&&["Income","Expense"].includes(t.direction));let ad=rows(w,"Manual Adjustments").map(r=>{let x=Object.fromEntries(Object.entries(r).map(([k,v])=>[norm(k),v]));return{id:String(x.adjustmentid||x.id||uid()),bulkOperationId:String(x.bulkoperationid||""),date:normDate(x.date),month:String(x.month||"").slice(0,7),memberId:String(x.memberid||""),amount:amount(x.amount),note:String(x.note||""),affectsBalance:false}}).filter(a=>ids.has(a.memberId)&&a.month&&a.amount);return{monthlyFee:amount(setting(sm,"Monthly Fee"))||1000,reviewMonth:String(setting(sm,"Review Month")||curMonth()).slice(0,7),members,transactions:ts,adjustments:ad,importedFileName:String(setting(sm,"Imported File")||file||"")}}
 async function readHandle(h){let f=await h.getFile(),w=XLSX.read(await f.arrayBuffer(),{type:"array",cellDates:true});return buildState(w,f.name)}function applyState(s){state=s;saveLocal();resetMember();resetTransaction();render()}
@@ -967,7 +966,7 @@ function setSync(cls,msg){
   const toast=$("autosaveToast"); if(toast&&(cls==="connected"||cls==="error")){toast.textContent=msg;toast.className="autosave-toast show "+(cls==="error"?"error":"");clearTimeout(window.__autosaveToastTimer);window.__autosaveToastTimer=setTimeout(()=>toast.classList.remove("show"),2600)}
 }
 // ============================================================================
-// AUTH AND OVERLAY LOGIC
+// AUTH AND OVERLAY LOGIC (FULLY RESTORED)
 // ============================================================================
 
 if (typeof debugLog === 'undefined') {
@@ -1233,4 +1232,4 @@ logoutButton.addEventListener('click', handleLogout);
 console.log('🏸 Badminton Group Manager with Reader Login');
 </script>
 </body>
-</html>
+</html>  
