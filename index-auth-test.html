@@ -349,8 +349,7 @@
   </style>
 </head>
 <body>
-
-<!-- ===== DASHBOARD HTML – State dropdown now includes "Test" ===== -->
+<!-- ===== DASHBOARD HTML – State dropdown includes "Test" ===== -->
 <main class="wrap">
 <header class="header"><div><div class="green">🏸 Badminton Group Accounts</div><h1>Badminton Group Manager</h1><p>Manage income, expenses and monthly fees with shared live database data.</p></div>
 <div class="auth-controls">
@@ -367,7 +366,6 @@
 <section class="card page-section group-showcase" data-page="dashboard" id="groupShowcase"><div class="section-head"><div><h2>Our Badminton Group</h2><p>Meet the active members of the group.</p></div><div class="group-count" id="groupMemberCount">0 Active Members</div></div><div class="pad"><div class="group-name-grid" id="groupNameGrid"></div><div class="group-show-more"><button class="hidden" id="toggleGroupMembersButton" type="button">Show All Members</button></div></div></section>
 <section class="card page-section page-hidden settings-studio-card" data-page="settings"><div class="section-head"><div><span class="section-kicker">APPEARANCE &amp; PREFERENCES</span><h2>Settings</h2><p>Standard monthly fee and review month.</p></div></div><div class="pad row"><div class="settings-controls"><div class="field"><label>Monthly Fee</label><input id="monthlyFee" min="1" type="number"/></div><div class="field"><label>Review Month</label><input id="reviewMonth" type="month"/></div><div class="field theme-field"><label><span aria-hidden="true" class="field-icon">✦</span>Interface Theme</label><select id="interfaceTheme"><option value="lavender">Lavender Mist</option><option value="mint">Mint Court</option><option value="sky">Sky Rally</option><option value="peach">Peach Shuttle</option><option value="rose">Rose Quartz</option><option value="aqua">Aqua Breeze</option><option value="lemon">Lemon Glow</option><option value="slate">Soft Slate</option><option value="berry">Berry Cream</option><option value="sand">Warm Sand</option><option value="coral">Coral Bloom</option><option value="mono">Pearl Mono</option></select></div><div class="settings-action"><button class="primary" id="saveSettingsButton">Save Settings</button></div></div></div></section>
 <section class="card page-section page-hidden member-form-card" data-page="members"><div class="section-head"><div><span class="section-kicker">MEMBER PROFILE</span><h2 id="memberFormTitle">Add Member</h2><p>Add or edit members.</p></div></div><div class="pad"><form id="memberForm"><div class="grid"><div class="field span2 member-form-field member-field-1"><label><span aria-hidden="true" class="field-icon">👤</span>Member Name</label><input id="memberName" required=""/></div><div class="field member-form-field member-field-2"><label><span aria-hidden="true" class="field-icon">📅</span>Joining Date</label><input id="joiningDate" required="" type="date"/></div>
-<!-- UPDATED: State dropdown now includes "Test" -->
 <div class="field member-form-field member-field-3"><label><span aria-hidden="true" class="field-icon">●</span>State</label><select id="memberState"><option value="active">Active</option><option value="inactive">Inactive</option><option value="test">Test</option></select></div>
 </div><div class="actions" style="margin-top:12px"><button class="primary" id="saveMemberButton" type="submit">Add Member</button><button class="hidden" id="cancelMemberButton" type="button">Cancel</button></div></form></div></section>
 <section class="card page-section page-hidden active-members-card" data-page="members"><div class="section-head"><div><h2>Active Member Details</h2><p>Monthly status, partial payments and advances.</p></div><div class="actions"><button class="primary member-action-button" id="bulkClearButton">Bulk Clear Pending</button><button class="member-action-button" id="undoBulkButton">Undo Last Bulk Clearance</button><button class="member-action-button" id="selectAllMembersButton">Select All</button><button class="member-action-button" id="clearMemberSelectionButton">Clear</button></div></div><div class="pad"><div class="member-picker"><div class="member-picker-top"><div class="member-search-wrap"><span aria-hidden="true">⌕</span><input autocomplete="off" id="memberSearchInput" placeholder="Search active members..." type="search"/></div><div class="member-selection-summary" id="memberSelectionSummary">Select one or more members to view details</div></div><div class="member-choice-grid" id="memberChoiceGrid"></div></div><div class="selected-details-heading"><div><span class="section-kicker">SELECTED MEMBERS</span><h3>Member Details</h3></div><span class="selected-details-count" id="selectedDetailsCount">0 selected</span></div><select aria-hidden="true" class="native-member-selector" id="memberSelector" multiple="" style="min-height:120px" tabindex="-1"></select><div class="member-grid" id="memberCards"></div></div></section>
@@ -440,7 +438,7 @@
 
 <script>
 // ============================================================================
-// APPLICATION SCRIPT – UPDATED: "Test" integrated into State dropdown
+// APPLICATION SCRIPT – UPDATED: All fixes applied
 // ============================================================================
 "use strict";
 /* EARLY NAVIGATION WIRING */
@@ -486,7 +484,7 @@ function renderMemberPicker(){const grid=$("memberChoiceGrid"),search=$("memberS
   return `<button type="button" class="member-choice ${selected.has(m.id)?"selected":""}" data-member-id="${m.id}" aria-pressed="${selected.has(m.id)}">${label}</button>`;
 }).join(""):'<div class="member-choice-empty">No active members match the search.</div>';grid.querySelectorAll(".member-choice").forEach(button=>button.addEventListener("click",()=>{const option=[...$("memberSelector").options].find(o=>o.value===button.dataset.memberId);if(option)option.selected=!option.selected;renderMemberPicker();renderCards()}));updateMemberSelectionSummary()}
 function renderCards(){let ids=[...$("memberSelector").selectedOptions].map(o=>o.value),review=state.reviewMonth||curMonth();$("memberCards").innerHTML=ids.map(id=>{let m=member(id),d=monthData(m,review),css=d.pending===0?"paid":d.applied>0?"partial":"";let testBadge = m.isTest ? ' <span style="background:#fbbf24;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700;color:#78350f;">🧪 Test</span>' : '';let shownMonths=archiveViewActive?[...new Set([...state.transactions.map(t=>t.feeMonth),...state.adjustments.map(a=>a.month)].filter(Boolean))].sort():[-2,-1,0,1,2].map(n=>addMonths(review,n));let rows=shownMonths.map(mo=>{let x=monthData(m,mo);return`<div class="month"><strong>${fmtMonth(mo)}</strong><span>Paid ${money(x.applied)} · Pending ${money(x.pending)}</span>${x.pending>0?`<button type="button" onclick="openPaid('${m.id}','${mo}',${x.pending})">Set Paid</button>`:""}</div>`}).join("");return`<article class="member ${css}"><h3>${esc(m.name)}${testBadge}</h3><p>Joining: ${esc(m.joiningDate)}</p><p>Current paid ${money(d.applied)} · pending ${money(d.pending)}</p><div class="months">${rows}</div><div class="actions"><button onclick="editMember('${m.id}')">Edit</button><button onclick="deactivateMember('${m.id}')">Deactivate</button><button class="danger" onclick="deleteMember('${m.id}')">Delete</button></div></article>`}).join("")}
-function renderRemoved(){let m=member($("removedMemberSelector").value),c=$("removedMemberDetails");if(!m){c.classList.add("hidden");return}c.classList.remove("hidden");let status = m.deleted ? "Deleted" : (m.isTest ? "Test" : (m.active ? "Active" : "Inactive"));c.innerHTML=`<h3>${esc(m.name)}</h3><p>${status}</p><div class="removed-member-actions"><button onclick="restoreMember('${m.id}')">Restore</button>${m.deleted?`<button class="permanent-delete-button" onclick="permanentlyDeleteMember('${m.id}')">Delete Permanently</button>`:""}</div>`}
+function renderRemoved(){let m=member($("removedMemberSelector").value),c=$("removedMemberDetails");if(!m){c.classList.add("hidden");return}c.classList.remove("hidden");let status = m.deleted ? "Deleted" : (m.isTest ? "🧪 Test" : (m.active ? "Active" : "Inactive"));let testBadge = m.isTest ? ' <span style="background:#fbbf24;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700;color:#78350f;">🧪 Test</span>' : '';c.innerHTML=`<h3>${esc(m.name)}${testBadge}</h3><p>${status}</p><div class="removed-member-actions"><button onclick="restoreMember('${m.id}')">Restore</button>${m.deleted?`<button class="permanent-delete-button" onclick="permanentlyDeleteMember('${m.id}')">Delete Permanently</button>`:""}</div>`}
 function renderMonths(){let old=$("financialMonth").value,ms=[...new Set([...state.transactions.map(t=>t.feeMonth||monthOf(t.date)),...state.adjustments.map(a=>a.month)].filter(Boolean))].sort().reverse();$("financialMonth").innerHTML='<option value="">All Months</option>'+ms.map(m=>`<option value="${m}">${fmtMonth(m)}</option>`).join("");if(ms.includes(old))$("financialMonth").value=old}
 function getAllocationLabel(record){if(record.isAdjustment)return record.bulkOperationId?"Bulk status-only":"Status only";if(record.allocationMode==="bulk"||record.source==="Bulk Clear Pending")return"Bulk payment";if(record.paymentGroupId){let count=state.transactions.filter(t=>t.paymentGroupId===record.paymentGroupId).length;if(count>1)return`Split payment (${count})`}if(record.allocationMode==="automatic")return"Auto allocated";return"Single entry"}
 function feeStatusSource(memberId,month,data){let parts=[];if(data.direct>0)parts.push("Direct payment");if(data.arrears>0)parts.push("Arrears");if(data.advance>0)parts.push("Advance");if(data.manual>0){let isBulk=state.adjustments.some(a=>a.memberId===memberId&&a.month===month&&a.bulkOperationId);parts.push(isBulk?"Bulk status-only":"Status-only adjustment")}return parts.length?parts.join(", "):"No payment recorded"}
@@ -513,32 +511,94 @@ window.editMember = id => {
   $("saveMemberButton").textContent = "Update Member";
   $("cancelMemberButton").classList.remove("hidden");
 };
-window.deactivateMember=id=>{let m=member(id);m.active=false;m.deleted=false;m.isTest=false;commit("Member deactivated")};
-window.deleteMember=id=>{if(confirm("Move member to Deleted Members?")){let m=member(id);m.active=false;m.deleted=true;m.isTest=false;commit("Member deleted")}};
-window.restoreMember=id=>{let m=member(id);m.active=true;m.deleted=false;commit("Member restored")};
-// ===== FIXED: Test members wiped entirely on permanent delete =====
+// ===== FIXED: Deactivate preserves test status =====
+window.deactivateMember = id => {
+  let m = member(id);
+  if (!m) return;
+  m.active = false;
+  m.deleted = false;
+  commit("Member deactivated.");
+  renderCards();
+  renderSelectors();
+  renderRemoved();
+  showToast(`✅ ${m.name} deactivated`, 'info');
+};
+// ===== FIXED: Delete preserves test status =====
+window.deleteMember = id => {
+  if (confirm("Move member to Deleted Members?")) {
+    let m = member(id);
+    if (!m) return;
+    m.active = false;
+    m.deleted = true;
+    commit("Member deleted.");
+    renderCards();
+    renderSelectors();
+    renderRemoved();
+    showToast(`✅ ${m.name} moved to Deleted Members`, 'info');
+  }
+};
+// ===== FIXED: Restore preserves test status =====
+window.restoreMember = id => {
+  let m = member(id);
+  if (!m) return;
+  if (m.isTest) {
+    m.active = true;
+    m.deleted = false;
+    commit("Test member restored (remains Test).");
+  } else {
+    m.active = true;
+    m.deleted = false;
+    commit("Member restored.");
+  }
+  renderRemoved();
+  renderSelectors();
+  renderCards();
+  showToast(`✅ ${m.name} restored${m.isTest ? ' as Test' : ''}`, 'success');
+};
+// ===== FIXED: Permanent delete wipes test members completely =====
 window.permanentlyDeleteMember = id => {
   const m = member(id);
-  if (!m || !m.deleted) return;
+  if (!m || !m.deleted) {
+    console.warn('Member not found or not deleted:', id);
+    return;
+  }
+
   if (m.isTest) {
-    if (!confirm(`🧪 Test member "${m.name}" – all their transactions and adjustments will be permanently deleted.\n\nContinue?`)) return;
+    const txCount = state.transactions.filter(t => t.memberId === id).length;
+    const adjCount = state.adjustments.filter(a => a.memberId === id).length;
+    if (!confirm(`🧪 Test member "${m.name}" – this will permanently delete:\n\n• ${txCount} transaction(s)\n• ${adjCount} adjustment(s)\n• The member record itself\n\nThis cannot be undone. Continue?`)) {
+      return;
+    }
     state.transactions = state.transactions.filter(t => t.memberId !== id);
     state.adjustments = state.adjustments.filter(a => a.memberId !== id);
     state.members = state.members.filter(x => x.id !== id);
     $("removedMemberSelector").value = "";
-    commit("Test member and all linked records permanently deleted.");
+    commit("🧪 Test member and all linked records permanently deleted.");
+    renderRemoved();
+    renderSelectors();
+    renderCards();
+    showToast('✅ Test member completely wiped from database', 'success');
     return;
   }
+
   const linkedTransactions = state.transactions.filter(t => t.memberId === id);
   const linkedAdjustments = state.adjustments.filter(a => a.memberId === id);
+  
   if (linkedTransactions.length || linkedAdjustments.length) {
     alert(`Permanent deletion is blocked because ${m.name} still has linked financial history.\n\nTransactions: ${linkedTransactions.length}\nStatus adjustments: ${linkedAdjustments.length}\n\nKeeping the member record protects balances, audit history, and archive references. The member can remain Deleted or be restored.`);
     return;
   }
-  if (!confirm(`Permanently delete ${m.name}?\n\nThis member has no linked current-master transactions or adjustments. This action cannot be undone.`)) return;
+
+  if (!confirm(`Permanently delete ${m.name}?\n\nThis member has no linked current-master transactions or adjustments. This action cannot be undone.`)) {
+    return;
+  }
+
   state.members = state.members.filter(x => x.id !== id);
   $("removedMemberSelector").value = "";
-  commit("Member permanently deleted");
+  commit("Member permanently deleted.");
+  renderRemoved();
+  renderSelectors();
+  showToast('✅ Member permanently deleted', 'success');
 };
 window.deleteTransaction=id=>{if(confirm("Delete this transaction?")){state.transactions=state.transactions.filter(t=>t.id!==id);commit("Transaction deleted")}};window.deleteAdjustment=id=>{state.adjustments=state.adjustments.filter(a=>a.id!==id);commit("Adjustment deleted")};
 window.editTransaction=id=>{let t=state.transactions.find(x=>x.id===id);editingTransactionId=id;$("transactionDate").value=t.date;$("transactionDirection").value=t.direction;if(t.direction==="Income")$("incomeCategory").value=t.category;else $("expenseCategory").value=t.category;$("transactionMember").value=t.memberId||"";$("feeMonth").value=t.feeMonth||"";$("transactionName").value=t.name||"";$("transactionAmount").value=t.amount;let opts=[...$("transactionDescriptionChoice").options].map(o=>o.value);if(opts.includes(t.description))$("transactionDescriptionChoice").value=t.description;else{$("transactionDescriptionChoice").value="Other / Custom";$("transactionDescription").value=t.description||""}toggleCustom();updateFields();$("transactionFormTitle").textContent="Edit Transaction";$("saveTransactionButton").textContent="Update Transaction";$("cancelTransactionButton").classList.remove("hidden")};
@@ -553,18 +613,15 @@ $("memberForm").onsubmit = e => {
   let active = (stateVal === "active" || stateVal === "test");
   if (editingMemberId) {
     let m = member(editingMemberId);
-    // Preserve deleted status only if state is inactive? We'll set cleanly.
     m.name = name;
     m.joiningDate = date;
     m.isTest = isTest;
     m.active = active;
-    // If state is inactive, ensure it's not deleted and not test.
     if (stateVal === "inactive") {
       m.active = false;
       m.isTest = false;
       m.deleted = false;
     } else {
-      // active or test => ensure not deleted
       m.deleted = false;
     }
   } else {
