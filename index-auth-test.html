@@ -162,7 +162,7 @@
     .removed-member-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}.permanent-delete-button{background:linear-gradient(135deg,#ffd8df,#ffb8c5)!important;color:#8e2f43!important;box-shadow:0 9px 21px rgba(166,65,86,.14)!important}.permanent-delete-button:hover:not(:disabled){background:linear-gradient(135deg,#ffcbd5,#f5a5b5)!important;color:#77273a!important}
     .file-menu-wrap,#masterGate{display:none!important}
 
-    /* ===== ADDED LOGIN OVERLAY STYLES ===== */
+    /* ===== LOGIN OVERLAY STYLES ===== */
     #loginOverlay {
       position: fixed;
       inset: 0;
@@ -189,10 +189,33 @@
       color: #183c2b;
       font-size: 28px;
     }
-    #loginOverlay p {
+    #loginOverlay .subtitle {
       color: #668174;
       margin-bottom: 28px;
       font-size: 15px;
+    }
+    #loginOverlay .field {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    #loginOverlay .field label {
+      display: block;
+      font-weight: 600;
+      font-size: 13px;
+      color: #183c2b;
+      margin-bottom: 4px;
+    }
+    #loginOverlay .field input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #c9ddd1;
+      border-radius: 12px;
+      font-size: 16px;
+      background: #fafcfa;
+    }
+    #loginOverlay .field input:focus {
+      outline: 2px solid #16865b;
+      outline-offset: 1px;
     }
     #loginOverlay .login-btn {
       display: block;
@@ -203,24 +226,43 @@
       font-weight: 700;
       font-size: 16px;
       cursor: pointer;
+      background: linear-gradient(135deg, #16865b, #0e6b47);
+      color: #fff;
       transition: transform 0.15s;
-      margin-bottom: 12px;
+      margin-top: 8px;
     }
-    #loginOverlay .login-btn:hover { transform: scale(1.02); }
-    .login-btn.reader { background: linear-gradient(135deg, #c9f8dc, #9ceabf); color: #075f2d; }
-    .login-btn.admin { background: linear-gradient(135deg, #d4efff, #9dd8fa); color: #175c82; }
-    #loginOverlay .login-error { color: #c94b5f; margin-top: 12px; font-size: 14px; }
+    #loginOverlay .login-btn:hover {
+      transform: scale(1.02);
+    }
+    #loginOverlay .login-error {
+      color: #c94b5f;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+    #loginOverlay .login-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    #loginOverlay .reader-hint {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #668174;
+      border-top: 1px solid #e2eee8;
+      padding-top: 16px;
+    }
+    #loginOverlay .reader-hint span {
+      font-weight: 600;
+      color: #0e6b47;
+    }
+    .wrap.hidden { display: none; }
 
-    /* ===== ADDED AUTH CONTROLS STYLES ===== */
+    /* ===== AUTH CONTROLS ===== */
     .auth-controls{display:flex;align-items:center;gap:12px;flex-shrink:0;margin-left:auto;}
     .auth-status{font-weight:600;font-size:13px;color:var(--muted);}
     .auth-status.admin{color:var(--green);}
-    #loginModal .modal{max-width:420px;}
-    #loginModal .modal input{width:100%;}
-    #loginModal .modal .field{margin-bottom:14px;}
-    .login-error{color:var(--red);font-size:13px;margin-top:6px;}
+    .auth-status.reader{color:#2d8060;}
 
-    /* ===== DEBUG PANEL STYLES (with collapsible) ===== */
+    /* ===== DEBUG PANEL ===== */
     #debugPanel {
       position: fixed;
       bottom: 0;
@@ -308,7 +350,7 @@
 </head>
 <body>
 
-<!-- ===== YOUR ORIGINAL DASHBOARD HTML (unchanged) ===== -->
+<!-- ===== ORIGINAL DASHBOARD HTML (unchanged) ===== -->
 <main class="wrap">
 <header class="header"><div><div class="green">🏸 Badminton Group Accounts</div><h1>Badminton Group Manager</h1><p>Manage income, expenses and monthly fees with shared live database data.</p></div>
 <div class="auth-controls">
@@ -336,7 +378,7 @@
 <div class="modal-bg hidden" id="archiveModal"><div class="modal" style="width:min(700px,100%)"><h2>Archive Data</h2><p>The archive file is created first. Current-master data is changed only after the archive is saved.</p><div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:14px"><div class="field studio-field studio-tone-1"><label>Archive Name Prefix</label><input id="archivePrefix" value="Badminton"/></div><div class="field studio-field studio-tone-2"><label>Start Month</label><input id="archiveStartMonth" type="month"/></div><div class="field studio-field studio-tone-3"><label>End Month</label><input id="archiveEndMonth" type="month"/></div><div class="field studio-field studio-tone-4"><label>New Current Review Month</label><input id="archiveNewReviewMonth" type="month"/></div></div><div class="preview"><h3>Archive Preview</h3><div class="muted" id="archivePreviewText"></div></div><div class="actions" style="margin-top:14px"><button class="primary" disabled="" id="confirmArchiveButton">Create Archive</button><button id="cancelArchiveButton">Cancel</button></div></div></div>
 <div class="modal-bg hidden" id="bulkClearModal"><div class="modal" style="width:min(700px,100%)"><h2>Bulk Clear Pending</h2><p>Clear exact pending amounts. Status-only is the safe default and does not change cash balance.</p><div class="grid" style="grid-template-columns:repeat(2,1fr);margin-top:14px"><div class="field"><label>Member Scope</label><select id="bulkMemberScope"><option value="selected">Members selected on main screen</option><option value="all">All active members</option><option value="one">One member</option></select></div><div class="field hidden" id="bulkOneMemberContainer"><label>Member</label><select id="bulkOneMember"></select></div><div class="field"><label>Month Scope</label><select id="bulkMonthScope"><option value="current">Current review month</option><option value="single">One selected month</option><option value="range">Selected month range</option><option value="allPending">All pending months up to review month</option></select></div><div class="field hidden" id="bulkSingleMonthContainer"><label>Selected Month</label><input id="bulkSingleMonth" type="month"/></div><div class="field hidden" id="bulkRangeStartContainer"><label>Start Month</label><input id="bulkStartMonth" type="month"/></div><div class="field hidden" id="bulkRangeEndContainer"><label>End Month</label><input id="bulkEndMonth" type="month"/></div><div class="field"><label>Balance Treatment</label><select id="bulkBalanceMode"><option value="status">Status only, do not change cash balance</option><option value="income">Record actual income and change cash balance</option></select></div><div class="field"><label>Clearance Date</label><input id="bulkClearDate" type="date"/></div><div class="field span2"><label>Note</label><input id="bulkClearNote" value="Bulk pending clearance"/></div></div><div class="preview"><h3>Preview</h3><div class="muted" id="bulkClearPreviewText"></div><div id="bulkClearPreviewList" style="max-height:220px;overflow:auto;margin-top:8px"></div></div><div class="actions" style="margin-top:14px"><button class="primary" disabled="" id="confirmBulkClearButton">Confirm Bulk Clearance</button><button id="cancelBulkClearButton">Cancel</button></div></div></div>
 <div class="modal-bg hidden" id="setPaidModal"><div class="modal"><h2>Set Paid / Clear Pending</h2><p id="setPaidMessage"></p><div class="field"><label>Date</label><input id="setPaidDate" type="date"/></div><div class="field"><label>Amount</label><input id="setPaidAmount" min="0.01" type="number"/></div><div class="field"><label>Change Cash Balance?</label><select id="setPaidBalanceEffect"><option value="yes">Yes, record income</option><option value="no">No, status only</option></select></div><div class="field"><label>Note</label><input id="setPaidNote" value="Manual pending clearance"/></div><div class="actions" style="margin-top:12px"><button class="primary" id="confirmSetPaidButton">Confirm</button><button id="cancelSetPaidButton">Cancel</button></div></div></div>
-<!-- Login modal (existing) -->
+<!-- Login modal (existing) - we will remove it and only use the overlay -->
 <div class="modal-bg hidden" id="loginModal">
   <div class="modal">
     <h2>🔐 Owner Login</h2>
@@ -362,10 +404,22 @@
 <div id="loginOverlay">
   <div class="overlay-box">
     <h2>🏸 Group Manager</h2>
-    <p>Please log in to view the dashboard.</p>
-    <button class="login-btn reader" id="readerLoginBtn">👀 Login as Reader<br><span style="font-weight:400;font-size:13px;">reader@badminton.local / reader</span></button>
-    <button class="login-btn admin" id="adminLoginBtn">🔐 Login as Admin</button>
-    <div id="loginOverlayError" class="login-error"></div>
+    <p class="subtitle">Please log in to view the dashboard.</p>
+    <form id="loginForm" autocomplete="off">
+      <div class="field">
+        <label for="loginEmailOverlay">Email / Username</label>
+        <input type="text" id="loginEmailOverlay" placeholder="your@email.com" value="vigilancekeeper@gmail.com" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="loginPasswordOverlay">Password</label>
+        <input type="password" id="loginPasswordOverlay" placeholder="••••••••" autocomplete="off" />
+      </div>
+      <button type="submit" class="login-btn" id="loginSubmitOverlay">Log In</button>
+      <div id="loginOverlayError" class="login-error"></div>
+      <div class="reader-hint">
+        💡 Use <span>reader@badminton.local</span> / <span>reader</span> for read‑only access.
+      </div>
+    </form>
   </div>
 </div>
 
@@ -753,12 +807,19 @@ let authSession = null;
 const authStatus = document.getElementById('authStatus');
 const loginButton = document.getElementById('loginButton');
 const logoutButton = document.getElementById('logoutButton');
-const loginModal = document.getElementById('loginModal');
+const loginModal = document.getElementById('loginModal'); // will not use
 const loginEmail = document.getElementById('loginEmail');
 const loginPassword = document.getElementById('loginPassword');
 const loginError = document.getElementById('loginError');
 const loginSubmitBtn = document.getElementById('loginSubmitBtn');
 const loginCancelBtn = document.getElementById('loginCancelBtn');
+
+// ---- Overlay login form ----
+const loginForm = document.getElementById('loginForm');
+const loginEmailOverlay = document.getElementById('loginEmailOverlay');
+const loginPasswordOverlay = document.getElementById('loginPasswordOverlay');
+const loginOverlayError = document.getElementById('loginOverlayError');
+const loginSubmitOverlay = document.getElementById('loginSubmitOverlay');
 
 // ---- Admin check (robust) ----
 async function checkAdminStatus() {
@@ -815,7 +876,7 @@ function updateAuthUI() {
     debugLog('🔓 Admin mode enabled.', 'success');
   } else if (authSession) {
     authStatus.textContent = '📖 Reader';
-    authStatus.className = 'auth-status';
+    authStatus.className = 'auth-status reader';
     loginButton.style.display = 'none';
     logoutButton.style.display = 'inline-block';
     enableWriteControls(false);
@@ -835,27 +896,31 @@ function enableWriteControls(enabled) {
   ids.forEach(id => { const el = document.getElementById(id); if(el) el.disabled = !enabled; });
 }
 
-// ---- Login ----
+// ---- Login handler ----
 async function handleLogin(email, password) {
   try {
     debugLog('🔑 Attempting login for: ' + email, 'info');
-    const errorEl = document.getElementById('loginError') || document.getElementById('loginOverlayError');
-    if (errorEl) errorEl.textContent = '';
+    loginOverlayError.textContent = '';
+    loginSubmitOverlay.disabled = true;
+    loginSubmitOverlay.textContent = 'Logging in...';
+
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) throw error;
     debugLog('✅ Login successful!', 'success');
-    if (errorEl) errorEl.textContent = '';
-    const modal = document.getElementById('loginModal');
-    if (modal) modal.classList.add('hidden');
+    loginOverlayError.textContent = '';
+    // Hide overlay
     hideLoginOverlay();
+    // Refresh auth and load data
     await refreshAuth();
     await loadSupabaseState(true);
     showToast('✅ Logged in as ' + (isAdmin ? 'Admin' : 'Reader'), 'success');
   } catch(e) {
     debugLog('❌ Login failed: ' + e.message, 'error');
-    const errorEl = document.getElementById('loginError') || document.getElementById('loginOverlayError');
-    if (errorEl) errorEl.textContent = '❌ ' + (e.message || 'Login failed');
+    loginOverlayError.textContent = '❌ ' + (e.message || 'Login failed');
     console.error('Login error:', e);
+  } finally {
+    loginSubmitOverlay.disabled = false;
+    loginSubmitOverlay.textContent = 'Log In';
   }
 }
 
@@ -867,9 +932,10 @@ async function handleLogout() {
     authSession = null; isAdmin = false;
     updateAuthUI();
     showToast('Logged out', '');
+    // Show overlay and hide dashboard
     showLoginOverlay();
     document.querySelector('.wrap')?.classList.add('hidden');
-    // Reset state to empty (optional)
+    // Reset state to empty
     state.members = [];
     state.transactions = [];
     state.adjustments = [];
@@ -951,40 +1017,32 @@ function hideLoginOverlay() {
   document.querySelector('.wrap')?.classList.remove('hidden');
 }
 
-// ---- Reader and Admin buttons ----
-document.getElementById('readerLoginBtn')?.addEventListener('click', function() {
-  handleLogin('reader@badminton.local', 'reader');
-});
-document.getElementById('adminLoginBtn')?.addEventListener('click', function() {
-  const modal = document.getElementById('loginModal');
-  if (modal) {
-    document.getElementById('loginEmail').value = 'vigilancekeeper@gmail.com';
-    document.getElementById('loginPassword').value = '';
-    document.getElementById('loginPassword').focus();
-    modal.classList.remove('hidden');
+// ---- Login form submit ----
+loginForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const email = loginEmailOverlay.value.trim();
+  const password = loginPasswordOverlay.value;
+  if (!email || !password) {
+    loginOverlayError.textContent = 'Please enter email and password.';
+    return;
   }
-});
-
-// ---- Login modal events ----
-loginButton.addEventListener('click', ()=>{
-  loginModal.classList.remove('hidden');
-  loginError.textContent = '';
-  loginPassword.value = '';
-  loginEmail.value = 'vigilancekeeper@gmail.com';
-  debugLog('🔐 Login modal opened.', 'info');
-});
-
-loginSubmitBtn.addEventListener('click', ()=>{
-  const email = loginEmail.value.trim();
-  const password = loginPassword.value;
-  if (!email || !password) { loginError.textContent = 'Please enter email and password'; return; }
   handleLogin(email, password);
 });
 
-loginCancelBtn.addEventListener('click', ()=>loginModal.classList.add('hidden'));
-loginPassword.addEventListener('keydown', (e)=>{ if(e.key==='Enter') loginSubmitBtn.click(); });
+// ---- Login button in header (opens overlay) ----
+loginButton.addEventListener('click', function() {
+  // If overlay is not visible, show it.
+  const overlay = document.getElementById('loginOverlay');
+  if (overlay.style.display !== 'flex') {
+    showLoginOverlay();
+    loginEmailOverlay.value = 'vigilancekeeper@gmail.com';
+    loginPasswordOverlay.value = '';
+    loginOverlayError.textContent = '';
+  }
+});
+
+// ---- Logout button ----
 logoutButton.addEventListener('click', handleLogout);
-loginModal.addEventListener('click', (e)=>{ if(e.target===loginModal) loginModal.classList.add('hidden'); });
 
 // ---- Init ----
 (async function init() {
