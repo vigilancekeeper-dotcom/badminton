@@ -480,13 +480,28 @@ function toggleCustom(){$("customDescriptionContainer").classList.toggle("hidden
 function resetTransaction(){editingTransactionId="";$("transactionForm").reset();$("transactionDate").value=today();$("transactionDirection").value="Income";$("incomeCategory").value="Monthly Fee";$("allocationMethod").value="automatic";$("feeMonth").value=state.reviewMonth||curMonth();$("transactionDescriptionChoice").value="Monthly Fee Payment";$("transactionFormTitle").textContent="Add Transaction";$("saveTransactionButton").textContent="Add Transaction";$("cancelTransactionButton").classList.add("hidden");$("allocationPreview").classList.add("hidden");toggleCustom();updateFields()}
 function allocate(mem,pay,target){let l=ledger(mem),left=pay,out=[],monthly=Number(state.monthlyFee);for(let mo of monthRange(monthOf(mem.joiningDate),target)){if(left<=0)break;let p=(l.months[mo]||{pending:monthly}).pending;if(p>0){let a=Math.min(p,left);out.push({month:mo,amount:a,category:mo<target?"Arrears Payment":"Monthly Fee",type:mo<target?"Oldest pending":"Current month"});left-=a}}let mo=addMonths(target,1),g=0;while(left>0&&g++<120){let p=(l.months[mo]||{pending:monthly}).pending;if(p>0){let a=Math.min(p,left);out.push({month:mo,amount:a,category:"Advance Fee",type:a<monthly?"Partial advance":"Future advance"});left-=a}mo=addMonths(mo,1)}return out}
 function preview(){let box=$("allocationPreview");box.classList.add("hidden");if(editingTransactionId||$("transactionDirection").value!=="Income"||!feeCat(category()))return;let m=member($("transactionMember").value),a=amount($("transactionAmount").value),mo=$("feeMonth").value;if(!m||!a||!mo)return;let arr=$("allocationMethod").value==="automatic"?allocate(m,a,mo):[{month:mo,amount:a,category:category(),type:"Manual selection"}];box.classList.remove("hidden");$("allocationPreviewMessage").textContent=`${money(a)} will be saved as ${arr.length} month-level record(s).`;$("allocationPreviewList").innerHTML=arr.map(x=>`<div class="preview-row"><strong>${fmtMonth(x.month)}</strong><span>${money(x.amount)}</span><span>${esc(x.type)}</span></div>`).join("")}
-window.editMember=id=>{let m=member(id);editingMemberId=id;$("memberName").value=m.name;$("joiningDate").value=m.joiningDate;$("memberState").value=m.member_state||"active";$("memberFormTitle").textContent="Edit Member";$("saveMemberButton").textContent="Update Member";$("cancelMemberButton").classList.remove("hidden")};
+window.editMember=function(id){
+  const m=member(id);
+  if(!m){ debugLog('❌ editMember: member not found for id '+id, 'error'); return; }
+  debugLog('✏️ Editing member: '+m.name+' (state: '+m.member_state+')', 'info');
+  editingMemberId=id;
+  document.getElementById("memberName").value=m.name;
+  document.getElementById("joiningDate").value=m.joiningDate||"";
+  // Set the dropdown to the member's state, default to 'active'
+  const stateEl=document.getElementById("memberState");
+  const states=['active','inactive','test'];
+  const currentState=m.member_state || (m.active ? 'active' : 'inactive');
+  stateEl.value=states.includes(currentState) ? currentState : 'active';
+  document.getElementById("memberFormTitle").textContent="Edit Member";
+  document.getElementById("saveMemberButton").textContent="Update Member";
+  document.getElementById("cancelMemberButton").classList.remove("hidden");
+};
 window.deactivateMember=id=>{let m=member(id);m.active=false;m.deleted=false;commit("Member deactivated")};
-window.deleteMember=id=>{
+window.deleteMember=function(id){
   let m=member(id);
   if(!m) return;
   // If member is test, hard delete
-  if(m.member_state === "test") {
+  if(m.member_state==="test"){
     if(!confirm(`Permanently delete test member "${m.name}" and all their transactions/adjustments? This cannot be undone.`)) return;
     // Remove from state
     state.members = state.members.filter(x=>x.id!==id);
